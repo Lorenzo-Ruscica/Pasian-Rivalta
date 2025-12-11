@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Gestione Navbar Sticky
+    // --- 1. NAVBAR STICKY (Effetto Sfondo allo scroll) ---
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 30) {
@@ -10,37 +10,78 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Menu Mobile (Burger)
+    // --- 2. MENU MOBILE (Apertura/Chiusura Generale) ---
     const burger = document.querySelector('.burger');
     const nav = document.querySelector('.nav-links');
-    
-    burger.addEventListener('click', () => {
-        nav.classList.toggle('nav-active');
-        
-        // Cambio Icona
-        if (nav.classList.contains('nav-active')) {
-            burger.innerHTML = '<i class="fas fa-times"></i>'; // X
-            burger.style.color = "#d4af37";
-        } else {
-            burger.innerHTML = '<i class="fas fa-bars"></i>'; // Burger
-            burger.style.color = "#fff";
-        }
-    });
+    const navLinksItems = document.querySelectorAll('.nav-links li');
 
-    // 3. Dropdown Mobile (Click invece di Hover)
-    const dropdown = document.querySelector('.dropdown');
-    
-    if (window.innerWidth <= 968) {
-        dropdown.addEventListener('click', (e) => {
-            // Se clicco sul link principale "Collezioni"
-            if (!e.target.closest('.dropdown-menu')) {
-                e.preventDefault(); // Non ricaricare la pagina
-                dropdown.classList.toggle('active'); // Mostra/Nascondi sottomenu
+    if (burger) {
+        burger.addEventListener('click', () => {
+            // Apre/Chiude il menu
+            nav.classList.toggle('nav-active');
+            
+            // Animazione icona Burger
+            burger.classList.toggle('toggle');
+            
+            // Cambia icona da Burger a X
+            if (nav.classList.contains('nav-active')) {
+                burger.innerHTML = '<i class="fas fa-times"></i>'; // Icona X
+                burger.style.color = "#d4af37"; // Oro
+            } else {
+                burger.innerHTML = '<i class="fas fa-bars"></i>'; // Icona Menu
+                burger.style.color = "#fff"; // Bianco
             }
         });
     }
 
-    // 4. Animazioni Scroll Reveal
+    // --- 3. DROPDOWN SU MOBILE (Logica a Fisarmonica) ---
+    // Selezioniamo il link che contiene "Collezioni"
+    const dropdownLink = document.querySelector('.dropdown > a');
+    const dropdownLi = document.querySelector('.dropdown');
+
+    if (dropdownLink) {
+        dropdownLink.addEventListener('click', (e) => {
+            // Questa logica si attiva solo se siamo su schermi piccoli (mobile/tablet)
+            if (window.innerWidth <= 968) {
+                e.preventDefault(); // Blocca il link (non ricarica la pagina)
+                e.stopPropagation(); // Ferma altri eventi
+                
+                // Aggiunge la classe 'active' al genitore per mostrare il menu
+                dropdownLi.classList.toggle('mobile-active');
+                
+                // Ruota la freccina
+                const arrow = dropdownLink.querySelector('i');
+                if (dropdownLi.classList.contains('mobile-active')) {
+                    arrow.style.transform = "rotate(180deg)";
+                } else {
+                    arrow.style.transform = "rotate(0deg)";
+                }
+            }
+        });
+    }
+
+    // --- 4. COOKIE BANNER (Fix Funzionamento) ---
+    const cookieBanner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('accept-cookies');
+
+    // Controllo se esiste già il salvataggio
+    if (!localStorage.getItem('cookiesAccepted')) {
+        // Aspetta 1 secondo e poi mostra il banner
+        setTimeout(() => {
+            cookieBanner.classList.add('show');
+        }, 1000);
+    }
+
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+            // 1. Rimuove la classe show (fa scendere il banner)
+            cookieBanner.classList.remove('show');
+            // 2. Salva la preferenza nel browser
+            localStorage.setItem('cookiesAccepted', 'true');
+        });
+    }
+
+    // --- 5. ANIMAZIONI SCROLL REVEAL ---
     const revealElements = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -52,23 +93,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealElements.forEach(el => observer.observe(el));
 });
-
-// --- GESTIONE COOKIE BANNER ---
-    const cookieBanner = document.getElementById('cookie-banner');
-    const acceptBtn = document.getElementById('accept-cookies');
-
-    // Controlla se l'utente ha già accettato
-    if (!localStorage.getItem('cookiesAccepted')) {
-        // Se no, mostra il banner dopo 2 secondi (effetto entrata elegante)
-        setTimeout(() => {
-            cookieBanner.classList.add('show');
-        }, 2000);
-    }
-
-    // Al click su Accetta
-    acceptBtn.addEventListener('click', () => {
-        // 1. Nascondi banner
-        cookieBanner.classList.remove('show');
-        // 2. Salva preferenza nel browser
-        localStorage.setItem('cookiesAccepted', 'true');
-    });

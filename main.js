@@ -1,53 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. COOKIE BANNER (Priorità Alta) ---
-    const cookieBanner = document.getElementById('cookie-banner');
-    const acceptBtn = document.getElementById('accept-cookies');
-
-    // Funzione per nascondere il banner
-    function hideBanner() {
-        if(cookieBanner) {
-            cookieBanner.classList.remove('show');
-            cookieBanner.style.display = 'none'; // Rimozione forzata
-        }
-    }
-
-    if (acceptBtn) {
-        // Aggiungiamo l'evento click
-        acceptBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Previene comportamenti strani
-            hideBanner();
-            localStorage.setItem('cookiesAccepted', 'true');
-        });
-        
-        // Supporto per il touch su mobile (nel caso il click fallisca)
-        acceptBtn.addEventListener('touchstart', (e) => {
-            // e.preventDefault(); // Non prevenire il default qui per permettere il click
-            hideBanner();
-            localStorage.setItem('cookiesAccepted', 'true');
-        }, {passive: true});
-    }
-
-    // Mostra il banner dopo 1 secondo se non accettato
-    if (!localStorage.getItem('cookiesAccepted') && cookieBanner) {
-        setTimeout(() => {
-            cookieBanner.classList.add('show');
-        }, 1000);
-    } else if (cookieBanner) {
-        // Se già accettato, nascondilo subito per sicurezza
-        cookieBanner.style.display = 'none';
-    }
-
-    // --- 2. MENU MOBILE ---
+    /* --- 1. GESTIONE MENU MOBILE E DROPDOWN --- */
     const burger = document.querySelector('.burger');
     const nav = document.querySelector('.nav-links');
+    const dropdownLink = document.querySelector('.dropdown > a');
+    const dropdownLi = document.querySelector('.dropdown');
 
-    if (burger && nav) {
+    // Apertura Menu Principale
+    if (burger) {
         burger.addEventListener('click', () => {
             nav.classList.toggle('nav-active');
-            burger.classList.toggle('toggle');
             
-            // Cambio icona
+            // Icona X o Burger
             if (nav.classList.contains('nav-active')) {
                 burger.innerHTML = '<i class="fas fa-times"></i>';
                 burger.style.color = "#d4af37";
@@ -58,53 +22,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. DROPDOWN MOBILE (Click su "Collezioni") ---
-    const dropdownLink = document.querySelector('.dropdown > a');
-    const dropdownLi = document.querySelector('.dropdown');
-
-    if (dropdownLink && dropdownLi) {
+    // Apertura Sottomenu (Collezioni)
+    if (dropdownLink) {
         dropdownLink.addEventListener('click', (e) => {
-            // Attiva solo su mobile (sotto i 968px)
+            // Solo su mobile
             if (window.innerWidth <= 968) {
-                e.preventDefault(); 
+                e.preventDefault(); // Non ricaricare la pagina
                 dropdownLi.classList.toggle('mobile-active');
                 
-                // Ruota la freccina
+                // Ruota freccia
                 const arrow = dropdownLink.querySelector('i');
                 if (arrow) {
-                    if (dropdownLi.classList.contains('mobile-active')) {
-                        arrow.style.transform = "rotate(180deg)";
-                    } else {
-                        arrow.style.transform = "rotate(0deg)";
-                    }
+                    arrow.style.transform = dropdownLi.classList.contains('mobile-active') 
+                        ? "rotate(180deg)" 
+                        : "rotate(0deg)";
                 }
             }
         });
     }
 
-    // --- 4. NAVBAR STICKY ---
+    /* --- 2. GESTIONE COOKIE BANNER (Forzata) --- */
+    const cookieBanner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('accept-cookies');
+
+    // Se il cookie non è salvato, mostra il banner dopo 1 secondo
+    if (!localStorage.getItem('cookiesAccepted')) {
+        if(cookieBanner) {
+            setTimeout(() => {
+                cookieBanner.style.display = 'flex'; // Forza display
+                // Piccola attesa per l'animazione CSS se presente, altrimenti appare e basta
+                setTimeout(() => cookieBanner.classList.add('show'), 10);
+            }, 1000);
+        }
+    } else {
+        // Se già accettato, nascondi sicuro
+        if(cookieBanner) cookieBanner.style.display = 'none';
+    }
+
+    // Al click su Accetta
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Nascondi immediatamente
+            if(cookieBanner) {
+                cookieBanner.style.display = 'none';
+                cookieBanner.classList.remove('show');
+            }
+            // Salva preferenza
+            localStorage.setItem('cookiesAccepted', 'true');
+        });
+    }
+
+    /* --- 3. NAVBAR SCROLL --- */
     const navbar = document.querySelector('.navbar');
-    if (navbar) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 30) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 30) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    /* --- 4. SCROLL REVEAL --- */
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
             }
         });
-    }
+    }, { threshold: 0.1 });
 
-    // --- 5. ANIMAZIONI SCROLL ---
-    const revealElements = document.querySelectorAll('.reveal');
-    if (revealElements.length > 0) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        revealElements.forEach(el => observer.observe(el));
-    }
+    revealElements.forEach(el => observer.observe(el));
 });

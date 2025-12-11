@@ -674,3 +674,63 @@ ul { list-style: none; }
     opacity: 1 !important;
     visibility: visible !important;
 }
+
+/* --- OTTIMIZZAZIONE MOBILE ESTREMA --- */
+
+@media (max-width: 768px) {
+
+    /* 1. Navbar più compatta e stabile */
+    .navbar {
+        width: 95% !important; /* Occupa quasi tutta la larghezza */
+        padding: 0.8rem 1.2rem !important; /* Meno spazio interno */
+        top: 10px !important; /* Più vicina all'alto */
+        border-radius: 40px !important; /* Curva leggermente ridotta */
+    }
+
+    /* Logo ridimensionato per non uscire dai bordi */
+    .logo-img {
+        height: 35px !important; /* Altezza fissa sicura */
+        width: auto !important;
+        max-width: 180px !important; /* Evita che vada sopra al burger */
+    }
+
+    /* Burger Menu allineato */
+    .burger {
+        font-size: 1.3rem !important;
+        margin-top: 2px; /* Allineamento ottico col logo */
+    }
+
+    /* 2. Banner Cookie Mobile Friendly */
+    .cookie-banner {
+        width: 90% !important; /* Margine di sicurezza */
+        bottom: 20px !important;
+        padding: 1.2rem !important;
+        border-radius: 20px !important;
+    }
+
+    .cookie-content {
+        flex-direction: column !important; /* Testo sopra, bottone sotto */
+        text-align: center !important;
+        gap: 1rem !important;
+    }
+
+    .cookie-content p {
+        font-size: 0.8rem !important; /* Testo leggibile */
+    }
+
+    .cookie-buttons {
+        width: 100% !important;
+    }
+
+    /* Bottone Accetta a tutta larghezza (facile da premere) */
+    #accept-cookies {
+        width: 100% !important;
+        padding: 0.8rem !important;
+        font-size: 0.9rem !important;
+        display: block !important;
+    }
+    
+    /* 3. Spaziature Generali Mobile */
+    .hero h1 { font-size: 2.2rem !important; } /* Titoli meno enormi */
+    .section { padding: 4rem 5% !important; } /* Meno spazio bianco inutile */
+}

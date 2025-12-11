@@ -677,21 +677,23 @@ ul { list-style: none; }
 
 /* --- OTTIMIZZAZIONE MOBILE ESTREMA --- */
 
-/* --- OTTIMIZZAZIONE MOBILE (Updated) --- */
+/* --- OTTIMIZZAZIONE MOBILE (Fix Definitivo) --- */
 @media (max-width: 968px) {
 
     /* 1. NAVBAR & LOGO */
     .navbar {
         width: 95% !important;
-        padding: 0.8rem 1.2rem !important;
+        padding: 0.8rem 1rem !important;
         top: 10px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         border-radius: 40px !important;
     }
 
     .logo-img {
-        height: 40px !important; /* Dimensione fissa logo mobile */
+        height: 35px !important;
         width: auto !important;
-        max-width: 180px !important;
+        object-fit: contain;
     }
 
     .burger {
@@ -699,9 +701,10 @@ ul { list-style: none; }
         z-index: 10001;
         font-size: 1.4rem;
         cursor: pointer;
+        margin-top: 4px;
     }
 
-    .nav-socials { display: none; } /* Via i social dalla barra in alto su mobile */
+    .nav-socials { display: none; }
 
     /* 2. MENU A TUTTO SCHERMO */
     .nav-links {
@@ -710,111 +713,110 @@ ul { list-style: none; }
         right: 0;
         height: 100vh;
         width: 100%;
-        background: #020202; /* Nero profondo */
+        background: #000000; /* Nero assoluto */
+        display: flex; /* Flexbox obbligatorio */
         flex-direction: column;
-        justify-content: center; /* Centrato verticalmente */
+        justify-content: center;
         align-items: center;
-        gap: 2rem; /* Spazio tra le voci */
-        transform: translateY(-100%); /* Nascosto in alto */
-        transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        gap: 1.5rem; /* Spazio ridotto tra le voci */
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
         z-index: 10000;
-        padding-bottom: 50px; /* Spazio per evitare che l'ultima voce sia troppo bassa */
+        padding-bottom: 80px; /* Spazio extra in fondo */
     }
 
     .nav-links.nav-active {
-        transform: translateY(0); /* Scende giù */
+        transform: translateY(0);
     }
 
-    /* Stile Testi Menu Mobile */
     .nav-links li {
         width: 100%;
         text-align: center;
-        opacity: 0;
-        animation: navLinkFade 0.5s ease forwards 0.3s;
-    }
-    
-    @keyframes navLinkFade {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        opacity: 1; /* Rimosso fade per stabilità */
     }
 
     .nav-links a {
-        font-size: 1.5rem; /* Testo grande e leggibile */
+        font-size: 1.2rem; /* Font leggermente più piccolo ed elegante */
         display: block;
         padding: 10px;
+        letter-spacing: 2px;
     }
 
-    /* 3. DROPDOWN MOBILE (Stile Fisarmonica) */
+    /* 3. DROPDOWN MOBILE (Box Grigio) */
     .dropdown {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
 
-    /* Il menu nascosto di base */
     .dropdown-menu {
-        position: static; /* Non più fluttuante */
+        position: static;
         transform: none;
-        background: rgba(255, 255, 255, 0.05); /* Sfondo leggermente più chiaro per distinguerlo */
-        border: none;
+        /* SFONDO VISIBILE PER IL SOTTOMENU */
+        background: rgba(255, 255, 255, 0.08); 
+        border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: none;
         border-radius: 15px;
-        width: 80%; /* Più stretto del menu principale */
+        width: 80%; /* Larghezza ridotta */
         margin: 10px auto 0;
         opacity: 1;
         visibility: visible;
-        
-        /* Chiuso di default */
-        display: none; 
+        display: none; /* Nascosto di default */
         padding: 1rem 0;
     }
 
-    /* Quando il JS aggiunge la classe .mobile-active */
+    /* Quando è attivo */
     .dropdown.mobile-active .dropdown-menu {
         display: block;
-        animation: slideDown 0.3s ease;
+        animation: fadeIn 0.3s ease;
     }
 
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-10px); }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
-    .dropdown-menu li {
-        margin: 0;
+    .dropdown-menu li { margin: 0; padding: 5px 0; }
+    
+    .dropdown-menu a {
+        font-size: 1rem !important; /* Testo sottomenu più piccolo */
+        color: var(--gold-solid);
         padding: 5px 0;
     }
 
-    .dropdown-menu a {
-        font-size: 1.1rem; /* Sottomenu leggermente più piccolo */
-        color: var(--gold-solid);
-        text-transform: capitalize;
-    }
-
-    /* 4. COOKIE BANNER MOBILE (Fix Click) */
+    /* 4. COOKIE BANNER (Fix Cliccabilità) */
     .cookie-banner {
         width: 90% !important;
-        bottom: 20px !important;
+        bottom: 25px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         padding: 1.5rem !important;
-        z-index: 20000 !important; /* Altissimo livello per assicurare il click */
+        /* Z-INDEX ALTISSIMO: Vince su tutto */
+        z-index: 2147483647 !important; 
         flex-direction: column;
         gap: 1rem;
+        background: rgba(10, 10, 10, 0.98) !important; /* Quasi solido */
+        border: 1px solid var(--gold-solid) !important; /* Bordo oro per vederlo bene */
     }
 
     .cookie-content {
         flex-direction: column !important;
         text-align: center;
+        width: 100%;
     }
+    
+    .cookie-buttons { width: 100%; }
 
     #accept-cookies {
         width: 100%;
         padding: 1rem;
         font-size: 1rem;
         display: block;
-        margin-top: 10px;
-        cursor: pointer; /* Assicura che sembri cliccabile */
-        pointer-events: auto; /* Forza la ricezione del click */
+        cursor: pointer;
+        background: var(--gold-solid);
+        color: #000;
+        font-weight: bold;
+        pointer-events: auto !important; /* Forza il click */
     }
 }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatti | Pasian Rivalta</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html">
+            <img src="immagini/logo.png" alt="Pasian Rivalta" class="logo-img">
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="storia.html">La nostra storia</a></li>
+            <li class="dropdown">
+                <a href="#">Collezioni <i class="fas fa-chevron-down" style="font-size: 0.6em; margin-left: 5px;"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="ottica.html">Ottica</a></li>
+                    <li><a href="gioielleria.html">Gioielleria</a></li>
+                </ul>
+            </li>
+            <li><a href="contatti.html" class="active">Contatti</a></li>
+        </ul>
+        <div class="nav-socials">
+            <a href="https://www.facebook.com/pasian.rivalta/?locale=it_IT" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/pasianrivalta/" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div class="burger"><i class="fas fa-bars"></i></div>
+    </nav>
+
+    <header class="hero" style="height: 50vh; background-image: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2000&auto=format&fit=crop');">
+        <div class="overlay"></div>
+        <div class="hero-content reveal">
+            <h1>Siamo a tua <span class="gradient-text">Disposizione</span></h1>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="contact-container reveal">
+            
+            <div class="contact-info-box">
+                <h3>Info</h3>
+                <p class="contact-desc">Hai domande o dubbi? Non esistare a contattarci</p>
+                
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <strong>Dove Siamo</strong>
+                        <p>Via Ferdinando Bocca, 30<br>10040 Rivalta di Torino (TO)</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <strong>Telefono</strong>
+                        <p>+39 339 697 1317</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="far fa-envelope"></i>
+                    <div>
+                        <strong>Email</strong>
+                        <p>pasian.rivalta@gmail.com</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="far fa-clock"></i>
+                    <div>
+                        <strong>Orari</strong>
+                        <p>Mar - Sab: 09:00 - 12:30 / 15:30 - 19:30<br>Lun e Dom: Chiuso</p>
+                    </div>
+                </div>
+            </div>
+
+            <form action="https://formspree.io/f/xrbnopod" method="POST" class="contact-form">
+                <h3 style="color:white; margin-bottom: 1.5rem;">Inviaci un messaggio</h3>
+                
+                <div class="input-group">
+                    <input type="text" name="nome" placeholder="Il tuo Nome" required class="input-field">
+                    <input type="email" name="email" placeholder="La tua Email" required class="input-field">
+                </div>
+
+                <input type="text" name="oggetto" placeholder="Oggetto" class="input-field full-width">
+                <textarea name="messaggio" placeholder="Come possiamo aiutarti?" rows="5" required class="input-field full-width"></textarea>
+
+                <div class="privacy-check">
+                    <input type="checkbox" id="privacy" required>
+                    <label for="privacy">Ho letto e accetto la <a href="privacy.html" style="text-decoration: underline;">Privacy Policy</a></label>
+                </div>
+
+                <button type="submit" class="btn-luxury" style="width: 100%; border-radius: 20px;">Invia Ora</button>
+            </form>
+
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <h2 class="section-title reveal" style="font-size: 2rem;">Vienici a <span class="gradient-text">Trovare</span></h2>
+        <div class="map-container reveal">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2820.675682977717!2d7.519961315826978!3d45.01188597909819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47883d6cb7768e7d%3A0x6a2c918115682664!2sVia%20Ferdinando%20Bocca%2C%2030%2C%2010040%20Rivalta%20di%20Torino%20TO!5e0!3m2!1sit!2sit!4v1646841234567!5m2!1sit!2sit" 
+                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+    </section>
+<footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3 style="color:var(--gold-solid); margin-bottom:1rem;">Pasian Rivalta</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">
+                    Eccellenza nel cuore di Rivalta di Torino dal 1981.
+                </p>
+                <div class="footer-socials">
+                    <a href="https://www.facebook.com/pasian.rivalta/?locale=it_IT" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/pasianrivalta/" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Esplora</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="storia.html">La Nostra Storia</a></li>
+                    <li><a href="gioielleria.html">Gioielleria</a></li>
+                    <li><a href="ottica.html">Ottica</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contatti</h4>
+                <p>Via Ferdinando Bocca, 30</p>
+                <p>10040 Rivalta di Torino (TO)</p>
+                <p style="margin-top: 10px; color:var(--gold-solid);">+39 339 697 1317</p>
+                <p>pasian.rivalta@gmail.com</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Pasian Rivalta. P.IVA 09333260017 | <a href="privacy.html">Privacy Policy</a> | <a href="cookie-policy.html">Cookie Policy</a></p>
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-content">
+            <p>Utilizziamo i cookie per offrirti un'esperienza di navigazione esclusiva e personalizzata.</p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="btn-luxury" style="padding: 0.5rem 1.5rem; font-size: 0.7rem;">Accetta</button>
+            </div>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

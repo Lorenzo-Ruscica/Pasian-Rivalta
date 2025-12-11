@@ -82,31 +82,17 @@ ul { list-style: none; }
 }
 
 /* --- LOGO RETTANGOLARE GRANDE --- */
-
 .logo-img {
-    height: 80px; /* Aumentato da 45px a 80px per renderlo ben visibile */
-    width: auto;  /* Mantiene la proporzione rettangolare */
-    max-width: 280px; /* Limite di larghezza per non invadere il menu */
-    object-fit: contain; /* Assicura che l'immagine non venga tagliata o stirata */
-    transition: all 0.4s ease; /* Animazione fluida per il rimpicciolimento */
+    height: 80px; 
+    width: auto;  
+    max-width: 280px; 
+    object-fit: contain; 
+    transition: all 0.4s ease; 
     display: block;
 }
 
-/* Quando scorri la pagina, il logo si rimpicciolisce elegantemente */
 .navbar.scrolled .logo-img {
-    height: 50px; /* Diventa più compatto nello scroll */
-}
-
-/* SU MOBILE: Il logo deve essere un po' più piccolo per stare vicino al burger menu */
-@media (max-width: 968px) {
-    .logo-img {
-        height: 50px; /* Dimensione giusta per smartphone */
-        max-width: 200px;
-    }
-    
-    .navbar.scrolled .logo-img {
-        height: 40px;
-    }
+    height: 50px; 
 }
 
 /* LINKS */
@@ -121,21 +107,37 @@ ul { list-style: none; }
 }
 .nav-links a:hover { color: var(--gold-solid); opacity: 1; }
 
-/* SOCIAL ICONS (Nuova sezione) */
+/* FIX NAVIGAZIONE ATTIVA */
+.nav-links a.active {
+    color: var(--gold-solid) !important;
+    opacity: 1 !important;
+    font-weight: 600;
+}
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; 
+    left: 0; 
+    width: 100%; 
+    height: 1px;
+    background: var(--gold-solid);
+}
+
+/* SOCIAL ICONS */
 .nav-socials {
     display: flex;
     align-items: center;
-    gap: 25px; /* Distanza tra le icone */
+    gap: 25px; 
     margin-left: 20px;
     padding-left: 20px;
-    border-left: 1px solid rgba(255,255,255,0.1); /* Separatore sottile */
+    border-left: 1px solid rgba(255,255,255,0.1); 
 }
 
 .nav-socials a {
     color: var(--text-light);
     font-size: 1.2rem;
     transition: 0.3s;
-    display: flex; /* Centratura verticale */
+    display: flex; 
 }
 
 .nav-socials a:hover {
@@ -169,6 +171,18 @@ ul { list-style: none; }
 .dropdown-menu li { margin-bottom: 1rem; text-align: center; }
 .dropdown-menu li:last-child { margin-bottom: 0; }
 
+/* FIX Dropdown Desktop attivo */
+.dropdown a.active + .dropdown-menu {
+    display: block; 
+    opacity: 0;
+    visibility: hidden;
+}
+.dropdown:hover .dropdown-menu {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+
 /* --- HERO & BUTTONS --- */
 .hero {
     height: 100vh;
@@ -200,7 +214,7 @@ ul { list-style: none; }
     position: relative;
     overflow: hidden;
     transition: var(--transition-smooth);
-    min-width: 180px; /* Larghezza minima uguale per entrambi */
+    min-width: 180px; 
     text-align: center;
 }
 .btn-luxury:hover {
@@ -259,53 +273,10 @@ ul { list-style: none; }
 .history-img { flex: 1; height: 400px; border-radius: var(--radius-card); overflow: hidden; }
 .history-img img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --- MOBILE --- */
-.burger { display: none; cursor: pointer; color: var(--text-light); font-size: 1.5rem; }
-
-@media (max-width: 968px) {
-    .navbar { top: 15px; width: 92%; padding: 1rem 1.5rem; }
-    .hero h1 { font-size: 2.5rem; }
-    
-    .nav-socials { display: none; } /* Nascondiamo i social sulla barra in mobile */
-    .burger { display: block; z-index: 10001; }
-    
-    .nav-links {
-        position: fixed; top: 0; right: 0;
-        height: 100vh; width: 100%;
-        background: #000;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        transform: translateY(-100%);
-        transition: transform 0.4s ease-in-out;
-        z-index: 10000;
-    }
-    .nav-links.nav-active { transform: translateY(0); }
-    
-    .dropdown-menu {
-        position: static;
-        transform: none;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        opacity: 1;
-        visibility: visible;
-        display: none; 
-        padding-top: 1rem;
-    }
-    .dropdown.active .dropdown-menu { display: block; }
-    .history-block { flex-direction: column !important; }
-    .history-img { width: 100%; height: 300px; }
-}
-
-/* --- ANIMATIONS --- */
-.reveal { opacity: 0; transform: translateY(50px); transition: 0.8s ease; }
-.reveal.active { opacity: 1; transform: translateY(0); }
-
 /* --- FOOTER STYLES --- */
 .footer {
     background: #050505;
-    border-top: 1px solid var(--glass-border); /* Linea dorata sottile sopra */
+    border-top: 1px solid var(--glass-border); 
     padding: 4rem 5% 2rem;
     margin-top: 4rem;
     font-size: 0.9rem;
@@ -350,18 +321,18 @@ ul { list-style: none; }
     font-size: 0.8rem;
 }
 
-/* --- COOKIE BANNER (Floating Glass) --- */
+/* --- COOKIE BANNER --- */
 .cookie-banner {
     position: fixed;
-    bottom: -100px; /* Nascosto inizialmente */
+    bottom: -100px; 
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
     max-width: 600px;
-    background: rgba(10, 10, 10, 0.95);
+    background: rgba(10, 10, 10, 0.98); /* Sfondo più solido */
     backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px; /* Arrotondato */
+    border-radius: 20px; 
     padding: 1.5rem;
     z-index: 10000;
     box-shadow: 0 10px 40px rgba(0,0,0,0.8);
@@ -369,7 +340,7 @@ ul { list-style: none; }
 }
 
 .cookie-banner.show {
-    bottom: 20px; /* Appare fluttuante */
+    bottom: 20px; 
 }
 
 .cookie-content {
@@ -396,11 +367,10 @@ ul { list-style: none; }
     border-radius: var(--radius-card);
     padding: 3rem;
     max-width: 900px;
-    margin: 0 auto; /* Centra il blocco nella pagina */
+    margin: 0 auto; 
     border: 1px solid var(--glass-border);
     box-shadow: var(--glow-gold);
 }
-
 .legal-content h3 {
     color: var(--gold-solid);
     font-size: 1.5rem;
@@ -409,25 +379,19 @@ ul { list-style: none; }
     border-bottom: 1px solid rgba(255,255,255,0.1);
     padding-bottom: 0.5rem;
 }
-
 .legal-content h3:first-child { margin-top: 0; }
-
 .legal-content p, .legal-content li {
     color: #ccc;
     font-size: 0.95rem;
     margin-bottom: 1rem;
-    text-align: left; /* Testo allineato a sinistra per leggibilità */
+    text-align: left; 
 }
-
 .legal-content ul {
     list-style: disc;
     padding-left: 20px;
     margin-bottom: 1.5rem;
 }
-
 .legal-content strong { color: #fff; }
-
-/* Link interni al testo legale */
 .legal-content a {
     color: var(--gold-solid);
     text-decoration: underline;
@@ -443,8 +407,6 @@ ul { list-style: none; }
     max-width: 1100px;
     margin: 0 auto;
 }
-
-/* Info Box a Sinistra */
 .contact-info-box {
     flex: 1;
     min-width: 300px;
@@ -453,17 +415,14 @@ ul { list-style: none; }
     border-radius: var(--radius-card);
     border: 1px solid var(--glass-border);
 }
-
 .contact-info-box h3 { color: var(--gold-solid); font-size: 1.5rem; margin-bottom: 1rem; }
 .contact-desc { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem; }
-
 .info-item {
     display: flex;
     align-items: center;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
-
 .info-item i {
     font-size: 1.2rem;
     color: var(--gold-solid);
@@ -472,11 +431,9 @@ ul { list-style: none; }
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
 }
-
 .info-item strong { display: block; color: var(--text-light); font-size: 0.9rem; }
 .info-item p { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
 
-/* Form a Destra */
 .contact-form {
     flex: 1.5;
     min-width: 300px;
@@ -485,36 +442,29 @@ ul { list-style: none; }
     border-radius: var(--radius-card);
     border: 1px solid var(--glass-border);
 }
-
 .input-group {
     display: flex;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
-
 .input-field {
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 1.5rem;
-    border-radius: 15px; /* Arrotondati */
+    border-radius: 15px; 
     color: white;
     font-family: var(--font-body);
     font-size: 0.9rem;
     transition: 0.3s;
     outline: none;
 }
-
 .input-field.full-width { margin-bottom: 1.5rem; }
-
-/* Effetto Focus Oro */
 .input-field:focus {
     border-color: var(--gold-solid);
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
     background: rgba(0, 0, 0, 0.5);
 }
-
-/* Privacy Checkbox */
 .privacy-check {
     display: flex;
     align-items: center;
@@ -525,218 +475,95 @@ ul { list-style: none; }
 }
 .privacy-check input { accent-color: var(--gold-solid); }
 
-/* Responsive Mobile */
 @media (max-width: 768px) {
     .contact-container { flex-direction: column; gap: 2rem; }
     .input-group { flex-direction: column; gap: 1.5rem; }
 }
-
-/* --- PAGINA CONTATTI STYLES --- */
-
-/* Container Flexbox */
-.contact-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3rem;
-    align-items: stretch; /* Altezza uguale per i box */
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Info Box (Sinistra) */
-.contact-info-box {
-    flex: 1;
-    min-width: 300px;
-    background: var(--bg-panel);
-    padding: 3rem;
-    border-radius: var(--radius-card);
-    border: 1px solid var(--glass-border);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.contact-info-box h3 { color: var(--gold-solid); font-size: 1.8rem; margin-bottom: 1rem; }
-.contact-desc { color: var(--text-muted); margin-bottom: 2.5rem; }
-
-.info-item {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-.info-item:last-child { margin-bottom: 0; }
-
-.info-item i {
-    font-size: 1.2rem;
-    color: var(--gold-solid);
-    width: 50px; height: 50px;
-    border: 1px solid var(--glass-border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(212, 175, 55, 0.05);
-}
-
-.info-item strong { display: block; color: #fff; font-size: 1rem; margin-bottom: 3px; }
-.info-item p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; margin: 0; }
-
-/* Form (Destra) */
-.contact-form {
-    flex: 1.5;
-    min-width: 300px;
-    background: rgba(255, 255, 255, 0.03); /* Vetro scuro */
-    padding: 3rem;
-    border-radius: var(--radius-card);
-    border: 1px solid var(--glass-border);
-}
-
-.input-group { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
-
-.input-field {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1rem 1.5rem;
-    border-radius: 15px;
-    color: white;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    transition: 0.3s;
-    outline: none;
-}
-
-.input-field.full-width { margin-bottom: 1.5rem; }
-
-.input-field:focus {
-    border-color: var(--gold-solid);
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-    background: #000;
-}
-
-.privacy-check {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 2rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-.privacy-check input { accent-color: var(--gold-solid); width: 16px; height: 16px; }
-
-/* --- MAPPA STILE DARK --- */
 .map-container {
     border-radius: var(--radius-card);
     overflow: hidden;
     border: 1px solid var(--glass-border);
-    line-height: 0; /* Rimuove spazi bianchi sotto iframe */
+    line-height: 0; 
 }
-
-/* Trucco CSS per rendere la mappa Google "Scura" */
 .map-container iframe {
     filter: invert(90%) hue-rotate(180deg) brightness(90%) contrast(85%);
 }
 
-@media (max-width: 768px) {
-    .contact-container { flex-direction: column; }
-    .input-group { flex-direction: column; }
-    .contact-info-box, .contact-form { padding: 1.5rem; }
-}
+/* --- ANIMAZIONI --- */
+.reveal { opacity: 0; transform: translateY(50px); transition: 0.8s ease; }
+.reveal.active { opacity: 1; transform: translateY(0); }
 
-/* --- FIX NAVIGAZIONE ATTIVA --- */
+.burger { display: none; cursor: pointer; color: var(--text-light); font-size: 1.5rem; }
 
-/* 1. Colore Oro per la pagina corrente */
-.nav-links a.active {
-    color: var(--gold-solid) !important; /* Forza il colore oro */
-    opacity: 1 !important;
-    font-weight: 600;
-}
-
-/* 2. Linea dorata sotto il link attivo */
-.nav-links a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -5px; 
-    left: 0; 
-    width: 100%; 
-    height: 1px;
-    background: var(--gold-solid);
-}
-
-/* 3. Fix per il Dropdown quando è attivo (evita bug grafici) */
-.dropdown a.active + .dropdown-menu {
-    /* Mantiene il menu nascosto finché non ci passi sopra col mouse */
-    display: block; 
-    opacity: 0;
-    visibility: hidden;
-}
-
-.dropdown:hover .dropdown-menu {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* --- FIX MOBILE DEFINITIVO --- */
-/* --- OTTIMIZZAZIONE MOBILE: Logo Centrale & Menu Fisso --- */
+/* ============================================================ */
+/* === FIX DEFINITIVO MOBILE (Barra e Menu) === */
+/* ============================================================ */
 @media (max-width: 968px) {
 
-    /* 1. NAVBAR - Struttura */
+    /* 1. BARRA FLUTTUANTE (Posizionata più in basso) */
     .navbar {
-        width: 95% !important;
-        padding: 0.8rem 1.5rem !important; /* Un po' più di spazio ai lati */
-        top: 15px !important;
+        width: 92% !important; /* Larghezza sicura */
+        padding: 0.8rem 1.5rem !important;
+        
+        /* POSIZIONE SICURA */
+        top: 50px !important; /* Abbassata per non toccare la tacca del telefono */
         left: 50% !important;
         transform: translateX(-50%) !important;
-        border-radius: 40px !important;
         
-        /* Questo spinge il Burger tutto a destra */
-        justify-content: flex-end !important; 
+        /* Stile */
+        border-radius: 50px !important;
+        background: rgba(5, 5, 5, 0.85) !important; /* Più scura per leggibilità */
+        backdrop-filter: blur(20px) !important; 
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(212, 175, 55, 0.3) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        
+        justify-content: flex-end !important; /* Spinge il burger a destra */
         position: fixed !important;
+        z-index: 9999;
     }
 
-    /* 2. LOGO - Centratura Assoluta */
-    /* Selezioniamo il link che avvolge il logo */
+    /* Logo centrato matematicamente */
     .navbar > a {
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate(-50%, -50%); /* Centrato perfettamente orizzontale e verticale */
+        transform: translate(-50%, -50%);
     }
 
     .logo-img {
-        height: 38px !important; /* Dimensione ideale */
+        height: 35px !important;
         width: auto !important;
         object-fit: contain;
-        display: block;
     }
 
-    /* 3. BURGER - A Destra */
     .burger {
         display: block !important;
         z-index: 10001;
         font-size: 1.4rem;
         cursor: pointer;
-        color: #fff !important;
-        /* Nessun margine strano, sta a destra grazie al justify-content della navbar */
+        color: var(--gold-solid) !important;
+        margin-top: 2px;
     }
 
     .nav-socials { display: none !important; }
 
-    /* 4. MENU A TENDINA (Schermo Intero) */
+    /* 2. MENU A TUTTO SCHERMO */
     .nav-links {
         position: fixed;
         top: 0;
         right: 0;
         height: 100vh;
         width: 100%;
-        background: #000000;
+        background: #020202; /* Nero solido per evitare problemi di lettura */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 1.5rem;
         transform: translateY(-100%);
-        transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-        z-index: 10000;
+        transition: transform 0.4s ease-in-out;
+        z-index: 9000; /* Sotto la navbar ma sopra il resto */
         padding-bottom: 80px;
     }
 
@@ -747,63 +574,76 @@ ul { list-style: none; }
     .nav-links li {
         width: 100%;
         text-align: center;
+        position: relative; /* Fondamentale per il dropdown */
     }
 
     .nav-links a {
-        font-size: 1.2rem;
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
         display: block;
         padding: 10px;
-        letter-spacing: 2px;
+        color: #fff;
     }
 
-    /* 5. DROPDOWN (Sottomenu Ordinato) */
+    /* 3. FIX MENU A TENDINA (DROPDOWN) */
     .dropdown {
-        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
 
     .dropdown-menu {
-        position: static !important;
+        /* RESET TOTALE DEL POSIZIONAMENTO */
+        position: static !important; /* Smette di fluttuare */
         float: none !important;
         transform: none !important;
+        left: auto !important;
+        right: auto !important;
+        
+        /* CENTRATURA E STILE */
         width: 80% !important; 
-        margin: 5px auto 0 auto !important;
-        background: rgba(255, 255, 255, 0.08); 
+        margin: 10px auto !important; /* Centrato orizzontalmente */
+        background: rgba(255, 255, 255, 0.08); /* Sfondo grigio/trasparente */
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        border-radius: 15px;
         box-shadow: none !important;
-        display: none;
         padding: 10px 0;
+        
+        /* VISIBILITÀ */
+        display: none; /* Nascosto di base */
         opacity: 1 !important;
         visibility: visible !important;
     }
 
+    /* Mostra il menu quando la classe viene aggiunta dal JS */
     .dropdown.mobile-active .dropdown-menu {
         display: block !important;
-        animation: fadeIn 0.3s ease;
+        animation: slideDown 0.3s ease;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-5px); }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
     .dropdown-menu a {
+        font-family: var(--font-body) !important;
         font-size: 1rem !important;
-        color: var(--gold-solid);
-        padding: 8px 0;
+        color: var(--gold-solid) !important;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding: 12px 0;
     }
 
-    /* 6. COOKIE BANNER (Fix Click) */
+    /* 4. FIX COOKIE BANNER MOBILE */
     .cookie-banner {
         width: 90% !important;
-        bottom: 25px !important;
+        bottom: 30px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         padding: 1.5rem !important;
-        z-index: 2147483647 !important;
+        z-index: 2147483647 !important; /* Sopra a tutto */
         background: #0a0a0a !important; 
         border: 1px solid var(--gold-solid) !important;
         flex-direction: column;
@@ -811,8 +651,8 @@ ul { list-style: none; }
 
     .cookie-content {
         flex-direction: column !important;
-        gap: 1rem;
         text-align: center;
+        gap: 1rem;
     }
 
     #accept-cookies {
@@ -821,27 +661,20 @@ ul { list-style: none; }
         font-size: 1rem;
         cursor: pointer;
         pointer-events: auto !important;
-        margin-top: 10px;
         display: block;
+        margin-top: 5px;
     }
+
+    /* 5. FIX GRIGLIA 3 COLONNE (Mobile) */
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important; 
+        padding: 0 5px !important;
+    }
+    .card { height: 130px !important; border-radius: 12px !important; }
+    .card-content { padding: 5px !important; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent) !important; }
+    .card h3 { font-size: 0.55rem !important; margin: 0 !important; }
+    .card p { display: none !important; }
 }
 
-/* --- PROTEZIONE IMMAGINI (No Download / No Popup) --- */
-img {
-    /* Blocca il menu contestuale su iOS e Android (il popup che dici tu) */
-    -webkit-touch-callout: none !important;
-    
-    /* Blocca la selezione dell'immagine (non diventa blu) */
-    -webkit-user-select: none !important;
-    -khtml-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
-    
-    /* Blocca il trascinamento dell'immagine (ghost image) */
-    -webkit-user-drag: none !important;
-    user-drag: none !important;
-    
-    /* IMPORTANTE: Lascia 'auto' per permettere il click sui link */
-    pointer-events: auto; 
-}
+

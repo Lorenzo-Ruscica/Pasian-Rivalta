@@ -676,52 +676,68 @@ ul { list-style: none; }
 }
 
 /* --- FIX MOBILE DEFINITIVO --- */
+/* --- OTTIMIZZAZIONE MOBILE: Logo Centrale & Menu Fisso --- */
 @media (max-width: 968px) {
 
-    /* NAVBAR E LOGO */
+    /* 1. NAVBAR - Struttura */
     .navbar {
         width: 95% !important;
-        padding: 0.8rem 1rem !important;
-        top: 10px !important;
+        padding: 0.8rem 1.5rem !important; /* Un po' più di spazio ai lati */
+        top: 15px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         border-radius: 40px !important;
+        
+        /* Questo spinge il Burger tutto a destra */
+        justify-content: flex-end !important; 
+        position: fixed !important;
+    }
+
+    /* 2. LOGO - Centratura Assoluta */
+    /* Selezioniamo il link che avvolge il logo */
+    .navbar > a {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%); /* Centrato perfettamente orizzontale e verticale */
     }
 
     .logo-img {
-        height: 35px !important;
+        height: 38px !important; /* Dimensione ideale */
         width: auto !important;
-        max-width: 180px; 
+        object-fit: contain;
+        display: block;
     }
 
+    /* 3. BURGER - A Destra */
     .burger {
         display: block !important;
         z-index: 10001;
         font-size: 1.4rem;
         cursor: pointer;
-        margin-top: 4px;
         color: #fff !important;
+        /* Nessun margine strano, sta a destra grazie al justify-content della navbar */
     }
 
     .nav-socials { display: none !important; }
 
-    /* MENU PRINCIPALE */
+    /* 4. MENU A TENDINA (Schermo Intero) */
     .nav-links {
         position: fixed;
         top: 0;
         right: 0;
         height: 100vh;
         width: 100%;
-        background: #000000; /* Nero totale */
+        background: #000000;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 1rem; /* Spazio ridotto */
+        gap: 1.5rem;
         transform: translateY(-100%);
-        transition: transform 0.4s ease-in-out;
+        transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
         z-index: 10000;
-        padding-bottom: 50px;
+        padding-bottom: 80px;
     }
 
     .nav-links.nav-active {
@@ -731,77 +747,66 @@ ul { list-style: none; }
     .nav-links li {
         width: 100%;
         text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
 
     .nav-links a {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         display: block;
         padding: 10px;
         letter-spacing: 2px;
-        width: 100%;
     }
 
-    /* --- FIX DROPDOWN (IL TUO PROBLEMA) --- */
+    /* 5. DROPDOWN (Sottomenu Ordinato) */
     .dropdown {
-        width: 100%; /* Occupa tutta la larghezza */
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        position: relative; /* Importante */
     }
 
     .dropdown-menu {
-        position: static !important; /* Rimuove il "galleggiamento" */
+        position: static !important;
         float: none !important;
         transform: none !important;
-        
-        /* Centratura e dimensione */
         width: 80% !important; 
         margin: 5px auto 0 auto !important;
-        
-        /* Stile Box */
         background: rgba(255, 255, 255, 0.08); 
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 10px;
         box-shadow: none !important;
-        
-        /* Visibilità */
         display: none;
         padding: 10px 0;
         opacity: 1 !important;
         visibility: visible !important;
-        left: auto !important;
     }
 
-    /* Mostra il menu quando attivo */
     .dropdown.mobile-active .dropdown-menu {
         display: block !important;
-    }
-
-    .dropdown-menu li {
-        width: 100%;
-        text-align: center;
+        animation: fadeIn 0.3s ease;
     }
     
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     .dropdown-menu a {
-        font-size: 0.9rem !important;
+        font-size: 1rem !important;
         color: var(--gold-solid);
         padding: 8px 0;
     }
 
-    /* --- COOKIE BANNER MOBILE --- */
+    /* 6. COOKIE BANNER (Fix Click) */
     .cookie-banner {
         width: 90% !important;
         bottom: 25px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         padding: 1.5rem !important;
-        z-index: 2147483647 !important; /* Livello massimo */
+        z-index: 2147483647 !important;
         background: #0a0a0a !important; 
         border: 1px solid var(--gold-solid) !important;
+        flex-direction: column;
     }
 
     .cookie-content {
@@ -815,6 +820,8 @@ ul { list-style: none; }
         padding: 1rem;
         font-size: 1rem;
         cursor: pointer;
-        pointer-events: auto !important; /* Forza il click */
+        pointer-events: auto !important;
+        margin-top: 10px;
+        display: block;
     }
 }

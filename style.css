@@ -904,7 +904,7 @@ ul {
 }
 
 /* ============================================================ */
-/* === MOBILE LUSSO: GLASSPHORISM (Vetro Sfocato) === */
+/* === MOBILE: CINEMATIC GLASS FULLSCREEN === */
 /* ============================================================ */
 @media (max-width: 968px) {
 
@@ -916,162 +916,166 @@ ul {
         left: 50% !important;
         transform: translateX(-50%) !important;
         
-        /* Effetto Vetro */
-        background: rgba(10, 10, 10, 0.75) !important;
+        /* Vetro Sfumato per la barra */
+        background: rgba(10, 10, 10, 0.65) !important;
         backdrop-filter: blur(20px) !important;
         -webkit-backdrop-filter: blur(20px) !important;
         
         border-radius: 50px !important;
         border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
         
         justify-content: flex-end !important;
         position: fixed !important;
+        transition: all 0.4s ease !important;
     }
 
-    /* Logo Centrato */
+    .navbar.scrolled {
+        top: 10px !important; width: 96% !important; padding: 0.6rem 1.2rem !important;
+        background: rgba(5, 5, 5, 0.9) !important;
+    }
+
     .navbar > a {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+        transition: all 0.4s ease;
     }
     .logo-img { height: 35px !important; width: auto !important; object-fit: contain; }
+    .navbar.scrolled .logo-img { height: 28px !important; }
     
-    /* Burger Oro */
     .burger { display: block !important; z-index: 10001; font-size: 1.3rem; cursor: pointer; color: var(--gold-solid) !important; margin-top: 2px; }
     .nav-socials { display: none !important; }
 
-    /* 2. MENU A TUTTO SCHERMO (Vetro Scuro Sfocato) */
+    /* 2. MENU PRINCIPALE (FULL SCREEN BLUR) */
     .nav-links {
-        position: fixed; top: 0; right: 0;
-        height: 100vh; width: 100%;
+        position: fixed; 
+        top: 0; 
+        left: 0; /* Copre tutto da sinistra... */
+        width: 100%; /* ...a destra. Nessun taglio laterale. */
+        height: 100vh;
         
-        /* QUI CAMBIA LO SFONDO: Non più nero solido, ma vetro scuro */
-        background: rgba(5, 5, 5, 0.85); 
-        backdrop-filter: blur(25px); /* Sfocatura potente dello sfondo del sito */
-        -webkit-backdrop-filter: blur(25px);
+        /* IL VERO EFFETTO VETRO SFOCATO */
+        background: rgba(5, 5, 5, 0.75); /* Nero al 75% di opacità */
+        backdrop-filter: blur(35px); /* Sfocatura molto potente dello sfondo */
+        -webkit-backdrop-filter: blur(35px); /* Per iPhone */
         
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        gap: 1.5rem;
-        transform: translateY(-100%);
-        transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); /* Animazione più morbida */
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center;
+        gap: 2rem;
+        
+        /* Animazione Slide Laterale */
+        transform: translateX(100%); /* Nascosto a destra */
+        transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
         z-index: 9000;
-        padding-bottom: 80px;
-        overflow-y: auto;
+        padding-bottom: 50px;
     }
-    .nav-links.nav-active { transform: translateY(0); }
-    .nav-links li { width: 100%; text-align: center; }
-    .nav-links a { font-size: 1.5rem; display: block; padding: 10px; letter-spacing: 1px; color: #fff; font-family: var(--font-heading); }
 
-    /* 3. MENU A TENDINA (Vetro più chiaro e leggero) */
-    .dropdown {
-        width: 100%; display: flex; flex-direction: column; align-items: center;
+    .nav-links.nav-active { 
+        transform: translateX(0); /* Entra coprendo tutto */
     }
+
+    .nav-links a { 
+        font-family: var(--font-heading); 
+        font-size: 1.8rem; /* Scritte grandi */
+        color: #fff; 
+        padding: 10px;
+        text-shadow: 0 5px 15px rgba(0,0,0,0.5); /* Ombra per leggere meglio sul vetro */
+    }
+
+    /* 3. MENU A TENDINA (DROPDOWN) */
+    .dropdown { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    
     .dropdown-menu {
-        position: static !important;
-        float: none !important;
-        transform: none !important;
-        width: 80% !important;
-        margin: 15px auto 0 auto !important;
+        position: static !important; float: none !important; transform: none !important;
+        width: 80% !important; margin: 10px auto 0 auto !important;
         
-        /* EFFETTO VETRO PER IL BOX */
-        background: rgba(255, 255, 255, 0.05) !important; /* Leggermente chiaro */
-        border: 1px solid rgba(255, 255, 255, 0.1); /* Bordo sottile */
-        border-radius: 15px;
+        /* Box leggerissimo, quasi invisibile */
+        background: rgba(255, 255, 255, 0.03) !important; 
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
         box-shadow: none !important;
         
-        display: none;
-        padding: 15px 0;
-        opacity: 1 !important;
-        visibility: visible !important;
+        display: none; padding: 15px 0; opacity: 1 !important; visibility: visible !important;
     }
-    .dropdown.mobile-active .dropdown-menu {
-        display: block !important;
-        animation: fadeIn 0.5s ease;
-    }
+    
+    .dropdown.mobile-active .dropdown-menu { display: block !important; animation: fadeIn 0.5s ease; }
     @keyframes fadeIn { from {opacity:0; transform:translateY(-10px);} to {opacity:1; transform:translateY(0);} }
 
     .dropdown-menu a {
         font-family: var(--font-body) !important;
         font-size: 1rem !important;
-        color: var(--gold-solid) !important;
+        color: var(--gold-solid) !important; /* Oro per contrasto */
         padding: 10px 0;
         text-transform: uppercase;
         letter-spacing: 2px;
+        text-shadow: none;
     }
 
-    /* 4. COOKIE BANNER (Vetro Coordinato) */
+    /* 4. COOKIE BANNER */
     .cookie-banner {
-        width: 90% !important;
-        bottom: 30px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        padding: 1.5rem !important;
-        z-index: 2147483647 !important;
-        
-        /* Vetro Scuro */
-        background: rgba(10, 10, 10, 0.9) !important;
-        backdrop-filter: blur(20px) !important;
-        border: 1px solid var(--gold-solid) !important;
-        
-        flex-direction: column;
-        border-radius: 20px !important;
+        width: 92% !important; bottom: 30px !important; left: 50% !important; transform: translateX(-50%) !important;
+        padding: 1.5rem !important; z-index: 2147483647 !important;
+        background: rgba(10, 10, 10, 0.9) !important; backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--gold-solid) !important; flex-direction: column; border-radius: 20px !important;
     }
     .cookie-content { flex-direction: column !important; text-align: center; gap: 1rem; }
     #accept-cookies { width: 100% !important; padding: 1rem; font-size: 1rem; display: block; margin-top: 5px; pointer-events: auto !important; cursor: pointer; }
-    
-    /* 5. RESET GRIGLIE */
-    .grid-container {
-        grid-template-columns: 1fr !important;
-        gap: 2rem !important;
-        padding: 0 5% !important;
-    }
+
+    /* 5. GRIGLIE & CONTATTI */
+    .grid-container { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 0 5% !important; }
     .card { height: 400px !important; border-radius: 20px !important; }
     
-    /* 6. GRIGLIA COMPATTA (Solo per Ottica/Gioielleria) */
-    .grid-compact-mobile {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 6px !important;
-        padding: 0 5px !important;
-    }
-    .grid-compact-mobile .card { height: 140px !important; border-radius: 12px !important; }
-    .grid-compact-mobile .card-content { padding: 5px !important; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent) !important; }
-    .grid-compact-mobile .card h3 { font-size: 0.6rem !important; margin-bottom: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .grid-compact-mobile .card p { display: none !important; }
-    /* ================================================= */
-    /* === GRIGLIA 2 COLONNE (Ottica & Gioielleria) === */
-    /* ================================================= */
-    
-    /* Questa classe forza 2 colonne invece di 1 */
-    .grid-2col-mobile {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 15px !important; /* Spazio elegante tra le due colonne */
-        padding: 0 10px !important;
-    }
+    /* 2 Colonne Ottica/Gioielleria */
+    .grid-2col-mobile { grid-template-columns: repeat(2, 1fr) !important; gap: 15px !important; padding: 0 10px !important; }
+    .grid-2col-mobile .card { height: 220px !important; border-radius: 20px !important; }
+    .grid-2col-mobile .card-content { padding: 10px !important; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent) !important; }
+    .grid-2col-mobile .card h3 { font-size: 0.85rem !important; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .grid-2col-mobile .card p { display: none !important; }
 
-    /* Adattiamo l'altezza delle card per le 2 colonne */
-    .grid-2col-mobile .card {
-        height: 220px !important; /* Né troppo alte, né troppo basse */
-        border-radius: 20px !important;
-    }
-
-    .grid-2col-mobile .card-content {
-        padding: 10px !important;
-        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent) !important;
-    }
-
-    /* Testo ottimizzato per 2 colonne */
-    .grid-2col-mobile .card h3 {
-        font-size: 0.85rem !important; /* Leggibile ma compatto */
-        margin-bottom: 0 !important;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis; /* Mette i puntini ... se il nome è lunghissimo */
-    }
-
-    /* Nascondiamo la descrizione per lasciare il focus sul Logo/Immagine */
-    .grid-2col-mobile .card p {
-        display: none !important;
-    }
+    /* Fix Contatti */
+    .contact-container { flex-direction: column !important; gap: 2rem !important; width: 100% !important; }
+    .contact-info-box, .contact-form { width: 100% !important; min-width: 0 !important; padding: 1.5rem !important; margin: 0 !important; }
+    .input-group { flex-direction: column !important; gap: 1rem !important; }
+    .whatsapp-float { bottom: 20px !important; right: 20px !important; width: 50px !important; height: 50px !important; font-size: 24px !important; }
 }
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #d4af37, #aa771c); /* Sfondo Oro */
+    color: #000;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    z-index: 9990; /* Sotto al menu mobile ma sopra al resto */
+    transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
+}
+
+/* Tooltip (fumetto) */
+.whatsapp-float .tooltip {
+    position: absolute;
+    right: 70px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    color: var(--gold-solid);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: 0.3s;
+    pointer-events: none;
+    border: 1px solid var(--gold-solid);
+}
+
+.whatsapp-float:hover .tooltip { opacity: 1; transform: translateX(-10px); }

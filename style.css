@@ -904,26 +904,26 @@ ul {
 }
 
 /* ============================================================ */
-/* === MOBILE: CINEMATIC GLASS FULLSCREEN === */
+/* === MOBILE: SIDE DRAWER A "RIQUADRI" (Card Style) === */
 /* ============================================================ */
 @media (max-width: 968px) {
 
-    /* 1. NAVBAR (La capsula in alto) */
+    /* 1. NAVBAR DINAMICA (La capsula in alto) */
     .navbar {
-        width: 92% !important;
-        padding: 0.8rem 1.5rem !important;
-        top: 40px !important; 
+        width: 90% !important;
+        padding: 0.8rem 1.2rem !important;
+        top: 45px !important; 
         left: 50% !important;
         transform: translateX(-50%) !important;
         
-        /* Vetro Sfumato per la barra */
-        background: rgba(10, 10, 10, 0.65) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
+        /* Vetro trasparente */
+        background: rgba(10, 10, 10, 0.6) !important; 
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
         
         border-radius: 50px !important;
         border: 1px solid rgba(212, 175, 55, 0.3) !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2) !important;
         
         justify-content: flex-end !important;
         position: fixed !important;
@@ -931,13 +931,12 @@ ul {
     }
 
     .navbar.scrolled {
-        top: 10px !important; width: 96% !important; padding: 0.6rem 1.2rem !important;
-        background: rgba(5, 5, 5, 0.9) !important;
+        top: 15px !important; width: 96% !important;
+        background: rgba(5, 5, 5, 0.95) !important;
     }
 
     .navbar > a {
         position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-        transition: all 0.4s ease;
     }
     .logo-img { height: 35px !important; width: auto !important; object-fit: contain; }
     .navbar.scrolled .logo-img { height: 28px !important; }
@@ -945,99 +944,145 @@ ul {
     .burger { display: block !important; z-index: 10001; font-size: 1.3rem; cursor: pointer; color: var(--gold-solid) !important; margin-top: 2px; }
     .nav-socials { display: none !important; }
 
-    /* 2. MENU PRINCIPALE (FULL SCREEN BLUR) */
+    /* 2. MENU LATERALE (Side Drawer Trasparente) */
     .nav-links {
         position: fixed; 
         top: 0; 
-        left: 0; /* Copre tutto da sinistra... */
-        width: 100%; /* ...a destra. Nessun taglio laterale. */
+        right: 0; /* Esce da DESTRA */
         height: 100vh;
+        width: 85%; /* Lascia un po' di spazio a sinistra per vedere il sito */
+        max-width: 380px;
         
-        /* IL VERO EFFETTO VETRO SFOCATO */
-        background: rgba(5, 5, 5, 0.75); /* Nero al 75% di opacità */
-        backdrop-filter: blur(35px); /* Sfocatura molto potente dello sfondo */
-        -webkit-backdrop-filter: blur(35px); /* Per iPhone */
+        /* Sfondo: Vetro molto sfocato, quasi invisibile */
+        background: rgba(5, 5, 5, 0.6); 
+        backdrop-filter: blur(30px); /* Sfocatura potente */
+        -webkit-backdrop-filter: blur(30px);
+        
+        border-left: 1px solid rgba(212, 175, 55, 0.1); /* Linea di taglio sottile */
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         
         display: flex; 
         flex-direction: column; 
-        justify-content: center; 
+        justify-content: center; /* Centrati verticalmente */
         align-items: center;
-        gap: 2rem;
+        gap: 15px; /* Spazio tra i riquadri */
+        padding: 2rem;
         
-        /* Animazione Slide Laterale */
         transform: translateX(100%); /* Nascosto a destra */
         transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
         z-index: 9000;
-        padding-bottom: 50px;
+        overflow-y: auto;
     }
 
     .nav-links.nav-active { 
-        transform: translateX(0); /* Entra coprendo tutto */
+        transform: translateX(0); /* Entra in scena */
     }
 
-    .nav-links a { 
-        font-family: var(--font-heading); 
-        font-size: 1.8rem; /* Scritte grandi */
-        color: #fff; 
-        padding: 10px;
-        text-shadow: 0 5px 15px rgba(0,0,0,0.5); /* Ombra per leggere meglio sul vetro */
+    /* 3. STILE "RIQUADRI" (Card Style) */
+    .nav-links li {
+        width: 100%;
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    
+    /* Animazione a cascata */
+    .nav-links.nav-active li { animation: slideInBox 0.5s forwards; }
+    .nav-links.nav-active li:nth-child(1) { animation-delay: 0.1s; }
+    .nav-links.nav-active li:nth-child(2) { animation-delay: 0.2s; }
+    .nav-links.nav-active li:nth-child(3) { animation-delay: 0.3s; }
+    .nav-links.nav-active li:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes slideInBox {
+        to { opacity: 1; transform: translateX(0); }
     }
 
-    /* 3. MENU A TENDINA (DROPDOWN) */
-    .dropdown { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    /* Il Design del Riquadro */
+    .nav-links a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Testo a sinistra, freccia a destra */
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        
+        /* Aspetto "Card" */
+        background: rgba(255, 255, 255, 0.03); /* Sfondo leggerissimo */
+        border: 1px solid rgba(212, 175, 55, 0.2); /* Bordo Oro Sottile */
+        border-radius: 15px; /* Angoli arrotondati come le card prodotti */
+        
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+    }
+
+    /* Effetto tocco */
+    .nav-links a:active {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: var(--gold-solid);
+        transform: scale(0.98);
+    }
+
+    /* 4. SOTTOMENU (Riquadri che appaiono sotto) */
+    .dropdown {
+        display: flex; flex-direction: column; width: 100%;
+    }
     
     .dropdown-menu {
         position: static !important; float: none !important; transform: none !important;
-        width: 80% !important; margin: 10px auto 0 auto !important;
+        width: 100% !important; margin: 0 !important;
         
-        /* Box leggerissimo, quasi invisibile */
-        background: rgba(255, 255, 255, 0.03) !important; 
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        box-shadow: none !important;
+        background: transparent !important;
+        border: none !important; box-shadow: none !important;
         
-        display: none; padding: 15px 0; opacity: 1 !important; visibility: visible !important;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px !important;
+        padding-left: 20px; /* Indentati per gerarchia */
+        opacity: 1 !important; visibility: visible !important;
     }
-    
-    .dropdown.mobile-active .dropdown-menu { display: block !important; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from {opacity:0; transform:translateY(-10px);} to {opacity:1; transform:translateY(0);} }
 
+    .dropdown.mobile-active .dropdown-menu { display: flex !important; animation: expand 0.4s ease; }
+    @keyframes expand { from {opacity:0; transform:translateY(-10px);} to {opacity:1; transform:translateY(0);} }
+
+    /* Riquadri del sottomenu (Ottica/Gioielleria) */
     .dropdown-menu a {
         font-family: var(--font-body) !important;
-        font-size: 1rem !important;
-        color: var(--gold-solid) !important; /* Oro per contrasto */
-        padding: 10px 0;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: none;
+        font-size: 0.9rem !important;
+        padding: 1rem !important;
+        background: rgba(212, 175, 55, 0.05) !important; /* Leggermente dorati */
+        border-color: rgba(212, 175, 55, 0.15) !important;
+        color: var(--gold-solid) !important;
     }
 
-    /* 4. COOKIE BANNER */
+    /* Freccina che ruota */
+    .dropdown > a i { font-size: 0.8em; transition: transform 0.3s; }
+
+    /* 5. FIX VARI (Cookie, Griglie, Contatti) */
     .cookie-banner {
-        width: 92% !important; bottom: 30px !important; left: 50% !important; transform: translateX(-50%) !important;
+        width: 90% !important; bottom: 30px !important; left: 50% !important; transform: translateX(-50%) !important;
         padding: 1.5rem !important; z-index: 2147483647 !important;
-        background: rgba(10, 10, 10, 0.9) !important; backdrop-filter: blur(20px) !important;
+        background: rgba(10, 10, 10, 0.95) !important; backdrop-filter: blur(20px) !important;
         border: 1px solid var(--gold-solid) !important; flex-direction: column; border-radius: 20px !important;
     }
     .cookie-content { flex-direction: column !important; text-align: center; gap: 1rem; }
     #accept-cookies { width: 100% !important; padding: 1rem; font-size: 1rem; display: block; margin-top: 5px; pointer-events: auto !important; cursor: pointer; }
 
-    /* 5. GRIGLIE & CONTATTI */
     .grid-container { grid-template-columns: 1fr !important; gap: 2rem !important; padding: 0 5% !important; }
     .card { height: 400px !important; border-radius: 20px !important; }
+
+    .contact-container { flex-direction: column !important; gap: 2rem !important; width: 100% !important; }
+    .contact-info-box, .contact-form { width: 100% !important; min-width: 0 !important; padding: 1.5rem !important; margin: 0 !important; }
+    .input-group { flex-direction: column !important; gap: 1rem !important; }
+    .whatsapp-float { bottom: 20px !important; right: 20px !important; width: 50px !important; height: 50px !important; font-size: 24px !important; }
     
-    /* 2 Colonne Ottica/Gioielleria */
     .grid-2col-mobile { grid-template-columns: repeat(2, 1fr) !important; gap: 15px !important; padding: 0 10px !important; }
     .grid-2col-mobile .card { height: 220px !important; border-radius: 20px !important; }
     .grid-2col-mobile .card-content { padding: 10px !important; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent) !important; }
     .grid-2col-mobile .card h3 { font-size: 0.85rem !important; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .grid-2col-mobile .card p { display: none !important; }
-
-    /* Fix Contatti */
-    .contact-container { flex-direction: column !important; gap: 2rem !important; width: 100% !important; }
-    .contact-info-box, .contact-form { width: 100% !important; min-width: 0 !important; padding: 1.5rem !important; margin: 0 !important; }
-    .input-group { flex-direction: column !important; gap: 1rem !important; }
-    .whatsapp-float { bottom: 20px !important; right: 20px !important; width: 50px !important; height: 50px !important; font-size: 24px !important; }
 }
 
 .whatsapp-float {

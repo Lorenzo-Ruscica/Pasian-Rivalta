@@ -1064,6 +1064,10 @@ ul {
     .grid-2col-mobile .card-content { padding: 10px !important; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent) !important; }
     .grid-2col-mobile .card h3 { font-size: 0.85rem !important; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .grid-2col-mobile .card p { display: none !important; }
+	.logo-card {
+        border-color: var(--gold-solid) !important;
+        background: rgba(212, 175, 55, 0.05) !important; /* Opzionale: leggero sfondo dorato per risaltare di più */
+    }
 }
 
 .whatsapp-float {

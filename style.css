@@ -1262,32 +1262,45 @@ ul {
 }
 
 /* ========================================= */
-/* === ADATTAMENTO MOBILE (Fondamentale!) === */
+/* === MOBILE: VERSIONE MICRO (Compatta) === */
 /* ========================================= */
 @media (max-width: 768px) {
     .cookie-banner {
-        bottom: 10px; /* Più vicino al bordo */
-        width: 95%; /* Quasi tutto lo schermo */
-        flex-direction: column; /* Su mobile, testo sopra e bottoni sotto */
-        padding: 15px 20px;
-        border-radius: 15px; /* Meno arrotondato su mobile */
-        text-align: center;
-        gap: 15px;
+        bottom: 15px !important; /* Staccato leggermente dal fondo */
+        width: 92% !important;   /* Non tocca i bordi laterali */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        
+        flex-direction: column !important; /* Testo sopra, tasti sotto */
+        padding: 10px 15px !important; /* Padding ridotto al minimo */
+        gap: 8px !important; /* Spazio ridotto tra testo e tasti */
+        
+        border-radius: 12px !important; /* Angoli meno "palla", più "card" */
+        background: rgba(8, 8, 8, 0.98) !important; /* Quasi opaco per leggibilità */
     }
 
+    /* Testo molto più piccolo e compatto */
     .cookie-text {
-        white-space: normal; /* Permetti al testo di andare a capo */
-        font-size: 0.8rem;
+        white-space: normal !important;
+        font-size: 0.7rem !important; /* Scritta piccola (11-12px) */
+        line-height: 1.3;
+        text-align: center;
+        color: #bbb !important; /* Leggermente più scuro per eleganza */
     }
 
+    /* Contenitore tasti */
     .cookie-buttons-inline {
         width: 100%;
-        justify-content: center; /* Centra i bottoni */
-        gap: 10px;
+        justify-content: center;
+        gap: 8px !important;
     }
 
+    /* Bottoni "Slim" (Bassi e larghi) */
     .btn-luxury-small, .btn-outline-small {
-        flex: 1; /* I bottoni si dividono lo spazio al 50% */
-        padding: 10px 0; /* Un po' più alti per essere cliccati col dito */
+        flex: 1; /* Si dividono lo spazio 50% e 50% */
+        padding: 6px 0 !important; /* Tasti molto sottili in altezza */
+        font-size: 0.65rem !important; /* Scritta tasti minuscola ma leggibile */
+        border-radius: 6px !important; /* Tasti rettangolari smussati */
+        letter-spacing: 0.5px !important;
     }
 }

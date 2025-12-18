@@ -1164,3 +1164,130 @@ ul {
     .error-content h1 { font-size: 5rem; }
     .error-content h2 { font-size: 1.5rem; }
 }
+
+/* ========================================= */
+/* === STILE COOKIE BANNER MINIMALISTA === */
+/* ========================================= */
+
+/* Il banner principale: sottile e compatto */
+.cookie-banner {
+    position: fixed;
+    bottom: 20px; /* Leggermente staccato dal fondo */
+    left: 50%;
+    transform: translateX(-50%); /* Centrato orizzontalmente */
+    
+    width: auto; /* Si adatta al contenuto */
+    max-width: 90%; /* Non più largo del 90% dello schermo */
+    min-width: 320px; /* Larghezza minima decente */
+    
+    background: rgba(10, 10, 10, 0.95); /* Sfondo scuro semi-trasparente */
+    backdrop-filter: blur(10px); /* Effetto vetro sfocato (elegante) */
+    
+    border: 1px solid var(--gold-solid); /* Bordo dorato sottile */
+    border-radius: 50px; /* Forma a pillola, molto moderna */
+    
+    padding: 10px 25px; /* Poco spazio interno per tenerlo basso */
+    
+    display: flex; /* Mette testo e bottoni sulla stessa riga */
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px; /* Spazio tra testo e bottoni */
+    
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); /* Ombra morbida */
+    z-index: 9999; /* Sempre sopra tutto */
+    
+    /* Animazione di entrata */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Quando deve apparire */
+.cookie-banner.show {
+    opacity: 1;
+    visibility: visible;
+    bottom: 20px;
+}
+
+/* Il testo: piccolo e pulito */
+.cookie-text {
+    font-family: var(--font-body);
+    font-size: 0.85rem; /* Testo piccolo */
+    color: #ccc; /* Grigio chiaro */
+    margin: 0; /* Toglie i margini di default */
+    white-space: nowrap; /* Forza su una riga (se ci sta) */
+}
+
+.cookie-text a {
+    color: var(--gold-solid);
+    text-decoration: underline;
+}
+
+/* Contenitore dei bottoni sulla riga */
+.cookie-buttons-inline {
+    display: flex;
+    gap: 10px;
+}
+
+/* STILE DEI BOTTONI PICCOLI */
+
+/* Bottone ACCETTO (Pieno) */
+.btn-luxury-small {
+    font-family: var(--font-heading);
+    font-size: 0.7rem; /* Molto piccolo */
+    padding: 8px 18px; /* Compatti */
+    background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728); /* Gradiente Oro */
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: transform 0.2s;
+}
+
+/* Bottone VISUALIZZA (Outline) */
+.btn-outline-small {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    padding: 7px 17px;
+    border: 1px solid var(--gold-solid);
+    color: var(--gold-solid);
+    text-decoration: none;
+    border-radius: 50px;
+    background: transparent;
+    transition: all 0.2s;
+}
+.btn-outline-small:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+/* ========================================= */
+/* === ADATTAMENTO MOBILE (Fondamentale!) === */
+/* ========================================= */
+@media (max-width: 768px) {
+    .cookie-banner {
+        bottom: 10px; /* Più vicino al bordo */
+        width: 95%; /* Quasi tutto lo schermo */
+        flex-direction: column; /* Su mobile, testo sopra e bottoni sotto */
+        padding: 15px 20px;
+        border-radius: 15px; /* Meno arrotondato su mobile */
+        text-align: center;
+        gap: 15px;
+    }
+
+    .cookie-text {
+        white-space: normal; /* Permetti al testo di andare a capo */
+        font-size: 0.8rem;
+    }
+
+    .cookie-buttons-inline {
+        width: 100%;
+        justify-content: center; /* Centra i bottoni */
+        gap: 10px;
+    }
+
+    .btn-luxury-small, .btn-outline-small {
+        flex: 1; /* I bottoni si dividono lo spazio al 50% */
+        padding: 10px 0; /* Un po' più alti per essere cliccati col dito */
+    }
+}

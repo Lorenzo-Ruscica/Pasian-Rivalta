@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina Non Trovata | Pasian Rivalta</title>
+    
+    <link rel="stylesheet" href="style.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="immagini/logo_favicon.ico" type="image/x-icon">
+</head>
+<body style="background-color: #000;">
+
+    <section class="error-container">
+        <div class="error-content reveal">
+            <h1 class="gradient-text">404</h1>
+            
+            <h2>Questo gioiello non si trova.</h2>
+            
+            <p>La pagina che stai cercando potrebbe essere stata spostata o non esistere.</p>
+            
+            <br>
+            
+            <a href="index.html" class="btn-luxury">Torna alla Home</a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.querySelector('.error-content');
+            setTimeout(() => {
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 300);
+        });
+    </script>
+
+</body>
+</html>

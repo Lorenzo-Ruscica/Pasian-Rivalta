@@ -1109,3 +1109,58 @@ ul {
 }
 
 .whatsapp-float:hover .tooltip { opacity: 1; transform: translateX(-10px); }
+
+/* ========================================= */
+/* === PAGINA 404 (Pagina di Errore) === */
+/* ========================================= */
+
+.error-container {
+    height: 100vh; /* Tutta l'altezza dello schermo */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+    text-align: center;
+    padding: 20px;
+}
+
+.error-content {
+    opacity: 0; /* Parte nascosto per animazione */
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+    max-width: 600px;
+}
+
+/* Il numero 404 gigante */
+.error-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem; /* Molto grande */
+    line-height: 1;
+    margin-bottom: 1rem;
+    
+    /* Effetto Oro */
+    background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+}
+
+.error-content h2 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.error-content p {
+    font-family: 'Montserrat', sans-serif;
+    color: #aaa;
+    margin-bottom: 2rem;
+}
+
+/* Adattamento Mobile */
+@media (max-width: 768px) {
+    .error-content h1 { font-size: 5rem; }
+    .error-content h2 { font-size: 1.5rem; }
+}

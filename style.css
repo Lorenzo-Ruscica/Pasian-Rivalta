@@ -16,13 +16,13 @@
 	--font-body: "Montserrat", sans-serif;
 	--transition-smooth: all .5s cubic-bezier(.23, 1, .32, 1);
 }
-/* --- FIX ESPERIENZA APP (Nessun flash blu) --- */
+
 * {
-    -webkit-tap-highlight-color: transparent !important; /* Rimuove il flash blu su Android/iOS */
+    -webkit-tap-highlight-color: transparent !important; 
     outline: none !important;
 }
 
-/* Impedisce di selezionare il testo su menu e bottoni (più elegante) */
+
 a, button, .navbar, .burger, .card h3, img {
     -webkit-user-select: none !important;
     user-select: none !important;
@@ -298,37 +298,37 @@ ul {
 .card:hover .card-img-wrapper img {
 	transform: scale(1.1);
 }
-/* ========================================================= */
-/* === SOLO PER PAGINE MARCHI (Ottica & Gioielleria) === */
-/* ========================================================= */
 
-/* Riquadro specifico per i loghi */
+
+
+
+
 .logo-card .card-img-wrapper {
-    height: 250px;           /* Altezza fissa per uniformità */
-    display: flex;           /* Centratura perfetta */
+    height: 250px;           
+    display: flex;           
     align-items: center;
     justify-content: center;
-    padding: 30px;           /* Spazio attorno al logo */
+    padding: 30px;           
     background: transparent;
 }
 
-/* Gestione Immagine Logo */
+
 .logo-card .card-img-wrapper img {
     max-width: 100%;
     max-height: 100%;
     width: auto;
     height: auto;
-    object-fit: contain;     /* Non tagliare e non deformare! */
+    object-fit: contain;     
     
-    /* Filtro per rendere i loghi bianchi (se sono neri/colorati) */
+
     filter: brightness(0) invert(1); 
     transition: transform 0.5s ease;
 }
 
-/* Effetto Zoom al passaggio del mouse */
+
 .logo-card:hover .card-img-wrapper img {
     transform: scale(1.1);
-    /* filter: brightness(0) sepia(1) hue-rotate(10deg) saturate(5); */ /* Decommenta per effetto oro */
+
 }
 .card-content {
 	position: absolute;
@@ -934,12 +934,12 @@ ul {
 	visibility: visible !important;
 }
 
-/* ============================================================ */
-/* === MOBILE: SIDE DRAWER CARD STYLE (Sfondo Leggibile) === */
-/* ============================================================ */
+
+
+
 @media (max-width: 968px) {
 
-    /* 1. NAVBAR */
+
     .navbar {
         width: 90% !important;
         padding: 1rem 1.5rem !important;
@@ -947,7 +947,7 @@ ul {
         top: 45px !important; 
         left: 50% !important;
         transform: translateX(-50%) !important;
-        background: rgba(10, 10, 10, 0.8) !important; /* Più scuro anche qui */
+        background: rgba(10, 10, 10, 0.8) !important; 
         backdrop-filter: blur(15px) !important;
         -webkit-backdrop-filter: blur(15px) !important;
         border-radius: 50px !important;
@@ -967,7 +967,7 @@ ul {
     .burger { display: block !important; z-index: 10001; font-size: 1.3rem; cursor: pointer; color: var(--gold-solid) !important; margin-top: 2px; }
     .nav-socials { display: none !important; }
 
-    /* 2. MENU LATERALE (SFONDO PIÙ SCURO E LEGGIBILE) */
+
     .nav-links {
         position: fixed; 
         top: 0; 
@@ -976,16 +976,16 @@ ul {
         width: 85%;
         max-width: 380px;
         
-        /* MODIFICA PRINCIPALE QUI: */
-        /* Molto più scuro (0.96) per leggere bene i tasti */
+
+
         background: rgba(8, 8, 8, 0.96); 
         
-        /* Meno sfocatura, così non disturba */
+
         backdrop-filter: blur(10px); 
         -webkit-backdrop-filter: blur(10px);
         
         border-left: 1px solid rgba(212, 175, 55, 0.2);
-        box-shadow: -10px 0 50px rgba(0,0,0,0.9); /* Ombra forte per staccarlo dallo sfondo */
+        box-shadow: -10px 0 50px rgba(0,0,0,0.9); 
         
         display: flex; 
         flex-direction: column; 
@@ -1002,7 +1002,7 @@ ul {
 
     .nav-links.nav-active { transform: translateX(0); }
 
-    /* 3. STILE "RIQUADRI" (Card Style) */
+
     .nav-links li { width: 100%; opacity: 0; transform: translateX(20px); }
     .nav-links.nav-active li { animation: slideInBox 0.5s forwards; }
     .nav-links.nav-active li:nth-child(1) { animation-delay: 0.1s; }
@@ -1015,7 +1015,7 @@ ul {
         display: flex; align-items: center; justify-content: space-between;
         width: 100%; padding: 1.2rem 1.5rem;
         
-        /* Sfondo del bottone leggermente più chiaro dello sfondo menu */
+
         background: rgba(255, 255, 255, 0.05); 
         border: 1px solid rgba(212, 175, 55, 0.2);
         border-radius: 15px;
@@ -1026,7 +1026,7 @@ ul {
     }
     .nav-links a:active { background: rgba(212, 175, 55, 0.15); border-color: var(--gold-solid); transform: scale(0.98); }
 
-    /* 4. SOTTOMENU */
+
     .dropdown { display: flex; flex-direction: column; width: 100%; }
     .dropdown-menu {
         position: static !important; float: none !important; transform: none !important;
@@ -1041,12 +1041,12 @@ ul {
 
     .dropdown-menu a {
         font-family: var(--font-body) !important; font-size: 0.9rem !important; padding: 1rem !important;
-        background: rgba(212, 175, 55, 0.08) !important; /* Più contrasto */
+        background: rgba(212, 175, 55, 0.08) !important; 
         border-color: rgba(212, 175, 55, 0.2) !important; color: var(--gold-solid) !important;
     }
     .dropdown > a i { font-size: 0.8em; transition: transform 0.3s; }
 
-    /* 5. FIX VARI */
+
     .cookie-banner { width: 90% !important; bottom: 30px !important; left: 50% !important; transform: translateX(-50%) !important; padding: 1.5rem !important; z-index: 2147483647 !important; background: rgba(10, 10, 10, 0.98) !important; border: 1px solid var(--gold-solid) !important; flex-direction: column; border-radius: 20px !important; }
     .cookie-content { flex-direction: column !important; text-align: center; gap: 1rem; }
     #accept-cookies { width: 100% !important; padding: 1rem; font-size: 1rem; display: block; margin-top: 5px; pointer-events: auto !important; cursor: pointer; }
@@ -1066,7 +1066,7 @@ ul {
     .grid-2col-mobile .card p { display: none !important; }
 	.logo-card {
         border-color: var(--gold-solid) !important;
-        background: rgba(212, 175, 55, 0.05) !important; /* Opzionale: leggero sfondo dorato per risaltare di più */
+        background: rgba(212, 175, 55, 0.05) !important; 
     }
 }
 
@@ -1076,13 +1076,13 @@ ul {
     right: 30px;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #d4af37, #aa771c); /* Sfondo Oro */
+    background: linear-gradient(135deg, #d4af37, #aa771c); 
     color: #000;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 30px;
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-    z-index: 9990; /* Sotto al menu mobile ma sopra al resto */
+    z-index: 9990; 
     transition: all 0.3s ease;
 }
 
@@ -1091,7 +1091,7 @@ ul {
     box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
 }
 
-/* Tooltip (fumetto) */
+
 .whatsapp-float .tooltip {
     position: absolute;
     right: 70px;
@@ -1110,12 +1110,12 @@ ul {
 
 .whatsapp-float:hover .tooltip { opacity: 1; transform: translateX(-10px); }
 
-/* ========================================= */
-/* === PAGINA 404 (Pagina di Errore) === */
-/* ========================================= */
+
+
+
 
 .error-container {
-    height: 100vh; /* Tutta l'altezza dello schermo */
+    height: 100vh; 
     width: 100%;
     display: flex;
     align-items: center;
@@ -1126,20 +1126,20 @@ ul {
 }
 
 .error-content {
-    opacity: 0; /* Parte nascosto per animazione */
+    opacity: 0; 
     transform: translateY(20px);
     transition: all 0.8s ease;
     max-width: 600px;
 }
 
-/* Il numero 404 gigante */
+
 .error-content h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 8rem; /* Molto grande */
+    font-size: 8rem; 
     line-height: 1;
     margin-bottom: 1rem;
     
-    /* Effetto Oro */
+
     background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1159,63 +1159,63 @@ ul {
     margin-bottom: 2rem;
 }
 
-/* Adattamento Mobile */
+
 @media (max-width: 768px) {
     .error-content h1 { font-size: 5rem; }
     .error-content h2 { font-size: 1.5rem; }
 }
 
-/* ========================================= */
-/* === STILE COOKIE BANNER MINIMALISTA === */
-/* ========================================= */
 
-/* Il banner principale: sottile e compatto */
+
+
+
+
 .cookie-banner {
     position: fixed;
-    bottom: 20px; /* Leggermente staccato dal fondo */
+    bottom: 20px; 
     left: 50%;
-    transform: translateX(-50%); /* Centrato orizzontalmente */
+    transform: translateX(-50%); 
     
-    width: auto; /* Si adatta al contenuto */
-    max-width: 90%; /* Non più largo del 90% dello schermo */
-    min-width: 320px; /* Larghezza minima decente */
+    width: auto; 
+    max-width: 90%; 
+    min-width: 320px; 
     
-    background: rgba(10, 10, 10, 0.95); /* Sfondo scuro semi-trasparente */
-    backdrop-filter: blur(10px); /* Effetto vetro sfocato (elegante) */
+    background: rgba(10, 10, 10, 0.95); 
+    backdrop-filter: blur(10px); 
     
-    border: 1px solid var(--gold-solid); /* Bordo dorato sottile */
-    border-radius: 50px; /* Forma a pillola, molto moderna */
+    border: 1px solid var(--gold-solid); 
+    border-radius: 50px; 
     
-    padding: 10px 25px; /* Poco spazio interno per tenerlo basso */
+    padding: 10px 25px; 
     
-    display: flex; /* Mette testo e bottoni sulla stessa riga */
+    display: flex; 
     align-items: center;
     justify-content: space-between;
-    gap: 20px; /* Spazio tra testo e bottoni */
+    gap: 20px; 
     
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); /* Ombra morbida */
-    z-index: 9999; /* Sempre sopra tutto */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); 
+    z-index: 9999; 
     
-    /* Animazione di entrata */
+
     opacity: 0;
     visibility: hidden;
     transition: all 0.5s ease-in-out;
 }
 
-/* Quando deve apparire */
+
 .cookie-banner.show {
     opacity: 1;
     visibility: visible;
     bottom: 20px;
 }
 
-/* Il testo: piccolo e pulito */
+
 .cookie-text {
     font-family: var(--font-body);
-    font-size: 0.85rem; /* Testo piccolo */
-    color: #ccc; /* Grigio chiaro */
-    margin: 0; /* Toglie i margini di default */
-    white-space: nowrap; /* Forza su una riga (se ci sta) */
+    font-size: 0.85rem; 
+    color: #ccc; 
+    margin: 0; 
+    white-space: nowrap; 
 }
 
 .cookie-text a {
@@ -1223,20 +1223,20 @@ ul {
     text-decoration: underline;
 }
 
-/* Contenitore dei bottoni sulla riga */
+
 .cookie-buttons-inline {
     display: flex;
     gap: 10px;
 }
 
-/* STILE DEI BOTTONI PICCOLI */
 
-/* Bottone ACCETTO (Pieno) */
+
+
 .btn-luxury-small {
     font-family: var(--font-heading);
-    font-size: 0.7rem; /* Molto piccolo */
-    padding: 8px 18px; /* Compatti */
-    background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728); /* Gradiente Oro */
+    font-size: 0.7rem; 
+    padding: 8px 18px; 
+    background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728); 
     color: #000;
     border: none;
     border-radius: 50px;
@@ -1245,7 +1245,7 @@ ul {
     transition: transform 0.2s;
 }
 
-/* Bottone VISUALIZZA (Outline) */
+
 .btn-outline-small {
     font-family: var(--font-heading);
     font-size: 0.7rem;
@@ -1261,46 +1261,46 @@ ul {
     background: rgba(212, 175, 55, 0.1);
 }
 
-/* ========================================= */
-/* === MOBILE: VERSIONE MICRO (Compatta) === */
-/* ========================================= */
+
+
+
 @media (max-width: 768px) {
     .cookie-banner {
-        bottom: 15px !important; /* Staccato leggermente dal fondo */
-        width: 92% !important;   /* Non tocca i bordi laterali */
+        bottom: 15px !important; 
+        width: 92% !important;   
         left: 50% !important;
         transform: translateX(-50%) !important;
         
-        flex-direction: column !important; /* Testo sopra, tasti sotto */
-        padding: 10px 15px !important; /* Padding ridotto al minimo */
-        gap: 8px !important; /* Spazio ridotto tra testo e tasti */
+        flex-direction: column !important; 
+        padding: 10px 15px !important; 
+        gap: 8px !important; 
         
-        border-radius: 12px !important; /* Angoli meno "palla", più "card" */
-        background: rgba(8, 8, 8, 0.98) !important; /* Quasi opaco per leggibilità */
+        border-radius: 12px !important; 
+        background: rgba(8, 8, 8, 0.98) !important; 
     }
 
-    /* Testo molto più piccolo e compatto */
+
     .cookie-text {
         white-space: normal !important;
-        font-size: 0.7rem !important; /* Scritta piccola (11-12px) */
+        font-size: 0.7rem !important; 
         line-height: 1.3;
         text-align: center;
-        color: #bbb !important; /* Leggermente più scuro per eleganza */
+        color: #bbb !important; 
     }
 
-    /* Contenitore tasti */
+
     .cookie-buttons-inline {
         width: 100%;
         justify-content: center;
         gap: 8px !important;
     }
 
-    /* Bottoni "Slim" (Bassi e larghi) */
+
     .btn-luxury-small, .btn-outline-small {
-        flex: 1; /* Si dividono lo spazio 50% e 50% */
-        padding: 6px 0 !important; /* Tasti molto sottili in altezza */
-        font-size: 0.65rem !important; /* Scritta tasti minuscola ma leggibile */
-        border-radius: 6px !important; /* Tasti rettangolari smussati */
+        flex: 1; 
+        padding: 6px 0 !important; 
+        font-size: 0.65rem !important; 
+        border-radius: 6px !important; 
         letter-spacing: 0.5px !important;
     }
 }

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
    
 
-    /* --- 1. GESTIONE MENU MOBILE E DROPDOWN --- */
+
 
     const burger = document.querySelector('.burger');
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // Apertura Menu Principale
+
 
     if (burger) {
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
            
 
-            // Icona X o Burger
+
 
             if (nav.classList.contains('nav-active')) {
 
@@ -46,23 +46,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // Apertura Sottomenu (Collezioni)
+
 
     if (dropdownLink) {
 
         dropdownLink.addEventListener('click', (e) => {
 
-            // Solo su mobile
+
 
             if (window.innerWidth <= 968) {
 
-                e.preventDefault(); // Non ricaricare la pagina
+                e.preventDefault();
 
                 dropdownLi.classList.toggle('mobile-active');
 
                
 
-                // Ruota freccia
+
 
                 const arrow = dropdownLink.querySelector('i');
 
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    /* --- 2. GESTIONE COOKIE BANNER (Forzata) --- */
+
 
     const cookieBanner = document.getElementById('cookie-banner');
 
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // Se il cookie non è salvato, mostra il banner dopo 1 secondo
+
 
     if (!localStorage.getItem('cookiesAccepted')) {
 
@@ -100,9 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
 
-                cookieBanner.style.display = 'flex'; // Forza display
+                cookieBanner.style.display = 'flex';
 
-                // Piccola attesa per l'animazione CSS se presente, altrimenti appare e basta
+
 
                 setTimeout(() => cookieBanner.classList.add('show'), 10);
 
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } else {
 
-        // Se già accettato, nascondi sicuro
+
 
         if(cookieBanner) cookieBanner.style.display = 'none';
 
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // Al click su Accetta
+
 
     if (acceptBtn) {
 
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             e.preventDefault();
 
-            // Nascondi immediatamente
+
 
             if(cookieBanner) {
 
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
 
-            // Salva preferenza
+
 
             localStorage.setItem('cookiesAccepted', 'true');
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    /* --- 3. NAVBAR SCROLL --- */
+
 
     const navbar = document.querySelector('.navbar');
 
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    /* --- 4. SCROLL REVEAL --- */
+
 
     const revealElements = document.querySelectorAll('.reveal');
 

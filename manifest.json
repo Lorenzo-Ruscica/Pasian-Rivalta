@@ -1,0 +1,18 @@
+{
+  "name": "Pasian Rivalta - Card Famiglia",
+  "short_name": "Pasian Card",
+  "description": "Card Famiglia digitale Pasian Rivalta: QR Code e sconti progressivi per Gioielleria e Ottica.",
+  "start_url": "/card-famiglia.html",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "immagini/logo1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

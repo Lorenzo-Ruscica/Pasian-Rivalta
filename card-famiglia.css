@@ -1,0 +1,1216 @@
+/* ============================================================================
+   PASIAN RIVALTA - STILI WEB APP MOBILE-FIRST (CARD FAMIGLIA & ADMIN)
+   ============================================================================ */
+
+.pf-page {
+    min-block-size: 100dvh;
+    background: #040404;
+    color: #f5f5f5;
+    padding-block-end: calc(84px + env(safe-area-inset-bottom, 0px));
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Accessibilità: ripristina focus-visible ad alto contrasto ed abilita selezione testo utile */
+.pf-page :where(input, select, textarea, button, a, summary):focus-visible {
+    outline: 3px solid var(--gold-solid) !important;
+    outline-offset: 2px !important;
+}
+
+.pf-page code,
+.pf-page .card-code-value {
+    -webkit-user-select: all !important;
+    user-select: all !important;
+}
+
+.visually-hidden {
+    position: absolute;
+    clip-path: inset(50%);
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    white-space: nowrap;
+}
+
+/* Navbar sempre perfettamente leggibile su sfondo scuro pieno */
+.pf-page .navbar {
+    background: rgba(8, 8, 8, 0.96) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(212, 175, 55, 0.32) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Header Pulito SENZA Immagine di Sfondo (Massimo Contrasto e Leggibilità) */
+.pf-hero {
+    padding: 135px 5% 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.16) 0%, rgba(12, 12, 12, 0.98) 65%, #040404 100%);
+    border-block-end: 1px solid rgba(212, 175, 55, 0.22);
+    position: relative;
+}
+
+.pf-hero .hero-content {
+    max-inline-size: 820px;
+    inline-size: 100%;
+    padding: 0;
+}
+
+.pf-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--gold-solid);
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    padding: 0.35rem 0.95rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-block-end: 0.85rem;
+}
+
+.pf-hero h1 {
+    font-size: clamp(2rem, 1.3rem + 3vw, 3.4rem);
+    margin-block-end: 0.65rem;
+    line-height: 1.15;
+    color: #ffffff;
+    text-wrap: balance;
+}
+
+.pf-subtitle {
+    color: #e0e0e0;
+    font-size: clamp(0.92rem, 0.86rem + 0.35vw, 1.05rem);
+    max-inline-size: 640px;
+    margin: 0 auto;
+    line-height: 1.55;
+    text-wrap: pretty;
+}
+
+.pf-container {
+    max-inline-size: 1180px;
+    margin-inline: auto;
+    padding: 1.75rem 4% 3rem;
+}
+
+/* Banner stato connessione Supabase / Demo */
+.demo-mode-banner {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.14), rgba(20, 20, 20, 0.95));
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 18px;
+    padding: 1rem 1.25rem;
+    margin-block-end: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: safe center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    font-size: 0.88rem;
+    color: #f7ebc1;
+}
+
+.demo-mode-banner strong {
+    color: var(--gold-solid);
+}
+
+.demo-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    inline-size: 100%;
+}
+
+@media (min-width: 769px) {
+    .demo-quick-actions {
+        inline-size: auto;
+    }
+}
+
+/* Riepilogo Regolamento Sconti */
+.rules-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.25rem;
+    margin-block-end: 2rem;
+}
+
+.rule-panel {
+    background: linear-gradient(160deg, #121212 0%, #080808 100%);
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 20px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: clip;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.rule-panel::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: 3px;
+    background: var(--gold-gradient);
+}
+
+.rule-panel-header {
+    display: flex;
+    align-items: safe center;
+    gap: 0.9rem;
+    margin-block-end: 1rem;
+}
+
+.rule-panel-icon {
+    inline-size: 46px;
+    block-size: 46px;
+    border-radius: 14px;
+    background: rgba(212, 175, 55, 0.14);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-solid);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.rule-panel :where(h2, h3) {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin: 0;
+}
+
+.rule-tiers-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+    margin-block: 1rem;
+}
+
+.tier-pill {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 14px;
+    padding: 0.75rem 0.4rem;
+    text-align: center;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.tier-pill.active-tier {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: var(--gold-solid);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.25);
+    transform: translateY(-2px);
+}
+
+.tier-pill.completed-tier {
+    background: rgba(46, 160, 67, 0.16);
+    border-color: rgba(46, 160, 67, 0.55);
+}
+
+.tier-step-label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #d0d0d0;
+    margin-block-end: 0.2rem;
+}
+
+.tier-discount-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.65rem);
+    font-weight: 700;
+    color: var(--gold-solid);
+}
+
+.rule-meta-note {
+    font-size: 0.84rem;
+    color: #d8d8d8;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-block-start: 0.65rem;
+    line-height: 1.45;
+}
+
+.rule-meta-note i {
+    color: var(--gold-solid);
+    margin-block-start: 3px;
+}
+
+.exclusion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-block-start: 0.75rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 50px;
+    background: rgba(217, 48, 37, 0.16);
+    border: 1px solid rgba(217, 48, 37, 0.5);
+    color: #ffb3ae;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   SCHEDA AUTENTICAZIONE (Sign In / Sign Up Unica Fase)
+   ============================================================================ */
+.auth-shell {
+    max-inline-size: 680px;
+    margin-inline: auto;
+    background: #0c0c0c;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 22px;
+    padding: 2rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+}
+
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    background: #050505;
+    padding: 0.35rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-block-end: 1.75rem;
+}
+
+.auth-tab-btn {
+    background: transparent;
+    border: none;
+    color: #c8c8c8;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.8rem 0.75rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    min-block-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+}
+
+.auth-tab-btn[aria-selected="true"] {
+    background: var(--gold-gradient);
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Gestalt Proximity Rule: margine tra label e input (0.35rem) < margine tra gruppi (1.35rem) */
+.field {
+    margin-block-end: 1.35rem;
+    text-align: left;
+}
+
+.field label,
+.fieldset-legend {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-block-end: 0.35rem;
+}
+
+.required-star {
+    color: var(--gold-solid);
+    margin-inline-start: 2px;
+}
+
+.hint,
+.rules-list {
+    display: block;
+    color: #c7c7c7;
+    font-size: 0.82rem;
+    margin-block-end: 0.45rem;
+    line-height: 1.45;
+}
+
+.rules-list {
+    padding-inline-start: 1.2rem;
+    list-style: disc;
+}
+
+.pf-input,
+.pf-select,
+.pf-textarea {
+    inline-size: 100%;
+    font-family: var(--font-body);
+    font-size: 1rem; /* >= 16px previene zoom automatico su iOS */
+    min-block-size: 50px;
+    padding: 0.8rem 1rem;
+    border-radius: 14px;
+    background: #050505;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    color: #ffffff;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+@media (pointer: coarse) {
+    .pf-input,
+    .pf-select,
+    .pf-textarea,
+    .btn-luxury,
+    .btn-secondary-gold {
+        min-block-size: 52px;
+    }
+}
+
+.pf-input:focus,
+.pf-select:focus,
+.pf-textarea:focus {
+    border-color: var(--gold-solid);
+    background: #000000;
+}
+
+/* Validazione post-interazione (:user-invalid + fallback JS) con :where() */
+.pf-input:where(:user-invalid, .user-invalid-fallback) {
+    border-color: #ef5350;
+    background-color: rgba(217, 48, 37, 0.14);
+}
+
+.pf-input:where(:user-valid, .user-valid-fallback) {
+    border-color: #2ea043;
+}
+
+.error-msg {
+    display: none;
+    color: #ff9e99;
+    font-size: 0.84rem;
+    margin-block-start: 0.35rem;
+    font-weight: 500;
+}
+
+.pf-input:where(:user-invalid, .user-invalid-fallback) + .error-msg,
+.password-input-wrap:has(.pf-input:where(:user-invalid, .user-invalid-fallback)) + .error-msg {
+    display: block;
+}
+
+.field:has(.pf-input:where(:user-invalid, .user-invalid-fallback)) .rules-list {
+    color: #ff9e99;
+    font-weight: 600;
+}
+
+.password-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrap .pf-input {
+    padding-inline-end: 3.4rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    inset-inline-end: 0.4rem;
+    background: transparent;
+    border: none;
+    color: #cfcfcf;
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.password-toggle-btn:hover {
+    color: var(--gold-solid);
+}
+
+/* Fieldset e Radio Buttons visibili per < 6 opzioni */
+.pf-fieldset {
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 16px;
+    padding: 1.15rem;
+    margin-block-end: 1.35rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.pf-fieldset legend {
+    padding-inline: 0.5rem;
+    color: var(--gold-solid);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.radio-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.65rem;
+    margin-block-start: 0.4rem;
+}
+
+.radio-card-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 12px;
+    background: #050505;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    cursor: pointer;
+    min-block-size: 50px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.radio-card-label input[type="radio"] {
+    accent-color: var(--gold-solid);
+    inline-size: 18px;
+    block-size: 18px;
+    flex-shrink: 0;
+}
+
+.radio-card-label:has(input[type="radio"]:checked) {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: var(--gold-solid);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Sezione aggiunta membri nucleo famigliare (Unica Fase) */
+.single-phase-warning {
+    background: rgba(212, 175, 55, 0.12);
+    border-inline-start: 4px solid var(--gold-solid);
+    border-radius: 12px;
+    padding: 0.95rem 1.1rem;
+    margin-block-end: 1.35rem;
+    font-size: 0.86rem;
+    color: #f7ebc1;
+    line-height: 1.45;
+}
+
+.single-phase-warning strong {
+    color: var(--gold-solid);
+    display: block;
+    margin-block-end: 0.2rem;
+}
+
+.family-members-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-block-end: 1.1rem;
+}
+
+.member-builder-row {
+    background: #060606;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 14px;
+    padding: 1rem;
+}
+
+.member-builder-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-block-end: 0.75rem;
+}
+
+.member-role-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold-solid);
+    font-weight: 700;
+}
+
+.remove-member-btn {
+    background: rgba(217, 48, 37, 0.18);
+    border: 1px solid rgba(217, 48, 37, 0.45);
+    color: #ff9e99;
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    min-block-size: 38px;
+}
+
+.add-member-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 0.6rem;
+    margin-block-start: 0.5rem;
+}
+
+.btn-secondary-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.75rem 1.15rem;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold-solid);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 48px;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-gold:hover:not(:disabled) {
+    background: var(--gold-solid);
+    color: #000;
+}
+
+.btn-primary-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    inline-size: 100%;
+    padding: 0.95rem 1.5rem;
+    border-radius: 16px;
+    border: none;
+    background: var(--gold-gradient);
+    color: #000;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    min-block-size: 54px;
+    box-shadow: 0 6px 22px rgba(212, 175, 55, 0.28);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary-gold:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(212, 175, 55, 0.45);
+}
+
+.btn-primary-gold:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.form-status-box {
+    margin-block-start: 1.1rem;
+    padding: 0.95rem 1.15rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    display: none;
+}
+
+.form-status-box.error {
+    display: block;
+    background: rgba(217, 48, 37, 0.18);
+    border: 1px solid rgba(217, 48, 37, 0.55);
+    color: #ffb3ae;
+}
+
+.form-status-box.success {
+    display: block;
+    background: rgba(46, 160, 67, 0.18);
+    border: 1px solid rgba(46, 160, 67, 0.55);
+    color: #8df096;
+}
+
+/* ============================================================================
+   DASHBOARD UTENTE: WALLET PASS DIGITALE & QR CODE
+   ============================================================================ */
+.dashboard-top-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: safe center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-end: 1.5rem;
+    padding-block-end: 1rem;
+    border-block-end: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.vip-card-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 1.5rem;
+    margin-block-end: 2.2rem;
+    align-items: stretch;
+}
+
+@media (max-width: 968px) {
+    .vip-card-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.luxury-vip-card {
+    background:
+        radial-gradient(circle at 100% 0%, rgba(212, 175, 55, 0.22), transparent 60%),
+        linear-gradient(145deg, #141414 0%, #070707 100%);
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    border-radius: 24px;
+    padding: 1.75rem;
+    position: relative;
+    overflow: clip;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.vip-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-block-end: 1.25rem;
+}
+
+.vip-brand-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--gold-solid);
+    display: block;
+    margin-block-end: 0.25rem;
+    font-weight: 600;
+}
+
+.vip-family-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.55rem, 1.3rem + 1vw, 2rem);
+    color: #fff;
+    line-height: 1.2;
+}
+
+.vip-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 50px;
+    background: rgba(46, 160, 67, 0.2);
+    border: 1px solid rgba(46, 160, 67, 0.55);
+    color: #8df096;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+}
+
+.vip-qr-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.4rem;
+    margin-block: 0.75rem 1.4rem;
+}
+
+.qr-white-frame {
+    background: #ffffff;
+    padding: 14px;
+    border-radius: 18px;
+    border: 3px solid var(--gold-solid);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 188px;
+    min-block-size: 188px;
+}
+
+.qr-white-frame :where(canvas, img) {
+    display: block;
+    max-inline-size: 160px;
+    block-size: auto;
+}
+
+.vip-code-details {
+    flex: 1 1 210px;
+    min-inline-size: 0;
+}
+
+.card-code-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #cfcfcf;
+    display: block;
+}
+
+.card-code-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--gold-solid);
+    letter-spacing: 2px;
+    margin-block: 0.25rem 0.85rem;
+    display: block;
+}
+
+.vip-qr-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 0.6rem;
+}
+
+.vip-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-block-start: 1rem;
+    border-block-start: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 0.82rem;
+    color: #d0d0d0;
+}
+
+/* Box Stato Cicli 3 Mesi */
+.cycle-status-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.cycle-card {
+    background: #0c0c0c;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 20px;
+    padding: 1.35rem;
+}
+
+.cycle-card-top {
+    display: flex;
+    align-items: safe center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-block-end: 0.85rem;
+}
+
+.next-discount-highlight {
+    background: rgba(212, 175, 55, 0.18);
+    border: 1px solid var(--gold-solid);
+    color: var(--gold-solid);
+    padding: 0.4rem 0.85rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+.countdown-banner {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 0.75rem 0.95rem;
+    font-size: 0.84rem;
+    color: #e2e2e2;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-block-start: 0.75rem;
+    line-height: 1.45;
+}
+
+.countdown-banner i {
+    margin-block-start: 3px;
+}
+
+.countdown-banner.active-window {
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: #f8e8b0;
+}
+
+/* Griglia Membri Famiglia Registrati */
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1rem;
+    margin-block-start: 1rem;
+}
+
+.member-card-item {
+    background: #0c0c0c;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 16px;
+    padding: 1rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.member-avatar-icon {
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: 12px;
+    background: rgba(212, 175, 55, 0.14);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: var(--gold-solid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.member-info h4 {
+    color: #fff;
+    font-size: 0.98rem;
+    margin-block-end: 0.1rem;
+}
+
+.member-info span {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--gold-solid);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   TABELLE RESPONSIVE CON CONTAINER QUERIES & STACKED CARDS MOBILE
+   ============================================================================ */
+.pf-table-wrap {
+    overflow: auto;
+    max-inline-size: 100%;
+    max-block-size: min(540px, 78dvh);
+    container-type: inline-size;
+    background: #0b0b0b;
+    border: 1px solid rgba(212, 175, 55, 0.26);
+    border-radius: 18px;
+    margin-block-start: 1rem;
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+}
+
+.pf-table {
+    inline-size: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+    font-size: 0.88rem;
+    --label-1: "Data";
+    --label-2: "Categoria";
+    --label-3: "Membro";
+    --label-4: "Step";
+    --label-5: "Sconto";
+    --label-6: "Importo";
+    --label-7: "Dettagli";
+}
+
+.pf-table.admin-cards-table {
+    --label-1: "Codice Card";
+    --label-2: "Famiglia";
+    --label-3: "Contatti";
+    --label-4: "Componenti";
+    --label-5: "Gioielleria";
+    --label-6: "Ottica";
+    --label-7: "Azione";
+}
+
+.pf-table thead {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+}
+
+.pf-table th,
+.pf-table td {
+    padding: 0.95rem 1.1rem;
+    border-block-end: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.pf-table thead th {
+    color: var(--gold-solid);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #121212;
+}
+
+.pf-table tbody th {
+    position: sticky;
+    inset-inline-start: 0;
+    background: #0e0e0e;
+    color: #fff;
+    font-weight: 600;
+    z-index: 1;
+}
+
+/* Su schermi piccoli o container stretti, la tabella diventa una pila di card */
+@container (width < 640px) {
+    .pf-table,
+    .pf-table thead,
+    .pf-table tbody,
+    .pf-table tr,
+    .pf-table th,
+    .pf-table td {
+        display: block;
+    }
+
+    .pf-table thead {
+        display: none;
+    }
+
+    .pf-table tr {
+        margin: 0.75rem;
+        border: 1px solid rgba(212, 175, 55, 0.28);
+        border-radius: 14px;
+        background: #111111;
+        overflow: clip;
+    }
+
+    .pf-table tbody th {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 2;
+        background: rgba(212, 175, 55, 0.14);
+        color: var(--gold-solid);
+        border-block-end: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    .pf-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 0.95rem;
+        text-align: right;
+    }
+
+    .pf-table td::before {
+        font-weight: 600;
+        color: #bdbdbd;
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        text-align: left;
+    }
+
+    .pf-table td:nth-child(2)::before {
+        content: var(--label-2) ": " / var(--label-2);
+    }
+    .pf-table td:nth-child(3)::before {
+        content: var(--label-3) ": " / var(--label-3);
+    }
+    .pf-table td:nth-child(4)::before {
+        content: var(--label-4) ": " / var(--label-4);
+    }
+    .pf-table td:nth-child(5)::before {
+        content: var(--label-5) ": " / var(--label-5);
+    }
+    .pf-table td:nth-child(6)::before {
+        content: var(--label-6) ": " / var(--label-6);
+    }
+    .pf-table td:nth-child(7)::before {
+        content: var(--label-7) ": " / var(--label-7);
+    }
+}
+
+/* ============================================================================
+   PANNELLO ADMIN: SCANNER QR & CASSA
+   ============================================================================ */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.scanner-box {
+    background: #0c0c0c;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 22px;
+    padding: 1.5rem;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+}
+
+#qr-reader {
+    inline-size: 100%;
+    border-radius: 16px;
+    overflow: clip;
+    border: 2px solid rgba(212, 175, 55, 0.45);
+    background: #000;
+    margin-block-end: 1rem;
+    min-block-size: 60px;
+}
+
+.price-preview-box {
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 16px;
+    padding: 1.1rem 1.25rem;
+    margin-block: 1rem 1.35rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: safe center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.price-preview-final {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem);
+    color: var(--gold-solid);
+    font-weight: 700;
+}
+
+/* ============================================================================
+   DIALOG MODALI NATIVI (<dialog closedby="any">)
+   ============================================================================ */
+.pf-dialog {
+    margin: auto;
+    background: #0d0d0d;
+    color: #ffffff;
+    border: 1px solid var(--gold-solid);
+    border-radius: 24px;
+    padding: 1.75rem;
+    max-inline-size: 480px;
+    inline-size: 92%;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95);
+}
+
+.pf-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(5px);
+}
+
+/* ============================================================================
+   BARRA DI NAVIGAZIONE INFERIORE STILE NATIVE MOBILE WEB APP (< 968px)
+   ============================================================================ */
+.mobile-app-tabbar {
+    display: none;
+}
+
+@media (max-width: 968px) {
+    /* Header compatto in stile App Nativa su mobile */
+    .pf-page .navbar {
+        top: max(10px, env(safe-area-inset-top, 10px)) !important;
+        inline-size: 94% !important;
+        min-block-size: 62px !important;
+        padding: 0.65rem 1.2rem !important;
+        border-radius: 20px !important;
+    }
+
+    .pf-page .logo-img {
+        block-size: 44px !important;
+    }
+
+    .pf-hero {
+        padding: 96px 4% 22px;
+    }
+
+    .pf-hero h1 {
+        font-size: 1.85rem;
+        margin-block-end: 0.4rem;
+    }
+
+    .pf-subtitle {
+        font-size: 0.88rem;
+    }
+
+    .pf-container {
+        padding: 1.15rem 3.5% 2.5rem;
+    }
+
+    .auth-shell,
+    .scanner-box,
+    .luxury-vip-card,
+    .rule-panel,
+    .cycle-card {
+        padding: 1.25rem;
+        border-radius: 20px;
+    }
+
+    /* Card QR stile Apple/Google Wallet centrata su smartphone */
+    .vip-qr-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .qr-white-frame {
+        margin-inline: auto;
+        padding: 16px;
+    }
+
+    .vip-code-details {
+        inline-size: 100%;
+    }
+
+    /* Barra di navigazione inferiore fissa stile App iOS / Android */
+    .mobile-app-tabbar {
+        position: fixed;
+        inset-block-end: 0;
+        inset-inline: 0;
+        z-index: 9500;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        background: rgba(8, 8, 8, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-block-start: 1px solid rgba(212, 175, 55, 0.32);
+        padding-block-start: 0.35rem;
+        padding-block-end: max(0.45rem, env(safe-area-inset-bottom, 0.45rem));
+        padding-inline: 0.5rem;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.85);
+    }
+
+    .app-tab-item {
+        background: transparent;
+        border: none;
+        color: #a8a8a8;
+        font-family: var(--font-body);
+        font-size: 0.68rem;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        padding: 0.4rem 0.2rem;
+        border-radius: 12px;
+        min-block-size: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .app-tab-item i {
+        font-size: 1.15rem;
+    }
+
+    .app-tab-item.active,
+    .app-tab-item:active {
+        color: var(--gold-solid);
+        background: rgba(212, 175, 55, 0.1);
+    }
+}

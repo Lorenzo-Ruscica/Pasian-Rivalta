@@ -1,4 +1,4 @@
-﻿:root {
+:root {
 	--bg-dark: #020202;
 	--bg-panel: #0a0a0a;
 	--gold-gradient: linear-gradient(135deg, #d4af37 0%, #fcf6ba 50%, #aa771c 100%);
@@ -392,7 +392,6 @@ ul {
 	font-size: 1.5rem;
 }
 
-@media (max-width: 968px) {
 @media (max-width: 968px) {
 	.hero h1 {
 		font-size: 2.5rem;
@@ -894,6 +893,28 @@ ul {
 .mnav-subcard-icon,
 .mnav-subcard-sub {
 	display: none;
+}
+
+@media (min-width: 969px) {
+	.pf-brand-emblem,
+	.pf-brand-text,
+	.mobile-nav-chrome,
+	.mnav-icon,
+	.mnav-sub,
+	.mnav-arrow:not(.dropdown-chevron),
+	.mnav-subcard-icon,
+	.mnav-subcard-sub {
+		display: none !important;
+	}
+
+	.mnav-item-left,
+	.mnav-labels,
+	.mnav-title,
+	.mnav-subcard-body,
+	.mnav-subcard-title {
+		display: inline !important;
+		font-weight: inherit !important;
+	}
 }
 
 .dropdown-chevron {

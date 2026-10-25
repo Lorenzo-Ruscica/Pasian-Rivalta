@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
     const burger = document.querySelector('.burger');
     const nav = document.querySelector('.nav-links');
@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdownLi = document.querySelector('.dropdown');
 
     // 1. Arricchisce il brand nella Top Bar mobile su tutte le pagine
+    const currentPage = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
     const brandLink = navbar?.querySelector(':scope > a');
     if (brandLink) {
         brandLink.classList.add('pf-brand-link');
-        const path = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+        const path = currentPage;
         const pageSubtitles = {
             'index.html': 'Ottica & Gioielleria',
             'storia.html': 'La Nostra Storia',

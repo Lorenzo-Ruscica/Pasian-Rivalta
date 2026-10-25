@@ -1,5 +1,5 @@
 /**
- * PASIAN RIVALTA - Logica Pannello Admin, Scanner QR Fotocamera & Cassa Sconti
+ * PASIAN RIVALTA - Logica Pannello Cassa & Scanner QR (Admin)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -7,61 +7,72 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.UserInvalidFallback.init(document);
     }
 
-    const adminDemoBanner = document.getElementById('admin-demo-banner');
-    const adminDemoLoginBtn = document.getElementById('admin-demo-login-btn');
+    const body = document.body;
+    const $ = (id) => document.getElementById(id);
 
-    const adminLoginSection = document.getElementById('admin-login-section');
-    const adminWorkspaceSection = document.getElementById('admin-workspace-section');
-    const adminSigninForm = document.getElementById('admin-signin-form');
-    const adminSigninBtn = document.getElementById('admin-signin-btn');
-    const adminLoginStatus = document.getElementById('admin-login-status');
-    const adminSignoutBtn = document.getElementById('admin-signout-btn');
+    const adminDemoBanner = $('admin-demo-banner');
+    const adminDemoLoginBtn = $('admin-demo-login-btn');
 
-    const startCameraBtn = document.getElementById('start-camera-btn');
-    const stopCameraBtn = document.getElementById('stop-camera-btn');
-    const qrFileInput = document.getElementById('qr-file-input');
-    const manualLookupForm = document.getElementById('manual-lookup-form');
-    const manualCodeInput = document.getElementById('manual-code-input');
-    const scannerStatus = document.getElementById('scanner-status');
+    const adminLoginSection = $('admin-login-section');
+    const adminWorkspaceSection = $('admin-workspace-section');
+    const adminSigninForm = $('admin-signin-form');
+    const adminSigninBtn = $('admin-signin-btn');
+    const adminLoginStatus = $('admin-login-status');
+    const adminSignoutBtn = $('admin-signout-btn');
 
-    const emptyScanPlaceholder = document.getElementById('empty-scan-placeholder');
-    const scannedCardPanel = document.getElementById('scanned-card-panel');
-    const loadSampleRossiBtn = document.getElementById('load-sample-rossi-btn');
+    const scanStage = $('scan-stage');
+    const startCameraBtn = $('start-camera-btn');
+    const stopCameraBtn = $('stop-camera-btn');
+    const qrFileInput = $('qr-file-input');
+    const manualLookupForm = $('manual-lookup-form');
+    const manualCodeInput = $('manual-code-input');
+    const scannerStatus = $('scanner-status');
 
-    const recordPurchaseForm = document.getElementById('record-purchase-form');
-    const recordPurchaseBtn = document.getElementById('record-purchase-btn');
-    const recordPurchaseStatus = document.getElementById('record-purchase-status');
-    const purchaseMemberSelect = document.getElementById('purchase-member-select');
-    const purchaseOriginalAmount = document.getElementById('purchase-original-amount');
-    const purchaseNotes = document.getElementById('purchase-notes');
-    const opticsExclusionBox = document.getElementById('optics-exclusion-confirm-box');
-    const opticsNoContactsCheck = document.getElementById('optics-no-contacts-check');
+    const emptyScanPlaceholder = $('empty-scan-placeholder');
+    const scannedCardPanel = $('scanned-card-panel');
+    const clearScannedCardBtn = $('clear-scanned-card-btn');
+    const loadSampleRossiBtn = $('load-sample-rossi-btn');
 
-    const refreshAdminListsBtn = document.getElementById('refresh-admin-lists-btn');
+    const recordPurchaseForm = $('record-purchase-form');
+    const recordPurchaseBtn = $('record-purchase-btn');
+    const recordPurchaseStatus = $('record-purchase-status');
+    const purchaseMemberSelect = $('purchase-member-select');
+    const purchaseOriginalAmount = $('purchase-original-amount');
+    const purchaseNotes = $('purchase-notes');
+    const opticsExclusionBox = $('optics-exclusion-confirm-box');
+    const opticsNoContactsCheck = $('optics-no-contacts-check');
+
+    const filterCardsInput = $('filter-cards-input');
+    const refreshAdminListsBtn = $('refresh-admin-lists-btn');
+
+    const CATEGORY_UI = {
+        gioielleria: { name: 'Gioielleria', icon: 'fa-gem' },
+        ottica: { name: 'Ottica', icon: 'fa-glasses' }
+    };
 
     let html5QrScanner = null;
     let isCameraRunning = false;
     let currentCardBundle = null;
+    let cachedCardsData = { cards: [], members: [], purchases: [] };
 
     if (!PasianCardService.isLiveSupabase() && adminDemoBanner) {
-        adminDemoBanner.style.display = 'flex';
+        adminDemoBanner.hidden = false;
     }
 
-    // Toggle Mostra/Nascondi Password
-    document.querySelectorAll('[data-toggle-password]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const targetId = btn.getAttribute('data-toggle-password');
-            const input = document.getElementById(targetId);
-            if (!input) return;
-            const isVisible = input.type === 'text';
-            input.type = isVisible ? 'password' : 'text';
-            btn.setAttribute('aria-pressed', isVisible ? 'false' : 'true');
-            btn.setAttribute('aria-label', isVisible ? 'Mostra password' : 'Nascondi password');
-            btn.innerHTML = isVisible
-                ? '<i class="fas fa-eye" aria-hidden="true"></i>'
-                : '<i class="fas fa-eye-slash" aria-hidden="true"></i>';
-        });
-    });
+    /* ------------------------------------------------------------------
+     * Utility
+     * ------------------------------------------------------------------ */
+    function getInitials(fullName) {
+        const parts = String(fullName || '').trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return '?';
+        const first = parts[0][0] || '';
+        const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+        return (first + last).toUpperCase();
+    }
+
+    function roleLabel(role) {
+        return (CARD_RULES.roles[role] || CARD_RULES.roles.genitore).label;
+    }
 
     function showStatus(box, msg, type = 'error') {
         if (!box) return;
@@ -75,9 +86,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         box.textContent = '';
     }
 
-    // Segnale acustico di conferma lettura QR Code
-    function playScanBeep() {
+    function setLoading(btn, isLoading) {
+        if (!btn) return;
+        btn.disabled = isLoading;
+        btn.classList.toggle('is-loading', isLoading);
+    }
+
+    // Mostra / Nascondi password
+    document.querySelectorAll('[data-toggle-password]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const input = $(btn.getAttribute('data-toggle-password'));
+            if (!input) return;
+            const isVisible = input.type === 'text';
+            input.type = isVisible ? 'password' : 'text';
+            btn.setAttribute('aria-pressed', isVisible ? 'false' : 'true');
+            btn.setAttribute('aria-label', isVisible ? 'Mostra password' : 'Nascondi password');
+            btn.innerHTML = isVisible
+                ? '<i class="fas fa-eye" aria-hidden="true"></i>'
+                : '<i class="fas fa-eye-slash" aria-hidden="true"></i>';
+        });
+    });
+
+    // Segnale acustico + vibrazione alla scansione del QR
+    function playScanFeedback() {
         try {
+            navigator.vibrate?.(80);
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
             if (!AudioCtx) return;
             const ctx = new AudioCtx();
@@ -95,37 +128,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Accesso rapido Demo Admin
+    /* ------------------------------------------------------------------
+     * Accesso Operatore
+     * ------------------------------------------------------------------ */
     adminDemoLoginBtn?.addEventListener('click', async () => {
         try {
             await PasianCardService.signIn('admin@pasianrivalta.it', 'AdminPassword1!');
             await refreshAdminView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) {
             showStatus(adminLoginStatus, err.message, 'error');
         }
     });
 
-    // Login Form Admin
     adminSigninForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearStatus(adminLoginStatus);
 
         if (!adminSigninForm.checkValidity()) {
+            adminSigninForm.querySelectorAll('input').forEach((inp) => {
+                inp.classList.toggle('user-invalid-fallback', !inp.checkValidity());
+            });
             adminSigninForm.querySelector(':invalid')?.focus();
             return;
         }
 
-        const email = document.getElementById('admin-email').value;
-        const password = document.getElementById('current-password').value;
-
-        adminSigninBtn.disabled = true;
+        setLoading(adminSigninBtn, true);
         try {
-            await PasianCardService.signIn(email, password);
+            await PasianCardService.signIn($('admin-email').value, $('current-password').value);
             await refreshAdminView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) {
             showStatus(adminLoginStatus, err.message || 'Accesso non riuscito.', 'error');
         } finally {
-            adminSigninBtn.disabled = false;
+            setLoading(adminSigninBtn, false);
         }
     });
 
@@ -133,36 +169,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         await stopQrCamera();
         await PasianCardService.signOut();
         await refreshAdminView();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Gestione Fotocamera Scanner QR (html5-qrcode)
+    /* ------------------------------------------------------------------
+     * Fotocamera Scanner QR
+     * ------------------------------------------------------------------ */
     async function startQrCamera() {
         clearStatus(scannerStatus);
         if (!window.Html5Qrcode) {
-            showStatus(scannerStatus, 'Libreria scanner QR non caricata. Usa la ricerca manuale.', 'error');
+            showStatus(scannerStatus, 'Scanner non disponibile. Usa la ricerca manuale.', 'error');
             return;
         }
         try {
+            scanStage?.classList.add('is-scanning');
             if (!html5QrScanner) {
                 html5QrScanner = new window.Html5Qrcode('qr-reader');
             }
             await html5QrScanner.start(
                 { facingMode: 'environment' },
-                { fps: 10, qrbox: { width: 230, height: 230 } },
+                { fps: 12, qrbox: { width: 220, height: 220 } },
                 async (decodedText) => {
-                    playScanBeep();
+                    playScanFeedback();
                     await stopQrCamera();
                     await lookupAndDisplayCard(decodedText, true);
                 },
                 () => {}
             );
             isCameraRunning = true;
-            startCameraBtn.style.display = 'none';
-            stopCameraBtn.style.display = 'inline-flex';
-        } catch (err) {
+            if (startCameraBtn) startCameraBtn.hidden = true;
+            if (stopCameraBtn) stopCameraBtn.hidden = false;
+        } catch (_) {
+            scanStage?.classList.remove('is-scanning');
             showStatus(
                 scannerStatus,
-                'Impossibile avviare la fotocamera (verifica i permessi del browser o carica una foto del QR).',
+                'Fotocamera non accessibile. Consenti il permesso o carica una foto del QR.',
                 'error'
             );
         }
@@ -177,14 +218,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             isCameraRunning = false;
         }
-        if (startCameraBtn) startCameraBtn.style.display = 'inline-flex';
-        if (stopCameraBtn) stopCameraBtn.style.display = 'none';
+        scanStage?.classList.remove('is-scanning');
+        if (startCameraBtn) startCameraBtn.hidden = false;
+        if (stopCameraBtn) stopCameraBtn.hidden = true;
     }
 
     startCameraBtn?.addEventListener('click', startQrCamera);
     stopCameraBtn?.addEventListener('click', stopQrCamera);
 
-    // Scansione QR da file immagine
+    // Scansione da foto / screenshot
     qrFileInput?.addEventListener('change', async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -195,24 +237,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!html5QrScanner) {
                 html5QrScanner = new window.Html5Qrcode('qr-reader');
             }
-            const decodedText = await html5QrScanner.scanFile(file, true);
-            playScanBeep();
+            const decodedText = await html5QrScanner.scanFile(file, false);
+            playScanFeedback();
             await lookupAndDisplayCard(decodedText, true);
         } catch (_) {
-            showStatus(scannerStatus, 'Nessun QR Code valido rilevato nell\'immagine selezionata.', 'error');
+            showStatus(scannerStatus, 'Nessun QR Code valido trovato nell\'immagine.', 'error');
+        } finally {
+            qrFileInput.value = '';
         }
     });
 
-    // Ricerca manuale per Codice Card, Cognome o Email
+    /* ------------------------------------------------------------------
+     * Ricerca e visualizzazione Card Famiglia
+     * ------------------------------------------------------------------ */
     manualLookupForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const q = manualCodeInput.value.trim();
-        if (!q) return;
+        if (!q) {
+            manualCodeInput.focus();
+            return;
+        }
         await lookupAndDisplayCard(q, false);
     });
 
     loadSampleRossiBtn?.addEventListener('click', async () => {
         await lookupAndDisplayCard('PR-FAM-ROSSI81', false);
+    });
+
+    clearScannedCardBtn?.addEventListener('click', () => {
+        currentCardBundle = null;
+        scannedCardPanel.hidden = true;
+        emptyScanPlaceholder.hidden = false;
+        clearStatus(scannerStatus);
+        clearStatus(recordPurchaseStatus);
     });
 
     async function lookupAndDisplayCard(queryText, fromQr = false) {
@@ -224,53 +281,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderScannedCardBundle(bundle);
             showStatus(
                 scannerStatus,
-                fromQr
-                    ? `QR Code riconosciuto: ${bundle.card.family_name} (${bundle.card.card_code})`
-                    : `Card caricata: ${bundle.card.family_name} (${bundle.card.card_code})`,
+                `${fromQr ? 'QR riconosciuto' : 'Card caricata'}: ${bundle.card.family_name}`,
                 'success'
             );
+            if (window.innerWidth <= 968) {
+                setActiveAdminTab('cassa-panel');
+                $('cassa-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         } catch (err) {
             showStatus(scannerStatus, err.message || 'Card Famiglia non trovata.', 'error');
         }
     }
 
-    function renderAdminCategorySummary(containerId, state, iconClass) {
-        const box = document.getElementById(containerId);
+    function renderAdminStatusTile(containerId, state, iconClass) {
+        const box = $(containerId);
         if (!box) return;
 
-        let windowInfoHtml = '';
+        const done = state.completedInActiveCycle;
+        const dotsHtml = state.tiers.map((_, idx) => {
+            const n = idx + 1;
+            const cls = n <= done ? 'is-done' : n === state.nextPurchaseNumber ? 'is-next' : '';
+            return `<i class="${cls}"></i>`;
+        }).join('');
+
+        let noteClass = 'status-tile__note';
+        let noteText = '1° acquisto avvia 3 mesi';
         if (state.isCycleActive && state.expiresAt) {
-            windowInfoHtml = `<span style="color:#7ee787; display:block; margin-top:6px; font-size:0.8rem;">
-                <i class="fas fa-clock" aria-hidden="true"></i> Entro 3 mesi: scade il <strong>${formatDateIT(state.expiresAt)}</strong> (${state.daysRemaining} gg rimasti)
-            </span>`;
-        } else if (state.wasExpired) {
-            windowInfoHtml = `<span style="color:#ffca80; display:block; margin-top:6px; font-size:0.8rem;">
-                <i class="fas fa-history" aria-hidden="true"></i> Finestra 3 mesi scaduta il ${formatDateIT(state.lastExpiresAt)} • Riparte dal 1° acquisto
-            </span>`;
+            noteClass += state.daysRemaining <= 14 ? ' is-warn' : ' is-active';
+            noteText = `Scade il ${formatDateIT(state.expiresAt)} (${state.daysRemaining}g)`;
         } else if (state.wasCompleted) {
-            windowInfoHtml = `<span style="color:#7ee787; display:block; margin-top:6px; font-size:0.8rem;">
-                <i class="fas fa-sync-alt" aria-hidden="true"></i> Ciclo precedente completato (3/3) • Riparte dal 1° acquisto
-            </span>`;
-        } else {
-            windowInfoHtml = `<span style="color:var(--text-muted); display:block; margin-top:6px; font-size:0.8rem;">
-                Nessun ciclo attivo • Il 1° acquisto avvia i 3 mesi
-            </span>`;
+            noteClass += ' is-active';
+            noteText = 'Ciclo 3/3 completato · riparte';
+        } else if (state.wasExpired) {
+            noteClass += ' is-warn';
+            noteText = `Scaduto il ${formatDateIT(state.lastExpiresAt)}`;
         }
 
         box.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.4rem;">
-                <strong style="color:#fff; font-size:1rem;">
-                    <i class="fas ${iconClass}" aria-hidden="true" style="color:var(--gold-solid); margin-right:6px;"></i>
-                    ${state.label}
-                </strong>
-                <span style="background:rgba(212,175,55,0.2); border:1px solid var(--gold-solid); color:var(--gold-solid); padding:3px 10px; border-radius:50px; font-weight:700; font-size:0.88rem;">
-                    -${state.nextDiscountPercent}%
-                </span>
+            <div class="status-tile__head">
+                <i class="fas ${iconClass}" aria-hidden="true"></i>
+                <span>${state.category === 'gioielleria' ? 'Gioielleria' : 'Ottica'}</span>
             </div>
-            <div style="font-size:0.88rem; color:#ddd;">
-                Prossimo step: <strong>${state.nextPurchaseNumber}° Acquisto su 3</strong>
+            <strong class="status-tile__pct">-${state.nextDiscountPercent}%</strong>
+            <div class="step-dots" aria-label="${state.nextPurchaseNumber} su 3">
+                ${dotsHtml}
+                <span>${state.nextPurchaseNumber}° su 3</span>
             </div>
-            ${windowInfoHtml}
+            <span class="${noteClass}">${noteText}</span>
         `;
     }
 
@@ -281,74 +338,103 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const { card, members } = bundle;
 
-        document.getElementById('admin-card-family').textContent = card.family_name;
-        document.getElementById('admin-card-code').textContent = card.card_code;
-        document.getElementById('admin-card-contact').textContent =
-            `Titolare: ${card.holder_name} • Email: ${card.holder_email}${card.holder_phone ? ' • Tel: ' + card.holder_phone : ''}`;
+        $('admin-card-family').textContent = card.family_name;
+        $('admin-card-code').textContent = card.card_code;
 
-        // Badge membri registrati
-        const badgesContainer = document.getElementById('admin-members-badges');
+        const contactsList = $('admin-card-contacts');
+        contactsList.innerHTML = '';
+
+        const holderLi = document.createElement('li');
+        holderLi.innerHTML = '<i class="fas fa-user" aria-hidden="true"></i><span></span>';
+        holderLi.querySelector('span').textContent = card.holder_name;
+        contactsList.appendChild(holderLi);
+
+        if (card.holder_phone) {
+            const phoneLi = document.createElement('li');
+            const telHref = `tel:${String(card.holder_phone).replace(/\s+/g, '')}`;
+            phoneLi.innerHTML = `<i class="fas fa-phone" aria-hidden="true"></i><a href="${telHref}"></a>`;
+            phoneLi.querySelector('a').textContent = card.holder_phone;
+            contactsList.appendChild(phoneLi);
+        }
+
+        if (card.holder_email) {
+            const mailLi = document.createElement('li');
+            mailLi.innerHTML = `<i class="fas fa-envelope" aria-hidden="true"></i><a href="mailto:${card.holder_email}"></a>`;
+            mailLi.querySelector('a').textContent = card.holder_email;
+            contactsList.appendChild(mailLi);
+        }
+
+        // Chip componenti e select acquirente
+        const badgesContainer = $('admin-members-badges');
         badgesContainer.innerHTML = '';
         purchaseMemberSelect.innerHTML = '';
 
         members.forEach((m) => {
-            const roleMeta = CARD_RULES.roles[m.role] || CARD_RULES.roles.genitore;
-            const badge = document.createElement('span');
-            badge.style.cssText =
-                'display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:50px; background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.35); font-size:0.85rem; color:#fff;';
-            badge.innerHTML = `<i class="fas ${roleMeta.icon}" aria-hidden="true" style="color:var(--gold-solid);"></i> <strong></strong> <span style="color:var(--gold-solid); font-size:0.75rem;">(${roleMeta.label})</span>`;
-            badge.querySelector('strong').textContent = m.full_name;
-            badgesContainer.appendChild(badge);
+            const rLabel = roleLabel(m.role);
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.innerHTML = `
+                <span class="avatar" aria-hidden="true"></span>
+                <strong></strong>
+                <small></small>
+            `;
+            chip.querySelector('.avatar').textContent = getInitials(m.full_name);
+            chip.querySelector('strong').textContent = m.full_name;
+            chip.querySelector('small').textContent = rLabel;
+            badgesContainer.appendChild(chip);
 
             const opt = document.createElement('option');
             opt.value = m.id;
-            opt.textContent = `${m.full_name} (${roleMeta.label}${m.is_holder ? ' - Titolare' : ''})`;
+            opt.textContent = `${m.full_name} · ${rLabel}${m.is_holder ? ' (Titolare)' : ''}`;
             purchaseMemberSelect.appendChild(opt);
         });
 
         const jewelryState = computeCategoryCycleState('gioielleria', card.jewelry_step, card.jewelry_cycle_started_at);
         const opticsState = computeCategoryCycleState('ottica', card.optics_step, card.optics_cycle_started_at);
 
-        renderAdminCategorySummary('admin-jewelry-summary', jewelryState, 'fa-gem');
-        renderAdminCategorySummary('admin-optics-summary', opticsState, 'fa-glasses');
+        renderAdminStatusTile('admin-jewelry-summary', jewelryState, 'fa-gem');
+        renderAdminStatusTile('admin-optics-summary', opticsState, 'fa-glasses');
+
+        $('cat-pct-gioielleria').textContent = `-${jewelryState.nextDiscountPercent}%`;
+        $('cat-pct-ottica').textContent = `-${opticsState.nextDiscountPercent}%`;
 
         updateLivePricePreview();
     }
 
     function getSelectedCategory() {
-        const checked = recordPurchaseForm?.querySelector('input[name="purchase_category"]:checked');
-        return checked ? checked.value : 'gioielleria';
+        return recordPurchaseForm?.querySelector('input[name="purchase_category"]:checked')?.value || 'gioielleria';
     }
 
     function updateLivePricePreview() {
-        if (!currentCardBundle || !currentCardBundle.card) return;
+        if (!currentCardBundle?.card) return;
         const card = currentCardBundle.card;
         const category = getSelectedCategory();
 
-        // Mostra/nascondi obbligo conferma esclusione lenti a contatto per Ottica
         if (opticsExclusionBox) {
             opticsExclusionBox.hidden = category !== 'ottica';
         }
 
-        const state =
-            category === 'gioielleria'
-                ? computeCategoryCycleState('gioielleria', card.jewelry_step, card.jewelry_cycle_started_at)
-                : computeCategoryCycleState('ottica', card.optics_step, card.optics_cycle_started_at);
+        const state = category === 'gioielleria'
+            ? computeCategoryCycleState('gioielleria', card.jewelry_step, card.jewelry_cycle_started_at)
+            : computeCategoryCycleState('ottica', card.optics_step, card.optics_cycle_started_at);
 
-        const badgeEl = document.getElementById('preview-discount-badge');
-        const finalPriceEl = document.getElementById('preview-final-price');
+        const ui = CATEGORY_UI[category] || CATEGORY_UI.gioielleria;
 
-        if (badgeEl) {
-            badgeEl.textContent = `${state.nextPurchaseNumber}° Acquisto ${state.label} (-${state.nextDiscountPercent}%)`;
-        }
+        $('preview-discount-badge').textContent = `-${state.nextDiscountPercent}%`;
+        $('preview-step-label').textContent = `${state.nextPurchaseNumber}° acquisto ${ui.name}`;
 
         const rawAmount = parseFloat(purchaseOriginalAmount?.value || '');
+        const finalPriceEl = $('preview-final-price');
+        const savedPriceEl = $('preview-saved-price');
+
         if (!Number.isNaN(rawAmount) && rawAmount > 0) {
             const discounted = (rawAmount * (100 - state.nextDiscountPercent)) / 100;
             const saved = rawAmount - discounted;
-            finalPriceEl.textContent = `${formatCurrencyEUR(discounted)} (Risparmio: ${formatCurrencyEUR(saved)})`;
+            finalPriceEl.textContent = formatCurrencyEUR(discounted);
+            savedPriceEl.textContent = `Risparmio ${formatCurrencyEUR(saved)}`;
         } else {
-            finalPriceEl.textContent = `Sconto -${state.nextDiscountPercent}%`;
+            finalPriceEl.textContent = '—';
+            savedPriceEl.textContent = 'Inserisci il listino per il calcolo';
         }
     }
 
@@ -357,7 +443,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     purchaseOriginalAmount?.addEventListener('input', updateLivePricePreview);
 
-    // Invio Registrazione Acquisto in Cassa
+    /* ------------------------------------------------------------------
+     * Registrazione Acquisto in Cassa
+     * ------------------------------------------------------------------ */
     recordPurchaseForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearStatus(recordPurchaseStatus);
@@ -371,28 +459,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (category === 'ottica' && !opticsNoContactsCheck.checked) {
             showStatus(
                 recordPurchaseStatus,
-                'Per registrare un acquisto di Ottica devi confermare che NON si tratta di lenti a contatto (escluse dalla promozione).',
+                'Conferma che l\'acquisto riguarda occhiali e non lenti a contatto.',
                 'error'
             );
             opticsNoContactsCheck.focus();
             return;
         }
 
-        const memberId = purchaseMemberSelect.value;
-        const originalAmount = purchaseOriginalAmount.value;
-        const notes = purchaseNotes.value;
-
-        recordPurchaseBtn.disabled = true;
+        setLoading(recordPurchaseBtn, true);
         try {
             const result = await PasianCardService.recordPurchase({
                 cardId: currentCardBundle.card.id,
-                memberId,
+                memberId: purchaseMemberSelect.value,
                 category,
-                originalAmount,
-                notes
+                originalAmount: purchaseOriginalAmount.value,
+                notes: purchaseNotes.value
             });
 
-            // Ricarica la Card aggiornata e le tabelle
             const updatedBundle = await PasianCardService.findCardByQuery(currentCardBundle.card.card_code);
             currentCardBundle = updatedBundle;
             renderScannedCardBundle(updatedBundle);
@@ -404,165 +487,212 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             showStatus(
                 recordPurchaseStatus,
-                `Acquisto registrato! Applicato il ${result.discount_percent}% di sconto (${result.purchase_number_in_cycle}° acquisto ${category === 'gioielleria' ? 'Gioielleria' : 'Ottica'}). Scadenza ciclo 3 mesi: ${formatDateIT(result.cycle_expires_at)}.`,
+                `Registrato ${result.purchase_number_in_cycle}° acquisto (${category === 'gioielleria' ? 'Gioielleria' : 'Ottica'}) con sconto -${result.discount_percent}%. Scadenza ciclo: ${formatDateIT(result.cycle_expires_at)}.`,
                 'success'
             );
 
-            await loadAdminTables();
+            await loadAdminLists();
         } catch (err) {
-            showStatus(recordPurchaseStatus, err.message || 'Errore nella registrazione dell\'acquisto.', 'error');
+            showStatus(recordPurchaseStatus, err.message || 'Errore nella registrazione.', 'error');
         } finally {
-            recordPurchaseBtn.disabled = false;
+            setLoading(recordPurchaseBtn, false);
         }
     });
 
-    async function loadAdminTables() {
-        const cardsTbody = document.getElementById('admin-all-cards-tbody');
-        const purchasesTbody = document.getElementById('admin-recent-purchases-tbody');
-        if (!cardsTbody || !purchasesTbody) return;
+    /* ------------------------------------------------------------------
+     * Elenchi Famiglie e Ultimi Acquisti (card mobile-first)
+     * ------------------------------------------------------------------ */
+    function renderCardsList(filterText = '') {
+        const listEl = $('admin-all-cards-list');
+        if (!listEl) return;
 
+        const { cards, members } = cachedCardsData;
+        const q = String(filterText || '').trim().toLowerCase();
+
+        const filtered = cards.filter((c) => {
+            if (!q) return true;
+            const cardMembers = members.filter((m) => m.card_id === c.id);
+            const haystack = [
+                c.card_code,
+                c.family_name,
+                c.holder_name,
+                c.holder_email,
+                c.holder_phone,
+                ...cardMembers.map((m) => m.full_name)
+            ].filter(Boolean).join(' ').toLowerCase();
+            return haystack.includes(q);
+        });
+
+        $('admin-cards-count').textContent = String(filtered.length);
+        listEl.innerHTML = '';
+
+        if (!filtered.length) {
+            listEl.innerHTML = `
+                <li class="empty-state">
+                    <i class="fas fa-users" aria-hidden="true"></i>
+                    <strong>Nessuna famiglia trovata</strong>
+                    <span>${q ? 'Prova con un altro termine di ricerca.' : 'Le nuove Card appariranno qui.'}</span>
+                </li>`;
+            return;
+        }
+
+        filtered.forEach((c) => {
+            const cardMembers = members.filter((m) => m.card_id === c.id);
+            const jState = computeCategoryCycleState('gioielleria', c.jewelry_step, c.jewelry_cycle_started_at);
+            const oState = computeCategoryCycleState('ottica', c.optics_step, c.optics_cycle_started_at);
+
+            const li = document.createElement('li');
+            li.className = 'family-item';
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'family-item__btn';
+            btn.innerHTML = `
+                <span class="avatar" aria-hidden="true"></span>
+                <div class="family-item__body">
+                    <span class="family-item__name"></span>
+                    <span class="family-item__meta"><code></code> · <span class="js-members"></span></span>
+                    <div class="family-item__badges">
+                        <span class="mini-badge ${jState.isCycleActive ? 'is-active' : ''}">
+                            <i class="fas fa-gem" aria-hidden="true"></i> -${jState.nextDiscountPercent}% (${jState.nextPurchaseNumber}°)
+                        </span>
+                        <span class="mini-badge ${oState.isCycleActive ? 'is-active' : ''}">
+                            <i class="fas fa-glasses" aria-hidden="true"></i> -${oState.nextDiscountPercent}% (${oState.nextPurchaseNumber}°)
+                        </span>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right family-item__chev" aria-hidden="true"></i>
+            `;
+
+            btn.querySelector('.avatar').textContent = getInitials(c.family_name.replace(/^famiglia\s+/i, '') || c.holder_name);
+            btn.querySelector('.family-item__name').textContent = c.family_name;
+            btn.querySelector('code').textContent = c.card_code;
+            btn.querySelector('.js-members').textContent = `${cardMembers.length} ${cardMembers.length === 1 ? 'membro' : 'membri'} · ${c.holder_name}`;
+
+            btn.addEventListener('click', () => {
+                lookupAndDisplayCard(c.card_code, false);
+                $('cassa-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            li.appendChild(btn);
+            listEl.appendChild(li);
+        });
+    }
+
+    function renderRecentPurchasesList() {
+        const listEl = $('admin-recent-purchases-list');
+        if (!listEl) return;
+
+        const { purchases, cards } = cachedCardsData;
+        const cardById = new Map(cards.map((c) => [c.id, c]));
+        listEl.innerHTML = '';
+
+        if (!purchases.length) {
+            listEl.innerHTML = `
+                <li class="empty-state">
+                    <i class="fas fa-receipt" aria-hidden="true"></i>
+                    <strong>Nessun acquisto registrato</strong>
+                    <span>Gli ultimi movimenti appariranno qui.</span>
+                </li>`;
+            return;
+        }
+
+        purchases.forEach((p) => {
+            const ui = CATEGORY_UI[p.category] || CATEGORY_UI.gioielleria;
+            const fam = cardById.get(p.card_id)?.family_name;
+            const hasAmount = p.final_amount !== null && p.final_amount !== undefined;
+
+            const li = document.createElement('li');
+            li.className = 'purchase-item';
+            li.innerHTML = `
+                <span class="purchase-item__icon" aria-hidden="true"><i class="fas ${ui.icon}"></i></span>
+                <div class="purchase-item__body">
+                    <span class="purchase-item__title"></span>
+                    <span class="purchase-item__meta"></span>
+                    ${p.notes ? '<span class="purchase-item__notes"></span>' : ''}
+                </div>
+                <div class="purchase-item__right">
+                    <span class="purchase-item__pct">-${p.discount_percent}%</span>
+                    ${hasAmount ? `<span class="purchase-item__amount">${formatCurrencyEUR(p.final_amount)}<s>${formatCurrencyEUR(p.original_amount)}</s></span>` : ''}
+                </div>
+            `;
+            li.querySelector('.purchase-item__title').textContent = `${p.member_name || fam || 'Cliente'} · ${p.purchase_number_in_cycle}° ${ui.name}`;
+            li.querySelector('.purchase-item__meta').textContent = `${fam ? fam + ' · ' : ''}${formatDateIT(p.created_at, true)}`;
+            if (p.notes) li.querySelector('.purchase-item__notes').textContent = p.notes;
+            listEl.appendChild(li);
+        });
+    }
+
+    async function loadAdminLists() {
         try {
-            const { cards, members, purchases } = await PasianCardService.listAllCardsAndRecentPurchases();
-
-            cardsTbody.innerHTML = '';
-            if (!cards.length) {
-                cardsTbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:1.5rem;">Nessuna Card Famiglia registrata.</td></tr>`;
-            } else {
-                cards.forEach((c) => {
-                    const cardMembers = members.filter((m) => m.card_id === c.id);
-                    const jState = computeCategoryCycleState('gioielleria', c.jewelry_step, c.jewelry_cycle_started_at);
-                    const oState = computeCategoryCycleState('ottica', c.optics_step, c.optics_cycle_started_at);
-
-                    const tr = document.createElement('tr');
-
-                    const thCode = document.createElement('th');
-                    thCode.scope = 'row';
-                    const codeEl = document.createElement('code');
-                    codeEl.style.color = 'var(--gold-solid)';
-                    codeEl.style.fontWeight = '700';
-                    codeEl.textContent = c.card_code;
-                    thCode.appendChild(codeEl);
-
-                    const tdFam = document.createElement('td');
-                    tdFam.style.fontWeight = '600';
-                    tdFam.textContent = c.family_name;
-
-                    const tdContact = document.createElement('td');
-                    tdContact.textContent = `${c.holder_name} (${c.holder_email})`;
-
-                    const tdMembers = document.createElement('td');
-                    tdMembers.textContent = `${cardMembers.length} membri (${cardMembers.map((m) => m.full_name).join(', ')})`;
-
-                    const tdJewelry = document.createElement('td');
-                    tdJewelry.textContent = `Prossimo: ${jState.nextPurchaseNumber}° (-${jState.nextDiscountPercent}%)`;
-
-                    const tdOptics = document.createElement('td');
-                    tdOptics.textContent = `Prossimo: ${oState.nextPurchaseNumber}° (-${oState.nextDiscountPercent}%)`;
-
-                    const tdAction = document.createElement('td');
-                    const openBtn = document.createElement('button');
-                    openBtn.type = 'button';
-                    openBtn.className = 'btn-secondary-gold';
-                    openBtn.style.padding = '0.45rem 0.9rem';
-                    openBtn.style.minBlockSize = '38px';
-                    openBtn.style.fontSize = '0.78rem';
-                    openBtn.innerHTML = '<i class="fas fa-qrcode" aria-hidden="true"></i> Apri in Cassa';
-                    openBtn.addEventListener('click', () => {
-                        lookupAndDisplayCard(c.card_code, false);
-                        document.getElementById('scanned-card-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    });
-                    tdAction.appendChild(openBtn);
-
-                    tr.append(thCode, tdFam, tdContact, tdMembers, tdJewelry, tdOptics, tdAction);
-                    cardsTbody.appendChild(tr);
-                });
-            }
-
-            purchasesTbody.innerHTML = '';
-            if (!purchases.length) {
-                purchasesTbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:1.5rem;">Nessun acquisto registrato.</td></tr>`;
-            } else {
-                purchases.forEach((p) => {
-                    const tr = document.createElement('tr');
-
-                    const thDate = document.createElement('th');
-                    thDate.scope = 'row';
-                    thDate.textContent = formatDateIT(p.created_at, true);
-
-                    const tdCat = document.createElement('td');
-                    tdCat.textContent = p.category === 'gioielleria' ? '💎 Gioielleria' : '👓 Ottica (Occhiali)';
-
-                    const tdMember = document.createElement('td');
-                    tdMember.textContent = p.member_name;
-
-                    const tdStep = document.createElement('td');
-                    tdStep.textContent = `${p.purchase_number_in_cycle}° Acquisto`;
-
-                    const tdDisc = document.createElement('td');
-                    tdDisc.style.color = 'var(--gold-solid)';
-                    tdDisc.style.fontWeight = '700';
-                    tdDisc.textContent = `-${p.discount_percent}%`;
-
-                    const tdPrice = document.createElement('td');
-                    tdPrice.textContent =
-                        p.final_amount !== null && p.final_amount !== undefined
-                            ? `${formatCurrencyEUR(p.original_amount)} → ${formatCurrencyEUR(p.final_amount)}`
-                            : '—';
-
-                    const tdNotes = document.createElement('td');
-                    tdNotes.style.color = 'var(--text-muted)';
-                    tdNotes.textContent = p.notes || '—';
-
-                    tr.append(thDate, tdCat, tdMember, tdStep, tdDisc, tdPrice, tdNotes);
-                    purchasesTbody.appendChild(tr);
-                });
-            }
+            cachedCardsData = await PasianCardService.listAllCardsAndRecentPurchases();
+            renderCardsList(filterCardsInput?.value || '');
+            renderRecentPurchasesList();
         } catch (err) {
             showStatus(scannerStatus, err.message, 'error');
         }
     }
 
-    refreshAdminListsBtn?.addEventListener('click', loadAdminTables);
+    filterCardsInput?.addEventListener('input', () => {
+        renderCardsList(filterCardsInput.value);
+    });
 
-    // Navigazione rapida dalla barra inferiore stile App Mobile (Operatore)
+    refreshAdminListsBtn?.addEventListener('click', loadAdminLists);
+
+    /* ------------------------------------------------------------------
+     * Tab bar inferiore (mobile)
+     * ------------------------------------------------------------------ */
     const adminMobileNavBtns = document.querySelectorAll('[data-admin-mobile-nav]');
+
+    function setActiveAdminTab(targetId) {
+        adminMobileNavBtns.forEach((b) => b.classList.toggle('active', b.dataset.adminMobileNav === targetId));
+    }
+
     adminMobileNavBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-            adminMobileNavBtns.forEach((b) => b.classList.remove('active'));
-            btn.classList.add('active');
-            const target = btn.getAttribute('data-admin-mobile-nav');
-
-            if (adminWorkspaceSection.hidden) {
-                adminLoginSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                return;
-            }
-
-            if (target === 'scanner') {
-                document.getElementById('qr-reader')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else if (target === 'cassa') {
-                const targetEl = !scannedCardPanel.hidden ? scannedCardPanel : emptyScanPlaceholder;
-                targetEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else if (target === 'famiglie') {
-                document.getElementById('all-cards-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const targetId = btn.dataset.adminMobileNav;
+            setActiveAdminTab(targetId);
+            if (targetId === 'scanner-panel') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                $(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
 
+    if ('IntersectionObserver' in window) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) setActiveAdminTab(entry.target.id);
+            });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        ['scanner-panel', 'cassa-panel', 'famiglie-section', 'acquisti-section'].forEach((id) => {
+            const el = $(id);
+            if (el) sectionObserver.observe(el);
+        });
+    }
+
+    /* ------------------------------------------------------------------
+     * Stato pagina: login ↔ postazione cassa
+     * ------------------------------------------------------------------ */
+    function showLoginView() {
+        adminLoginSection.hidden = false;
+        adminWorkspaceSection.hidden = true;
+        body.dataset.view = 'auth';
+    }
+
     async function refreshAdminView() {
         const user = await PasianCardService.getSessionUser();
         if (!user) {
-            adminLoginSection.hidden = false;
-            adminWorkspaceSection.hidden = true;
+            showLoginView();
             return;
         }
 
-        // In modalità Live Supabase richiede che l'utente sia presente in public.admin_users
         if (PasianCardService.isLiveSupabase() && !user.is_admin) {
-            adminLoginSection.hidden = false;
-            adminWorkspaceSection.hidden = true;
+            showLoginView();
             showStatus(
                 adminLoginStatus,
-                `L'account ${user.email} è autenticato ma non è ancora abilitato come Admin. Esegui nel SQL Editor di Supabase: INSERT INTO public.admin_users (user_id, email) VALUES ('${user.id}', '${user.email}');`,
+                `L'account ${user.email} non è ancora abilitato come operatore nella tabella admin_users.`,
                 'error'
             );
             return;
@@ -570,9 +700,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         adminLoginSection.hidden = true;
         adminWorkspaceSection.hidden = false;
-        document.getElementById('admin-logged-email').textContent = `Operatore attivo: ${user.email}`;
+        body.dataset.view = 'workspace';
+        $('admin-logged-email').textContent = user.email;
 
-        await loadAdminTables();
+        await loadAdminLists();
     }
 
     await refreshAdminView();

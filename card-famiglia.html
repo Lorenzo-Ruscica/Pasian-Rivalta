@@ -18,16 +18,21 @@
     <title>Card Famiglia | Pasian Rivalta</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="card-famiglia.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="immagini/logo_favicon.ico" type="image/png">
     <link rel="apple-touch-icon" href="immagini/logo_favicon.ico">
 </head>
-<body class="pf-page">
+<body class="pf-page" data-view="auth">
 
     <nav class="navbar" aria-label="Navigazione principale">
-        <a href="index.html">
+        <a href="index.html" class="pf-brand-link">
             <img src="immagini/logo1.png" alt="Pasian Rivalta" class="logo-img" width="220" height="80">
+            <span class="pf-brand-emblem" aria-hidden="true"></span>
+            <span class="pf-brand-text">
+                <strong class="pf-brand-title">Pasian Rivalta</strong>
+                <span class="pf-brand-sub">Card Famiglia</span>
+            </span>
         </a>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
@@ -51,524 +56,414 @@
 
     <header class="pf-hero">
         <div class="hero-content">
-            <span class="pf-eyebrow"><i class="fas fa-crown" aria-hidden="true"></i> Programma Fedeltà Esclusivo</span>
-            <h1>Card <span class="gradient-text">Famiglia</span></h1>
-            <p class="pf-subtitle">
-                Un unico QR Code per tutto il tuo nucleo famigliare (Genitori, Figli e Nonni) con vantaggi crescenti su Gioielleria e Ottica.
-            </p>
+            <div class="pf-hero-top">
+                <span class="pf-hero-crest" aria-hidden="true"><i class="fas fa-crown"></i></span>
+                <div class="pf-hero-titles">
+                    <span class="pf-eyebrow">Programma Fedeltà</span>
+                    <h1>Card <span class="gradient-text">Famiglia</span></h1>
+                </div>
+            </div>
+            <p class="pf-subtitle">Un unico QR Code per Genitori, Figli e Nonni con sconti crescenti entro 3 mesi.</p>
+            <div class="pf-hero-pills" aria-label="Riepilogo sconti">
+                <div class="pf-hero-pill">
+                    <i class="fas fa-gem" aria-hidden="true"></i>
+                    <div>
+                        <span>Gioielleria</span>
+                        <strong>-10% · -15% · -20%</strong>
+                    </div>
+                </div>
+                <div class="pf-hero-pill">
+                    <i class="fas fa-glasses" aria-hidden="true"></i>
+                    <div>
+                        <span>Ottica</span>
+                        <strong>-15% · -20% · -25%</strong>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
     <main class="pf-container">
 
-        <!-- Banner informativo Modalità Demo / Configurazione Supabase -->
-        <aside id="demo-banner" class="demo-mode-banner" style="display: none;" aria-label="Stato connessione database">
-            <div>
-                <strong><i class="fas fa-info-circle" aria-hidden="true"></i> Modalità Demo Attiva (In attesa di chiavi Supabase):</strong>
-                Puoi provare subito registrazione, QR Code e Scanner Admin. Per collegare il database cloud inserisci URL e Anon Key in <code>supabase-config.js</code>.
+        <!-- Banner Modalità Demo (visibile solo senza chiavi Supabase) -->
+        <aside id="demo-banner" class="pf-demo" hidden aria-label="Modalità demo">
+            <div class="pf-demo__text">
+                <i class="fas fa-flask" aria-hidden="true"></i>
+                <span><strong>Modalità demo</strong> · dati salvati solo su questo dispositivo</span>
             </div>
-            <div class="demo-quick-actions">
-                <button type="button" id="demo-fill-rossi-btn" class="btn-secondary-gold">
-                    <i class="fas fa-magic" aria-hidden="true"></i> Prova Account Demo (Famiglia Rossi)
+            <div class="pf-demo__actions">
+                <button type="button" id="demo-fill-rossi-btn" class="pf-chip-btn">
+                    <i class="fas fa-magic" aria-hidden="true"></i> Prova account demo
                 </button>
-                <a href="admin.html" class="btn-secondary-gold">
-                    <i class="fas fa-qrcode" aria-hidden="true"></i> Apri Pannello Admin Scanner
+                <a href="admin.html" class="pf-chip-btn">
+                    <i class="fas fa-cash-register" aria-hidden="true"></i> Cassa
                 </a>
             </div>
         </aside>
 
-        <!-- Riepilogo Regolamento Card Famiglia -->
-        <section aria-labelledby="rules-heading">
-            <h2 id="rules-heading" class="visually-hidden">Regolamento e Sconti Card Famiglia</h2>
-            <div class="rules-showcase-grid">
-                <article class="rule-panel">
-                    <div class="rule-panel-header">
-                        <div class="rule-panel-icon" aria-hidden="true"><i class="fas fa-gem"></i></div>
-                        <div>
-                            <h3>Vantaggi Gioielleria</h3>
-                            <p style="color: var(--text-muted); font-size: 0.85rem;">Gioielli, Diamanti &amp; Orologeria</p>
-                        </div>
-                    </div>
-                    <div class="rule-tiers-row">
-                        <div class="tier-pill">
-                            <span class="tier-step-label">1° Acquisto</span>
-                            <span class="tier-discount-value">-10%</span>
-                        </div>
-                        <div class="tier-pill">
-                            <span class="tier-step-label">2° Acquisto</span>
-                            <span class="tier-discount-value">-15%</span>
-                        </div>
-                        <div class="tier-pill">
-                            <span class="tier-step-label">3° Acquisto</span>
-                            <span class="tier-discount-value">-20%</span>
-                        </div>
-                    </div>
-                    <p class="rule-meta-note">
-                        <i class="fas fa-clock" aria-hidden="true"></i>
-                        <span>Dal <strong>1° acquisto di gioielleria</strong> hai <strong>3 mesi di tempo</strong> per effettuare il 2° (-15%) e il 3° acquisto (-20%) con qualsiasi membro registrato della famiglia.</span>
-                    </p>
-                </article>
-
-                <article class="rule-panel">
-                    <div class="rule-panel-header">
-                        <div class="rule-panel-icon" aria-hidden="true"><i class="fas fa-glasses"></i></div>
-                        <div>
-                            <h3>Vantaggi Ottica</h3>
-                            <p style="color: var(--text-muted); font-size: 0.85rem;">Occhiali da Vista e da Sole</p>
-                        </div>
-                    </div>
-                    <div class="rule-tiers-row">
-                        <div class="tier-pill">
-                            <span class="tier-step-label">1° Acquisto</span>
-                            <span class="tier-discount-value">-15%</span>
-                        </div>
-                        <div class="tier-pill">
-                            <span class="tier-step-label">2° Acquisto</span>
-                            <span class="tier-discount-value">-20%</span>
-                        </div>
-                        <div class="tier-pill">
-                            <span class="tier-step-label">3° Acquisto</span>
-                            <span class="tier-discount-value">-25%</span>
-                        </div>
-                    </div>
-                    <p class="rule-meta-note">
-                        <i class="fas fa-clock" aria-hidden="true"></i>
-                        <span>Dal <strong>1° acquisto di occhiali</strong> hai <strong>3 mesi di tempo</strong> per usufruire del 20% sul secondo e del 25% sul terzo acquisto per tutto il nucleo famigliare.</span>
-                    </p>
-                    <div class="exclusion-badge">
-                        <i class="fas fa-ban" aria-hidden="true"></i> Sono escluse le lenti a contatto
-                    </div>
-                </article>
-            </div>
-        </section>
-
         <!-- ==================================================================
-             SEZIONE 1: LOGIN & REGISTRAZIONE UNICA FASE (Utente non autenticato)
+             VISTA 1: VANTAGGI + ACCESSO / REGISTRAZIONE (utente non autenticato)
              ================================================================== -->
-        <section id="auth-section" class="auth-shell" aria-labelledby="auth-section-title">
-            <h2 id="auth-section-title" class="visually-hidden">Accesso e Registrazione Card Famiglia</h2>
+        <div id="auth-section" class="pf-auth-layout">
 
-            <div class="auth-tabs" role="tablist" aria-label="Scegli tra Accesso e Registrazione">
-                <button type="button" role="tab" id="tab-signin" class="auth-tab-btn" aria-selected="true" aria-controls="panel-signin">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Accedi
-                </button>
-                <button type="button" role="tab" id="tab-signup" class="auth-tab-btn" aria-selected="false" aria-controls="panel-signup">
-                    <i class="fas fa-users" aria-hidden="true"></i> Registra Famiglia
-                </button>
-            </div>
+            <section id="perks-section" class="pf-section" aria-labelledby="perks-title">
+                <h2 id="perks-title" class="pf-section-title">Più acquisti, più risparmi</h2>
 
-            <!-- PANNELLO SIGN IN -->
-            <div id="panel-signin" role="tabpanel" aria-labelledby="tab-signin">
-                <form id="signin-form" action="/card-famiglia.html" method="POST" novalidate>
-                    <div class="field">
-                        <label for="login-email">Indirizzo Email <span class="required-star" aria-hidden="true">*</span></label>
-                        <span id="login-email-hint" class="hint">Inserisci l'email utilizzata per registrare la Card Famiglia.</span>
-                        <input
-                            type="email"
-                            id="login-email"
-                            name="email"
-                            class="pf-input"
-                            autocomplete="username"
-                            inputmode="email"
-                            enterkeyhint="next"
-                            required
-                            aria-describedby="login-email-hint"
-                            aria-errormessage="login-email-error"
-                        >
-                        <div id="login-email-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> Inserisci un indirizzo email valido (es. nome@esempio.it).
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="current-password">Password <span class="required-star" aria-hidden="true">*</span></label>
-                        <div class="password-input-wrap">
-                            <input
-                                type="password"
-                                id="current-password"
-                                name="password"
-                                class="pf-input"
-                                autocomplete="current-password"
-                                enterkeyhint="done"
-                                required
-                                aria-errormessage="login-password-error"
-                            >
-                            <button
-                                type="button"
-                                class="password-toggle-btn"
-                                data-toggle-password="current-password"
-                                aria-pressed="false"
-                                aria-label="Mostra password"
-                            >
-                                <i class="fas fa-eye" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div id="login-password-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> Inserisci la tua password per accedere.
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 1.4rem;">
-                        <button type="button" id="forgot-password-btn" style="background: none; border: none; color: var(--gold-solid); font-size: 0.85rem; cursor: pointer; text-decoration: underline;">
-                            Password dimenticata?
-                        </button>
-                    </div>
-
-                    <button type="submit" id="signin-submit-btn" class="btn-primary-gold">
-                        <i class="fas fa-qrcode" aria-hidden="true"></i> Accedi alla Card Famiglia
-                    </button>
-
-                    <div id="signin-status" class="form-status-box" role="status" aria-live="polite"></div>
-                </form>
-            </div>
-
-            <!-- PANNELLO SIGN UP (UNICA FASE CON NUCLEO FAMIGLIARE) -->
-            <div id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" hidden>
-                <div class="single-phase-warning">
-                    <strong><i class="fas fa-lock" aria-hidden="true"></i> Registrazione in Un'Unica Fase</strong>
-                    Inserisci ora tutti gli appartenenti al nucleo famigliare (<strong>Genitori, Figli e Nonni</strong>).
-                    Per regolamento, <strong>non sarà possibile aggiungere o modificare membri dopo la prima registrazione</strong>.
-                </div>
-
-                <form id="signup-form" action="/card-famiglia.html" method="POST" novalidate>
-                    <div class="field">
-                        <label for="family-name">Nome del Nucleo Famigliare <span class="required-star" aria-hidden="true">*</span></label>
-                        <span id="family-name-hint" class="hint">Esempio: Famiglia Rossi oppure Famiglia Bianchi - Verdi</span>
-                        <input
-                            type="text"
-                            id="family-name"
-                            name="family_name"
-                            class="pf-input"
-                            autocomplete="family-name"
-                            enterkeyhint="next"
-                            required
-                            maxlength="100"
-                            aria-describedby="family-name-hint"
-                            aria-errormessage="family-name-error"
-                        >
-                        <div id="family-name-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> Indica il cognome o nome del nucleo famigliare.
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="holder-name">Tuo Nome e Cognome (Titolare Registrazione) <span class="required-star" aria-hidden="true">*</span></label>
-                        <span id="holder-name-hint" class="hint">Inserisci nome e cognome completi in un unico campo.</span>
-                        <input
-                            type="text"
-                            id="holder-name"
-                            name="holder_name"
-                            class="pf-input"
-                            autocomplete="name"
-                            enterkeyhint="next"
-                            required
-                            maxlength="100"
-                            aria-describedby="holder-name-hint"
-                            aria-errormessage="holder-name-error"
-                        >
-                        <div id="holder-name-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> Inserisci il tuo nome e cognome.
-                        </div>
-                    </div>
-
-                    <fieldset class="pf-fieldset">
-                        <legend>Tuo Ruolo nel Nucleo Famigliare <span class="required-star" aria-hidden="true">*</span></legend>
-                        <div class="radio-cards-grid">
-                            <label class="radio-card-label">
-                                <input type="radio" name="holder_role" value="genitore" checked required>
-                                <span><i class="fas fa-user-tie" aria-hidden="true" style="color:var(--gold-solid); margin-right:6px;"></i> Genitore</span>
-                            </label>
-                            <label class="radio-card-label">
-                                <input type="radio" name="holder_role" value="figlio">
-                                <span><i class="fas fa-child" aria-hidden="true" style="color:var(--gold-solid); margin-right:6px;"></i> Figlio / a</span>
-                            </label>
-                            <label class="radio-card-label">
-                                <input type="radio" name="holder_role" value="nonno">
-                                <span><i class="fas fa-user-shield" aria-hidden="true" style="color:var(--gold-solid); margin-right:6px;"></i> Nonno / a</span>
-                            </label>
-                        </div>
-                    </fieldset>
-
-                    <div class="field">
-                        <label for="holder-phone">Telefono Cellulare <span class="required-star" aria-hidden="true">*</span></label>
-                        <span id="holder-phone-hint" class="hint">Numero di riferimento della famiglia (es. +39 333 1234567).</span>
-                        <input
-                            type="tel"
-                            id="holder-phone"
-                            name="holder_phone"
-                            class="pf-input"
-                            autocomplete="tel"
-                            inputmode="tel"
-                            enterkeyhint="next"
-                            required
-                            aria-describedby="holder-phone-hint"
-                            aria-errormessage="holder-phone-error"
-                        >
-                        <div id="holder-phone-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> Inserisci un recapito telefonico valido.
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="signup-email">Indirizzo Email <span class="required-star" aria-hidden="true">*</span></label>
-                        <span id="signup-email-hint" class="hint">Formato: nome@esempio.it (servirà per accedere al tuo QR Code).</span>
-                        <input
-                            type="email"
-                            id="signup-email"
-                            name="email"
-                            class="pf-input"
-                            autocomplete="username"
-                            inputmode="email"
-                            enterkeyhint="next"
-                            required
-                            aria-describedby="signup-email-hint"
-                            aria-errormessage="signup-email-error"
-                        >
-                        <div id="signup-email-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> Inserisci un indirizzo email valido.
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="new-password">Crea Password <span class="required-star" aria-hidden="true">*</span></label>
-                        <ul id="password-rules" class="rules-list">
-                            <li>Almeno 8 caratteri</li>
-                            <li>Almeno una lettera maiuscola e una minuscola</li>
-                            <li>Almeno un numero</li>
-                        </ul>
-                        <div class="password-input-wrap">
-                            <input
-                                type="password"
-                                id="new-password"
-                                name="new-password"
-                                class="pf-input"
-                                autocomplete="new-password"
-                                minlength="8"
-                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                enterkeyhint="next"
-                                required
-                                aria-describedby="password-rules"
-                                aria-errormessage="signup-password-error"
-                            >
-                            <button
-                                type="button"
-                                class="password-toggle-btn"
-                                data-toggle-password="new-password"
-                                aria-pressed="false"
-                                aria-label="Mostra password"
-                            >
-                                <i class="fas fa-eye" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div id="signup-password-error" class="error-msg">
-                            <span aria-hidden="true">❌</span> La password deve rispettare i requisiti indicati sopra.
-                        </div>
-                    </div>
-
-                    <!-- SEZIONE MEMBRI NUCLEO FAMIGLIARE (GENITORI, FIGLI, NONNI) -->
-                    <fieldset class="pf-fieldset">
-                        <legend><i class="fas fa-users" aria-hidden="true"></i> Altri Membri del Nucleo Famigliare (Genitori, Figli, Nonni)</legend>
-                        <p class="hint" style="margin-bottom: 1rem;">
-                            Aggiungi qui tutti i <strong>Genitori</strong>, <strong>Figli</strong> e <strong>Nonni</strong> della tua famiglia che potranno utilizzare la Card. Non potranno essere aggiunti in seguito.
-                        </p>
-
-                        <div id="additional-members-list" class="family-members-builder" aria-live="polite"></div>
-
-                        <div class="add-member-buttons">
-                            <button type="button" class="btn-secondary-gold" data-add-member-role="genitore">
-                                <i class="fas fa-plus" aria-hidden="true"></i> Aggiungi Genitore
-                            </button>
-                            <button type="button" class="btn-secondary-gold" data-add-member-role="figlio">
-                                <i class="fas fa-plus" aria-hidden="true"></i> Aggiungi Figlio / a
-                            </button>
-                            <button type="button" class="btn-secondary-gold" data-add-member-role="nonno">
-                                <i class="fas fa-plus" aria-hidden="true"></i> Aggiungi Nonno / a
-                            </button>
-                        </div>
-                    </fieldset>
-
-                    <div class="privacy-check" style="margin-bottom: 1.5rem;">
-                        <input type="checkbox" id="signup-privacy" name="privacy_accepted" required>
-                        <label for="signup-privacy" style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
-                            Accetto la <a href="privacy.html" style="color: var(--gold-solid); text-decoration: underline;">Privacy Policy</a> e confermo che il nucleo famigliare inserito è completo e definitivo.
-                        </label>
-                    </div>
-
-                    <button type="submit" id="signup-submit-btn" class="btn-primary-gold">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i> Attiva Card Famiglia e Genera QR Code
-                    </button>
-
-                    <div id="signup-status" class="form-status-box" role="status" aria-live="polite"></div>
-                </form>
-            </div>
-        </section>
-
-        <!-- ==================================================================
-             SEZIONE 2: DASHBOARD CLIENTE (QR CODE + SCONTI + MEMBRI BLOCCATI)
-             ================================================================== -->
-        <section id="dashboard-section" hidden aria-labelledby="dashboard-heading">
-            <div class="dashboard-top-bar">
-                <div>
-                    <h2 id="dashboard-heading" style="font-size: 1.8rem;">La Tua <span class="gradient-text">Card Famiglia</span></h2>
-                    <p id="dashboard-user-email" style="color: var(--text-muted); font-size: 0.9rem;"></p>
-                </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-                    <a href="admin.html" id="goto-admin-link" class="btn-secondary-gold" style="display: none;">
-                        <i class="fas fa-user-shield" aria-hidden="true"></i> Pannello Admin Scanner
-                    </a>
-                    <button type="button" id="signout-btn" class="btn-secondary-gold">
-                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Esci
-                    </button>
-                </div>
-            </div>
-
-            <div class="vip-card-layout">
-                <!-- CARD DIGITALE CON QR CODE -->
-                <div class="luxury-vip-card">
-                    <div>
-                        <div class="vip-card-header">
-                            <div>
-                                <span class="vip-brand-label">Pasian Rivalta • Dal 1981</span>
-                                <h3 id="card-family-name" class="vip-family-title">Famiglia</h3>
+                <div class="perks-grid">
+                    <article class="perk-card">
+                        <div class="perk-card__head">
+                            <span class="perk-card__icon" aria-hidden="true"><i class="fas fa-gem"></i></span>
+                            <div class="perk-card__title">
+                                <h3>Gioielleria</h3>
+                                <p>Gioielli e orologi</p>
                             </div>
-                            <span class="vip-status-pill">
-                                <i class="fas fa-check-circle" aria-hidden="true"></i> Card Attiva
-                            </span>
+                            <span class="perk-card__max">fino a <strong>-20%</strong></span>
+                        </div>
+                        <ol class="perk-steps" aria-label="Sconti Gioielleria">
+                            <li><strong>-10%</strong><span>1° acquisto</span></li>
+                            <li><strong>-15%</strong><span>2° acquisto</span></li>
+                            <li><strong>-20%</strong><span>3° acquisto</span></li>
+                        </ol>
+                    </article>
+
+                    <article class="perk-card">
+                        <div class="perk-card__head">
+                            <span class="perk-card__icon" aria-hidden="true"><i class="fas fa-glasses"></i></span>
+                            <div class="perk-card__title">
+                                <h3>Ottica</h3>
+                                <p>Occhiali da vista e da sole</p>
+                            </div>
+                            <span class="perk-card__max">fino a <strong>-25%</strong></span>
+                        </div>
+                        <ol class="perk-steps" aria-label="Sconti Ottica">
+                            <li><strong>-15%</strong><span>1° acquisto</span></li>
+                            <li><strong>-20%</strong><span>2° acquisto</span></li>
+                            <li><strong>-25%</strong><span>3° acquisto</span></li>
+                        </ol>
+                        <p class="perk-card__note"><i class="fas fa-ban" aria-hidden="true"></i> Lenti a contatto escluse</p>
+                    </article>
+                </div>
+
+                <p class="perks-rule">
+                    <i class="fas fa-hourglass-half" aria-hidden="true"></i>
+                    <span>Il 2° e il 3° sconto valgono <strong>entro 3 mesi</strong> dal 1° acquisto, per chiunque della famiglia.</span>
+                </p>
+
+                <ol class="how-strip" aria-label="Come funziona">
+                    <li><span class="how-strip__icon" aria-hidden="true"><i class="fas fa-users"></i></span>Registra la famiglia</li>
+                    <li><span class="how-strip__icon" aria-hidden="true"><i class="fas fa-qrcode"></i></span>Mostra il QR in cassa</li>
+                    <li><span class="how-strip__icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>Lo sconto cresce</li>
+                </ol>
+            </section>
+
+            <section id="auth-card" class="auth-shell" aria-labelledby="auth-section-title">
+                <h2 id="auth-section-title" class="visually-hidden">Accesso e registrazione Card Famiglia</h2>
+
+                <div class="auth-tabs" role="tablist" aria-label="Accedi o registrati">
+                    <button type="button" role="tab" id="tab-signin" class="auth-tab-btn" aria-selected="true" aria-controls="panel-signin">
+                        <i class="fas fa-right-to-bracket" aria-hidden="true"></i> Accedi
+                    </button>
+                    <button type="button" role="tab" id="tab-signup" class="auth-tab-btn" aria-selected="false" aria-controls="panel-signup">
+                        <i class="fas fa-user-plus" aria-hidden="true"></i> Registrati
+                    </button>
+                </div>
+
+                <!-- PANNELLO ACCEDI -->
+                <div id="panel-signin" role="tabpanel" aria-labelledby="tab-signin">
+                    <form id="signin-form" action="/card-famiglia.html" method="POST" novalidate>
+                        <div class="field">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" name="email" class="pf-input"
+                                autocomplete="username" inputmode="email" enterkeyhint="next"
+                                placeholder="nome@esempio.it" required aria-errormessage="login-email-error">
+                            <div id="login-email-error" class="error-msg">Inserisci un'email valida.</div>
                         </div>
 
-                        <div class="vip-qr-section">
-                            <div class="qr-white-frame" id="card-qr-container" aria-label="QR Code personale della Card Famiglia"></div>
-                            <div class="vip-code-details">
-                                <span class="card-code-label">Codice Identificativo</span>
-                                <code id="card-code-display" class="card-code-value">PR-FAM--------</code>
-                                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                                    Mostra questo QR Code in negozio per applicare automaticamente lo sconto riservato a te e ai membri registrati della tua famiglia.
-                                </p>
-                                <div class="vip-qr-actions">
-                                    <button type="button" id="open-fullscreen-qr-btn" class="btn-secondary-gold">
-                                        <i class="fas fa-expand" aria-hidden="true"></i> Ingrandisci QR per la Cassa
-                                    </button>
-                                    <button type="button" id="download-qr-btn" class="btn-secondary-gold">
-                                        <i class="fas fa-download" aria-hidden="true"></i> Scarica QR
+                        <div class="field">
+                            <label for="current-password">Password</label>
+                            <div class="password-input-wrap">
+                                <input type="password" id="current-password" name="password" class="pf-input"
+                                    autocomplete="current-password" enterkeyhint="done" required
+                                    aria-errormessage="login-password-error">
+                                <button type="button" class="password-toggle-btn" data-toggle-password="current-password" aria-pressed="false" aria-label="Mostra password">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div id="login-password-error" class="error-msg">Inserisci la password.</div>
+                        </div>
+
+                        <div class="forgot-row">
+                            <button type="button" id="forgot-password-btn" class="btn-link">Password dimenticata?</button>
+                        </div>
+
+                        <button type="submit" id="signin-submit-btn" class="btn-primary-gold">
+                            <i class="fas fa-qrcode" aria-hidden="true"></i> Apri la mia Card
+                        </button>
+
+                        <div id="signin-status" class="form-status-box" role="status" aria-live="polite"></div>
+                    </form>
+                </div>
+
+                <!-- PANNELLO REGISTRATI (WIZARD IN 2 PASSAGGI) -->
+                <div id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" hidden>
+                    <ol class="wizard-progress" aria-label="Passaggi registrazione">
+                        <li class="is-current" data-step-indicator="1"><span>1</span> I tuoi dati</li>
+                        <li data-step-indicator="2"><span>2</span> La famiglia</li>
+                    </ol>
+
+                    <form id="signup-form" action="/card-famiglia.html" method="POST" novalidate>
+                        <!-- PASSO 1: DATI TITOLARE -->
+                        <div class="wizard-step" data-step="1">
+                            <div class="field">
+                                <label for="family-name">Nome della famiglia</label>
+                                <input type="text" id="family-name" name="family_name" class="pf-input"
+                                    autocomplete="family-name" enterkeyhint="next" maxlength="100"
+                                    placeholder="es. Famiglia Rossi" required aria-errormessage="family-name-error">
+                                <div id="family-name-error" class="error-msg">Inserisci il nome della famiglia.</div>
+                            </div>
+
+                            <div class="field">
+                                <label for="holder-name">Il tuo nome e cognome</label>
+                                <input type="text" id="holder-name" name="holder_name" class="pf-input"
+                                    autocomplete="name" enterkeyhint="next" maxlength="100"
+                                    placeholder="es. Mario Rossi" required aria-errormessage="holder-name-error">
+                                <div id="holder-name-error" class="error-msg">Inserisci nome e cognome.</div>
+                            </div>
+
+                            <fieldset class="pf-fieldset">
+                                <legend>Il tuo ruolo in famiglia</legend>
+                                <div class="choice-grid">
+                                    <label class="choice-card">
+                                        <input type="radio" name="holder_role" value="genitore" checked required>
+                                        <i class="fas fa-user-tie" aria-hidden="true"></i> Genitore
+                                    </label>
+                                    <label class="choice-card">
+                                        <input type="radio" name="holder_role" value="figlio">
+                                        <i class="fas fa-child" aria-hidden="true"></i> Figlio/a
+                                    </label>
+                                    <label class="choice-card">
+                                        <input type="radio" name="holder_role" value="nonno">
+                                        <i class="fas fa-user-shield" aria-hidden="true"></i> Nonno/a
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                            <div class="field">
+                                <label for="holder-phone">Cellulare</label>
+                                <input type="tel" id="holder-phone" name="holder_phone" class="pf-input"
+                                    autocomplete="tel" inputmode="tel" enterkeyhint="next"
+                                    placeholder="+39 333 1234567" required aria-errormessage="holder-phone-error">
+                                <div id="holder-phone-error" class="error-msg">Inserisci un numero valido.</div>
+                            </div>
+
+                            <div class="field">
+                                <label for="signup-email">Email</label>
+                                <input type="email" id="signup-email" name="email" class="pf-input"
+                                    autocomplete="username" inputmode="email" enterkeyhint="next"
+                                    placeholder="nome@esempio.it" required aria-errormessage="signup-email-error">
+                                <div id="signup-email-error" class="error-msg">Inserisci un'email valida.</div>
+                            </div>
+
+                            <div class="field">
+                                <label for="new-password">Crea una password</label>
+                                <div class="password-input-wrap">
+                                    <input type="password" id="new-password" name="new-password" class="pf-input"
+                                        autocomplete="new-password" minlength="8"
+                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                        enterkeyhint="done" required
+                                        aria-describedby="password-rules" aria-errormessage="signup-password-error">
+                                    <button type="button" class="password-toggle-btn" data-toggle-password="new-password" aria-pressed="false" aria-label="Mostra password">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
+                                <div id="signup-password-error" class="error-msg">La password non rispetta i requisiti.</div>
+                                <ul id="password-rules" class="pw-rules" aria-label="Requisiti password">
+                                    <li data-rule="len">8+ caratteri</li>
+                                    <li data-rule="case">Maiuscola e minuscola</li>
+                                    <li data-rule="num">Un numero</li>
+                                </ul>
+                            </div>
+
+                            <button type="button" id="signup-next-btn" class="btn-primary-gold">
+                                Continua <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        <!-- PASSO 2: COMPONENTI DELLA FAMIGLIA -->
+                        <div class="wizard-step" data-step="2" hidden>
+                            <div class="pf-callout">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                                <span><strong>Aggiungi tutti adesso.</strong> Dopo la registrazione la famiglia non si può più modificare.</span>
+                            </div>
+
+                            <div class="members-builder" aria-live="polite">
+                                <div class="member-builder-row member-builder-row--holder">
+                                    <span class="avatar" id="holder-preview-avatar" aria-hidden="true">TU</span>
+                                    <div class="member-row__body">
+                                        <span class="member-row__name" id="holder-preview-name">Tu</span>
+                                        <span class="member-row__role" id="holder-preview-role">Genitore</span>
+                                    </div>
+                                    <span class="holder-badge">Titolare</span>
+                                </div>
+                                <div id="additional-members-list" class="members-builder"></div>
+                            </div>
+
+                            <p class="add-member-title">Aggiungi un familiare</p>
+                            <div class="add-member-buttons">
+                                <button type="button" class="add-member-btn" data-add-member-role="genitore">
+                                    <i class="fas fa-user-tie" aria-hidden="true"></i> + Genitore
+                                </button>
+                                <button type="button" class="add-member-btn" data-add-member-role="figlio">
+                                    <i class="fas fa-child" aria-hidden="true"></i> + Figlio/a
+                                </button>
+                                <button type="button" class="add-member-btn" data-add-member-role="nonno">
+                                    <i class="fas fa-user-shield" aria-hidden="true"></i> + Nonno/a
+                                </button>
+                            </div>
+
+                            <label class="privacy-check" for="signup-privacy">
+                                <input type="checkbox" id="signup-privacy" name="privacy_accepted" required>
+                                <span>Accetto la <a href="privacy.html">Privacy Policy</a> e confermo che la famiglia inserita è completa.</span>
+                            </label>
+
+                            <div class="wizard-actions">
+                                <button type="button" id="signup-back-btn" class="btn-ghost btn-square" aria-label="Torna ai tuoi dati">
+                                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                                </button>
+                                <button type="submit" id="signup-submit-btn" class="btn-primary-gold">
+                                    <i class="fas fa-check" aria-hidden="true"></i> Attiva la Card
+                                </button>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="vip-card-footer">
-                        <span><i class="fas fa-user" aria-hidden="true" style="color:var(--gold-solid);"></i> Titolare: <strong id="card-holder-display" style="color:#fff;">—</strong></span>
-                        <span><i class="fas fa-calendar-alt" aria-hidden="true" style="color:var(--gold-solid);"></i> Attivata il: <strong id="card-created-display" style="color:#fff;">—</strong></span>
+                        <div id="signup-status" class="form-status-box" role="status" aria-live="polite"></div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================================================================
+             VISTA 2: DASHBOARD CLIENTE (CARD QR + SCONTI + FAMIGLIA + STORICO)
+             ================================================================== -->
+        <section id="dashboard-section" hidden aria-labelledby="dashboard-heading">
+            <header class="dash-head">
+                <div class="dash-head__identity">
+                    <span class="dash-head__avatar" id="dashboard-holder-avatar" aria-hidden="true">PR</span>
+                    <div class="dash-head__text">
+                        <p class="dash-head__eyebrow">Card Famiglia Attiva</p>
+                        <h1 id="dashboard-heading" class="dash-head__title">Ciao, <span id="dashboard-holder-first">—</span></h1>
+                        <p id="dashboard-user-email" class="dash-head__sub"></p>
+                    </div>
+                </div>
+                <div class="dash-head__actions">
+                    <a href="admin.html" id="goto-admin-link" class="dash-action-pill" aria-label="Pannello cassa" title="Pannello cassa" hidden>
+                        <i class="fas fa-cash-register" aria-hidden="true"></i>
+                        <span>Cassa</span>
+                    </a>
+                    <button type="button" id="signout-btn" class="dash-action-pill dash-action-pill--muted" aria-label="Esci dall'account" title="Esci">
+                        <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+                        <span>Esci</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="dash-grid">
+                <!-- CARD DIGITALE CON QR CODE -->
+                <div class="dash-col-card">
+                    <article id="wallet-card" class="wallet-card" aria-label="Card Famiglia digitale">
+                        <div class="wallet-card__top">
+                            <div>
+                                <span class="wallet-card__brand">Pasian Rivalta</span>
+                                <h2 id="card-family-name" class="wallet-card__family">Famiglia</h2>
+                            </div>
+                            <span class="wallet-card__status"><i class="fas fa-circle-check" aria-hidden="true"></i> Attiva</span>
+                        </div>
+
+                        <button type="button" id="card-qr-button" class="wallet-card__qr" aria-label="Ingrandisci il QR Code per la cassa">
+                            <span class="qr-white-frame" id="card-qr-container"></span>
+                            <span class="wallet-card__tap"><i class="fas fa-expand" aria-hidden="true"></i> Tocca per ingrandire</span>
+                        </button>
+
+                        <code id="card-code-display" class="wallet-card__code">PR-FAM--------</code>
+
+                        <dl class="wallet-card__meta">
+                            <div>
+                                <dt>Titolare</dt>
+                                <dd id="card-holder-display">—</dd>
+                            </div>
+                            <div>
+                                <dt>Attiva dal</dt>
+                                <dd id="card-created-display">—</dd>
+                            </div>
+                        </dl>
+                    </article>
+
+                    <div class="wallet-actions">
+                        <button type="button" id="open-fullscreen-qr-btn" class="btn-primary-gold">
+                            <i class="fas fa-qrcode" aria-hidden="true"></i> Mostra in cassa
+                        </button>
+                        <button type="button" id="download-qr-btn" class="btn-secondary-gold btn-square" aria-label="Scarica il QR Code" title="Scarica QR">
+                            <i class="fas fa-download" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
 
-                <!-- STATO SCONTI E SCADENZA 3 MESI PER CATEGORIA -->
-                <div class="cycle-status-stack">
-                    <!-- Box Gioielleria -->
-                    <div class="cycle-card" id="jewelry-cycle-card">
-                        <div class="cycle-card-top">
-                            <div>
-                                <h3 style="font-size: 1.3rem;"><i class="fas fa-gem" aria-hidden="true" style="color:var(--gold-solid); margin-right: 8px;"></i> Gioielleria</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-muted);">Finestra di 3 mesi dal 1° acquisto</p>
-                            </div>
-                            <span id="jewelry-next-badge" class="next-discount-highlight">Prossimo: -10%</span>
+                <div class="dash-col-info">
+                    <!-- SCONTI -->
+                    <section id="sconti-section" class="pf-section" aria-labelledby="sconti-title">
+                        <h2 id="sconti-title" class="pf-section-title">I tuoi sconti</h2>
+                        <div class="discount-list">
+                            <article class="discount-card" id="jewelry-cycle-card" aria-label="Sconti Gioielleria"></article>
+                            <article class="discount-card" id="optics-cycle-card" aria-label="Sconti Ottica"></article>
                         </div>
-                        <div class="rule-tiers-row" id="jewelry-tiers-visual"></div>
-                        <div id="jewelry-countdown-box" class="countdown-banner"></div>
-                    </div>
+                    </section>
 
-                    <!-- Box Ottica -->
-                    <div class="cycle-card" id="optics-cycle-card">
-                        <div class="cycle-card-top">
-                            <div>
-                                <h3 style="font-size: 1.3rem;"><i class="fas fa-glasses" aria-hidden="true" style="color:var(--gold-solid); margin-right: 8px;"></i> Ottica (Occhiali)</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-muted);">Finestra di 3 mesi dal 1° acquisto • Escluse lenti a contatto</p>
-                            </div>
-                            <span id="optics-next-badge" class="next-discount-highlight">Prossimo: -15%</span>
+                    <!-- FAMIGLIA -->
+                    <section id="famiglia-section" class="pf-section" aria-labelledby="members-section-title">
+                        <div class="pf-section-head">
+                            <h2 id="members-section-title" class="pf-section-title">La tua famiglia</h2>
+                            <span class="pf-tag"><i class="fas fa-lock" aria-hidden="true"></i> <span id="members-count">0</span></span>
                         </div>
-                        <div class="rule-tiers-row" id="optics-tiers-visual"></div>
-                        <div id="optics-countdown-box" class="countdown-banner"></div>
-                    </div>
+                        <ul id="registered-members-grid" class="member-list"></ul>
+                        <p class="pf-footnote">Tutti possono usare il QR della famiglia.</p>
+                    </section>
+
+                    <!-- STORICO -->
+                    <section id="storico-section" class="pf-section" aria-labelledby="purchases-section-title">
+                        <h2 id="purchases-section-title" class="pf-section-title">Storico acquisti</h2>
+                        <ul id="customer-purchases-list" class="purchase-list"></ul>
+                    </section>
                 </div>
             </div>
-
-            <!-- NUCLEO FAMIGLIARE REGISTRATO (BLOCCATO) -->
-            <section style="margin-bottom: 3rem;" aria-labelledby="members-section-title">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
-                    <div>
-                        <h3 id="members-section-title" style="font-size: 1.5rem;">
-                            <i class="fas fa-users" aria-hidden="true" style="color:var(--gold-solid); margin-right: 8px;"></i>
-                            Componenti del Nucleo Famigliare Abilitati
-                        </h3>
-                        <p style="color: var(--text-muted); font-size: 0.88rem;">
-                            Tutti i membri elencati qui sotto possono usufruire degli sconti progressivi presentando il QR Code della famiglia.
-                        </p>
-                    </div>
-                    <span class="exclusion-badge" style="background: rgba(212, 175, 55, 0.12); border-color: rgba(212, 175, 55, 0.4); color: var(--gold-solid);">
-                        <i class="fas fa-lock" aria-hidden="true"></i> Registrazione Unica Bloccata (Non modificabile)
-                    </span>
-                </div>
-
-                <div id="registered-members-grid" class="members-grid"></div>
-            </section>
-
-            <!-- STORICO ACQUISTI DELLA FAMIGLIA -->
-            <section aria-labelledby="purchases-section-title">
-                <h3 id="purchases-section-title" style="font-size: 1.5rem;">
-                    <i class="fas fa-receipt" aria-hidden="true" style="color:var(--gold-solid); margin-right: 8px;"></i>
-                    Storico Acquisti e Sconti Utilizzati
-                </h3>
-                <div class="pf-table-wrap">
-                    <table class="pf-table">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Categoria</th>
-                                <th>Membro Famiglia</th>
-                                <th>Step Ciclo</th>
-                                <th>Sconto Applicato</th>
-                                <th>Importo Finale</th>
-                                <th>Dettagli</th>
-                            </tr>
-                        </thead>
-                        <tbody id="customer-purchases-tbody"></tbody>
-                    </table>
-                </div>
-            </section>
         </section>
 
     </main>
 
-    <!-- DIALOG CONFERMA REGISTRAZIONE UNICA FASE (<dialog closedby="any">) -->
+    <!-- DIALOG CONFERMA FAMIGLIA -->
     <dialog id="confirm-registration-dialog" class="pf-dialog" closedby="any" aria-labelledby="confirm-dialog-title">
-        <h2 id="confirm-dialog-title" style="font-size: 1.5rem; color: var(--gold-solid); margin-bottom: 0.75rem;">
-            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Conferma Definitiva Nucleo Famigliare
-        </h2>
-        <p style="font-size: 0.92rem; color: #ddd; margin-bottom: 1rem;">
-            Verifica che tutti i membri della tua famiglia (Genitori, Figli, Nonni) siano presenti nell'elenco qui sotto.
-            <strong>Dopo la conferma non sarà più possibile aggiungere altri componenti.</strong>
-        </p>
-        <ul id="confirm-members-preview" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.3); border-radius: 14px; padding: 1rem 1.4rem; margin-bottom: 1.5rem; list-style: disc; color: #fff; font-size: 0.92rem;"></ul>
-        <div style="display: flex; gap: 0.8rem; justify-content: flex-end; flex-wrap: wrap;">
-            <button type="button" id="cancel-confirm-dialog-btn" class="btn-secondary-gold">
-                Modifica Membri
+        <div class="pf-dialog__icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+        <h2 id="confirm-dialog-title">È tutta la famiglia?</h2>
+        <p class="pf-dialog__text">Dopo la conferma <strong>non potrai più aggiungere</strong> altri componenti.</p>
+        <ul id="confirm-members-preview" class="pf-dialog__list"></ul>
+        <div class="pf-dialog__actions">
+            <button type="button" id="proceed-confirm-dialog-btn" class="btn-primary-gold">
+                <i class="fas fa-check" aria-hidden="true"></i> Sì, crea la Card
             </button>
-            <button type="button" id="proceed-confirm-dialog-btn" class="btn-primary-gold" style="width: auto;">
-                Conferma e Crea Card
+            <button type="button" id="cancel-confirm-dialog-btn" class="btn-ghost">
+                Modifica
             </button>
         </div>
     </dialog>
 
-    <!-- DIALOG QR CODE A SCHERMO INTERO PER SCANSIONE IN CASSA (<dialog closedby="any">) -->
-    <dialog id="qr-fullscreen-dialog" class="pf-dialog" closedby="any" aria-labelledby="qr-dialog-title" style="text-align: center; max-width: 420px;">
-        <h2 id="qr-dialog-title" style="font-size: 1.4rem; color: var(--gold-solid); margin-bottom: 0.4rem;">
-            Mostra in Cassa
-        </h2>
-        <p id="qr-dialog-family" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem;"></p>
-        <div class="qr-white-frame" id="qr-fullscreen-container" style="margin: 0 auto 1.2rem; padding: 20px;"></div>
-        <code id="qr-dialog-code" class="card-code-value" style="margin-bottom: 1.4rem;"></code>
+    <!-- DIALOG QR A SCHERMO INTERO PER LA CASSA -->
+    <dialog id="qr-fullscreen-dialog" class="pf-dialog qr-dialog" closedby="any" aria-labelledby="qr-dialog-title">
+        <span class="qr-dialog__brand">Pasian Rivalta · Card Famiglia</span>
+        <h2 id="qr-dialog-title"><span id="qr-dialog-family">Famiglia</span></h2>
+        <div class="qr-white-frame" id="qr-fullscreen-container"></div>
+        <code id="qr-dialog-code" class="qr-dialog__code"></code>
+        <p class="qr-dialog__hint">Mostra questo codice all'operatore</p>
         <form method="dialog">
-            <button type="submit" class="btn-secondary-gold" style="width: 100%;">Chiudi</button>
+            <button type="submit" class="btn-close-dark">Chiudi</button>
         </form>
     </dialog>
 
@@ -612,24 +507,24 @@
         </div>
     </footer>
 
-    <!-- Barra di Navigazione Inferiore Stile Web App Mobile -->
-    <nav class="mobile-app-tabbar" aria-label="Navigazione rapida App">
-        <button type="button" class="app-tab-item active" data-mobile-nav="card">
+    <!-- Barra di navigazione inferiore stile App (solo da autenticati, mobile) -->
+    <nav class="mobile-app-tabbar" aria-label="Navigazione rapida Card">
+        <button type="button" class="app-tab-item active" data-mobile-nav="wallet-card">
             <i class="fas fa-qrcode" aria-hidden="true"></i>
-            <span>La Mia Card</span>
+            <span>Card</span>
         </button>
-        <button type="button" class="app-tab-item" data-mobile-nav="sconti">
+        <button type="button" class="app-tab-item" data-mobile-nav="sconti-section">
             <i class="fas fa-percent" aria-hidden="true"></i>
             <span>Sconti</span>
         </button>
-        <button type="button" class="app-tab-item" data-mobile-nav="famiglia">
+        <button type="button" class="app-tab-item" data-mobile-nav="famiglia-section">
             <i class="fas fa-users" aria-hidden="true"></i>
             <span>Famiglia</span>
         </button>
-        <a href="admin.html" class="app-tab-item">
-            <i class="fas fa-camera" aria-hidden="true"></i>
-            <span>Scanner</span>
-        </a>
+        <button type="button" class="app-tab-item" data-mobile-nav="storico-section">
+            <i class="fas fa-receipt" aria-hidden="true"></i>
+            <span>Storico</span>
+        </button>
     </nav>
 
     <!-- Librerie CDN: Supabase JS v2 & QRCode.js -->

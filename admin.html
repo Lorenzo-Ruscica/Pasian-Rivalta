@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -11,8 +11,8 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="manifest" href="manifest.json">
     <title>Pannello Cassa &amp; Scanner QR | Pasian Rivalta</title>
-    <link rel="stylesheet" href="style.css?v=2.2">
-    <link rel="stylesheet" href="card-famiglia.css">
+    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="card-famiglia.css?v=4.0">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="immagini/logo_favicon.ico" type="image/png">
@@ -54,101 +54,180 @@
                     <h1>Pannello <span class="gradient-text">Cassa</span></h1>
                 </div>
             </div>
-            <p class="pf-subtitle">Scansiona il QR del cliente, verifica il nucleo e applica lo sconto automatico.</p>
-            <div class="pf-hero-pills" aria-label="Funzioni cassa">
-                <div class="pf-hero-pill">
-                    <i class="fas fa-qrcode" aria-hidden="true"></i>
-                    <div>
-                        <span>Lettura Rapida</span>
-                        <strong>Scanner QR &amp; Foto</strong>
-                    </div>
-                </div>
-                <div class="pf-hero-pill">
-                    <i class="fas fa-percent" aria-hidden="true"></i>
-                    <div>
-                        <span>Calcolo Automatico</span>
-                        <strong>Ciclo 3 Mesi</strong>
-                    </div>
-                </div>
-            </div>
+            <p class="pf-subtitle">Scanner QR e calcolo automatico dello sconto.</p>
         </div>
     </header>
 
     <main class="pf-container">
 
-        <!-- Banner Modalità Demo Operatore -->
-        <aside id="admin-demo-banner" class="pf-demo" hidden aria-label="Modalità demo operatore">
-            <div class="pf-demo__text">
-                <i class="fas fa-flask" aria-hidden="true"></i>
-                <span><strong>Modalità demo</strong> · prova subito scanner e cassa</span>
-            </div>
-            <div class="pf-demo__actions">
-                <button type="button" id="admin-demo-login-btn" class="pf-chip-btn">
-                    <i class="fas fa-bolt" aria-hidden="true"></i> Entra come operatore demo
-                </button>
-                <a href="card-famiglia.html" class="pf-chip-btn">
-                    <i class="fas fa-id-card" aria-hidden="true"></i> Area clienti
-                </a>
-            </div>
-        </aside>
-
         <!-- ==================================================================
-             VISTA 1: LOGIN OPERATORE
+             VISTA 1: LOGIN OPERATORE & IMPOSTAZIONE PASSWORD
              ================================================================== -->
         <section id="admin-login-section" class="auth-shell" aria-labelledby="admin-login-heading">
             <h2 id="admin-login-heading" class="auth-shell__title">Accesso operatore</h2>
-            <p class="auth-shell__lead">Inserisci le credenziali negozio per aprire lo scanner e la cassa.</p>
 
-            <form id="admin-signin-form" action="/admin.html" method="POST" novalidate>
-                <div class="field">
-                    <label for="admin-email">Email operatore</label>
-                    <input
-                        type="email"
-                        id="admin-email"
-                        name="email"
-                        class="pf-input"
-                        autocomplete="username"
-                        inputmode="email"
-                        enterkeyhint="next"
-                        placeholder="operatore@pasianrivalta.it"
-                        required
-                        aria-errormessage="admin-email-error"
-                    >
-                    <div id="admin-email-error" class="error-msg">Inserisci un'email valida.</div>
-                </div>
+            <div class="auth-tabs" role="tablist" aria-label="Modalità accesso operatore">
+                <button
+                    type="button"
+                    id="admin-tab-login"
+                    class="auth-tab-btn"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="admin-panel-login"
+                    data-admin-auth-tab="login"
+                >
+                    <i class="fas fa-right-to-bracket" aria-hidden="true"></i> Accedi
+                </button>
+                <button
+                    type="button"
+                    id="admin-tab-setpass"
+                    class="auth-tab-btn"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="admin-panel-setpass"
+                    data-admin-auth-tab="setpass"
+                >
+                    <i class="fas fa-key" aria-hidden="true"></i> Imposta password
+                </button>
+            </div>
 
-                <div class="field">
-                    <label for="current-password">Password</label>
-                    <div class="password-input-wrap">
+            <!-- PANNELLO 1: ACCEDI -->
+            <div id="admin-panel-login" role="tabpanel" aria-labelledby="admin-tab-login">
+                <form id="admin-signin-form" action="/admin.html" method="POST" novalidate>
+                    <div class="field">
+                        <label for="admin-email">Email operatore</label>
                         <input
-                            type="password"
-                            id="current-password"
-                            name="password"
+                            type="email"
+                            id="admin-email"
+                            name="email"
                             class="pf-input"
-                            autocomplete="current-password"
-                            enterkeyhint="done"
+                            autocomplete="username"
+                            inputmode="email"
+                            enterkeyhint="next"
                             required
-                            aria-errormessage="admin-pass-error"
+                            aria-errormessage="admin-email-error"
                         >
-                        <button
-                            type="button"
-                            class="password-toggle-btn"
-                            data-toggle-password="current-password"
-                            aria-pressed="false"
-                            aria-label="Mostra password"
-                        >
-                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        <div id="admin-email-error" class="error-msg">Inserisci un'email valida.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="current-password">Password</label>
+                        <div class="password-input-wrap">
+                            <input
+                                type="password"
+                                id="current-password"
+                                name="password"
+                                class="pf-input"
+                                autocomplete="current-password"
+                                enterkeyhint="done"
+                                required
+                                aria-errormessage="admin-pass-error"
+                            >
+                            <button
+                                type="button"
+                                class="password-toggle-btn"
+                                data-toggle-password="current-password"
+                                aria-pressed="false"
+                                aria-label="Mostra password"
+                            >
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="admin-pass-error" class="error-msg">Inserisci la password.</div>
+                    </div>
+
+                    <div class="forgot-row">
+                        <button type="button" id="switch-to-setpass-btn" class="btn-link">
+                            Primo accesso o vuoi scegliere la tua password?
                         </button>
                     </div>
-                    <div id="admin-pass-error" class="error-msg">Inserisci la password.</div>
-                </div>
 
-                <button type="submit" id="admin-signin-btn" class="btn-primary-gold">
-                    <i class="fas fa-cash-register" aria-hidden="true"></i> Apri postazione cassa
-                </button>
+                    <button type="submit" id="admin-signin-btn" class="btn-primary-gold">
+                        <i class="fas fa-cash-register" aria-hidden="true"></i> Apri postazione cassa
+                    </button>
 
-                <div id="admin-login-status" class="form-status-box" role="status" aria-live="polite"></div>
-            </form>
+                    <div id="admin-login-status" class="form-status-box" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+
+            <!-- PANNELLO 2: IMPOSTA / CAMBIA PASSWORD OPERATORE -->
+            <div id="admin-panel-setpass" role="tabpanel" aria-labelledby="admin-tab-setpass" hidden>
+                <form id="admin-setpass-form" action="/admin.html" method="POST" novalidate>
+                    <div class="field">
+                        <label for="admin-setpass-email">Email operatore</label>
+                        <input
+                            type="email"
+                            id="admin-setpass-email"
+                            name="email"
+                            class="pf-input"
+                            autocomplete="username"
+                            inputmode="email"
+                            enterkeyhint="next"
+                            required
+                            aria-errormessage="admin-setpass-email-error"
+                        >
+                        <div id="admin-setpass-email-error" class="error-msg">Inserisci l'email operatore.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="admin-new-password">Nuova password (min. 8 caratteri)</label>
+                        <div class="password-input-wrap">
+                            <input
+                                type="password"
+                                id="admin-new-password"
+                                name="new_password"
+                                class="pf-input"
+                                autocomplete="new-password"
+                                minlength="8"
+                                enterkeyhint="next"
+                                required
+                                aria-errormessage="admin-new-pass-error"
+                            >
+                            <button
+                                type="button"
+                                class="password-toggle-btn"
+                                data-toggle-password="admin-new-password"
+                                aria-pressed="false"
+                                aria-label="Mostra password"
+                            >
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="admin-new-pass-error" class="error-msg">Inserisci almeno 8 caratteri.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="admin-confirm-password">Conferma nuova password</label>
+                        <div class="password-input-wrap">
+                            <input
+                                type="password"
+                                id="admin-confirm-password"
+                                name="confirm_password"
+                                class="pf-input"
+                                autocomplete="new-password"
+                                minlength="8"
+                                enterkeyhint="done"
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="password-toggle-btn"
+                                data-toggle-password="admin-confirm-password"
+                                aria-pressed="false"
+                                aria-label="Mostra password"
+                            >
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="admin-setpass-btn" class="btn-primary-gold">
+                        <i class="fas fa-check" aria-hidden="true"></i> Salva password ed entra in cassa
+                    </button>
+
+                    <div id="admin-setpass-status" class="form-status-box" role="status" aria-live="polite"></div>
+                </form>
+            </div>
         </section>
 
         <!-- ==================================================================
@@ -234,27 +313,82 @@
                             <i class="fas fa-id-card"></i>
                         </div>
                         <h2>Nessuna Card selezionata</h2>
-                        <p>Scansiona un QR Code, cerca un cliente o toccane uno dall'elenco qui sotto.</p>
-                        <button type="button" id="load-sample-rossi-btn" class="btn-secondary-gold">
-                            <i class="fas fa-folder-open" aria-hidden="true"></i> Carica Famiglia Rossi (demo)
-                        </button>
+                        <p>Scansiona un QR Code, cerca un cliente o seleziona una famiglia dall'elenco.</p>
                     </div>
 
                     <div id="scanned-card-panel" hidden>
                         <div class="scanned-head">
                             <div class="scanned-head__top">
                                 <span class="scanned-head__label"><i class="fas fa-circle-check" aria-hidden="true"></i> Card verificata</span>
-                                <button type="button" id="clear-scanned-card-btn" class="icon-btn icon-btn--sm" aria-label="Chiudi scheda famiglia" title="Chiudi scheda">
-                                    <i class="fas fa-times" aria-hidden="true"></i>
-                                </button>
+                                <div class="scanned-head__btns">
+                                    <button type="button" id="toggle-edit-card-btn" class="pf-chip-btn" aria-expanded="false" aria-controls="admin-edit-card-form">
+                                        <i class="fas fa-pen" aria-hidden="true"></i> Modifica dati
+                                    </button>
+                                    <button type="button" id="clear-scanned-card-btn" class="icon-btn icon-btn--sm" aria-label="Chiudi scheda famiglia" title="Chiudi scheda">
+                                        <i class="fas fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </div>
                             <h3 id="admin-card-family">—</h3>
                             <code id="admin-card-code" class="pf-code">—</code>
                             <ul id="admin-card-contacts" class="contact-list"></ul>
+
+                            <!-- MODIFICA DATI SCHEDA FAMIGLIA (SOLO ADMIN) -->
+                            <form id="admin-edit-card-form" class="admin-inline-form" hidden novalidate>
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label for="admin-edit-family-name">Nome famiglia</label>
+                                        <input type="text" id="admin-edit-family-name" class="pf-input" required maxlength="100">
+                                    </div>
+                                    <div class="field">
+                                        <label for="admin-edit-holder-name">Titolare</label>
+                                        <input type="text" id="admin-edit-holder-name" class="pf-input" required maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label for="admin-edit-holder-phone">Telefono</label>
+                                        <input type="tel" id="admin-edit-holder-phone" class="pf-input" maxlength="40">
+                                    </div>
+                                    <div class="field admin-inline-form__actions">
+                                        <button type="submit" id="admin-save-card-btn" class="btn-primary-gold">
+                                            <i class="fas fa-check" aria-hidden="true"></i> Salva
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
 
-                        <h4 class="sub-title">Componenti abilitati</h4>
+                        <div class="admin-sub-head">
+                            <h4 class="sub-title">Componenti famiglia</h4>
+                            <button type="button" id="toggle-add-member-btn" class="pf-chip-btn" aria-expanded="false" aria-controls="admin-add-member-form">
+                                <i class="fas fa-user-plus" aria-hidden="true"></i> + Aggiungi familiare
+                            </button>
+                        </div>
                         <div id="admin-members-badges" class="chips"></div>
+
+                        <!-- AGGIUNTA RAPIDA FAMILIARE (SOLO ADMIN) -->
+                        <form id="admin-add-member-form" class="admin-inline-form" hidden novalidate>
+                            <div class="admin-add-member-row">
+                                <input
+                                    type="text"
+                                    id="admin-new-member-name"
+                                    class="pf-input"
+                                    placeholder="Nome e cognome nuovo familiare"
+                                    maxlength="100"
+                                    required
+                                >
+                                <select id="admin-new-member-role" class="pf-select" aria-label="Ruolo in famiglia">
+                                    <option value="figlio">Figlio / Figlia</option>
+                                    <option value="genitore">Genitore</option>
+                                    <option value="nonno">Nonno / Nonna</option>
+                                </select>
+                                <button type="submit" id="admin-add-member-btn" class="btn-primary-gold">
+                                    <i class="fas fa-plus" aria-hidden="true"></i> Aggiungi
+                                </button>
+                            </div>
+                        </form>
+                        <div id="admin-manage-status" class="form-status-box" role="status" aria-live="polite"></div>
 
                         <h4 class="sub-title">Sconto attivo oggi</h4>
                         <div class="status-tiles">
@@ -346,21 +480,48 @@
 
                             <div id="record-purchase-status" class="form-status-box" role="status" aria-live="polite"></div>
                         </form>
+
+                        <!-- ACQUISTI DI QUESTA FAMIGLIA (CON ANNULLAMENTO / RIPRISTINO SCONTO) -->
+                        <div id="admin-card-purchases-wrap" class="admin-card-purchases">
+                            <h4 class="sub-title">Acquisti di questa Card</h4>
+                            <ul id="admin-card-purchases-list" class="purchase-list"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ELENCO FAMIGLIE & ULTIMI ACQUISTI (CARD MOBILE-FIRST) -->
+            <!-- ELENCO FAMIGLIE & ULTIMI ACQUISTI (APRIBILI CON PULSANTE) -->
+            <div class="drawer-triggers drawer-triggers--admin" aria-label="Elenchi negozio">
+                <button type="button" id="toggle-admin-famiglie-btn" class="drawer-trigger-btn" aria-expanded="false" aria-controls="famiglie-section">
+                    <span class="drawer-trigger-btn__left">
+                        <i class="fas fa-users" aria-hidden="true"></i>
+                        <strong>Famiglie registrate</strong>
+                    </span>
+                    <span class="drawer-trigger-btn__right">
+                        <span id="admin-cards-count" class="pf-tag">0</span>
+                        <i class="fas fa-chevron-down drawer-chevron" aria-hidden="true"></i>
+                    </span>
+                </button>
+
+                <button type="button" id="toggle-admin-acquisti-btn" class="drawer-trigger-btn" aria-expanded="false" aria-controls="acquisti-section">
+                    <span class="drawer-trigger-btn__left">
+                        <i class="fas fa-receipt" aria-hidden="true"></i>
+                        <strong>Ultimi acquisti</strong>
+                    </span>
+                    <span class="drawer-trigger-btn__right">
+                        <span id="admin-purchases-count" class="pf-tag">0</span>
+                        <i class="fas fa-chevron-down drawer-chevron" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+
             <div class="admin-lists">
-                <section id="famiglie-section" class="pf-section" aria-labelledby="all-cards-heading">
+                <section id="famiglie-section" class="pf-section drawer-panel" hidden aria-labelledby="all-cards-heading">
                     <div class="pf-section-head">
                         <h2 id="all-cards-heading" class="pf-section-title">Famiglie registrate</h2>
-                        <div style="display:flex; align-items:center; gap:0.45rem;">
-                            <span id="admin-cards-count" class="pf-tag">0</span>
-                            <button type="button" id="refresh-admin-lists-btn" class="icon-btn icon-btn--sm" aria-label="Aggiorna elenchi" title="Aggiorna">
-                                <i class="fas fa-sync-alt" aria-hidden="true"></i>
-                            </button>
-                        </div>
+                        <button type="button" id="refresh-admin-lists-btn" class="icon-btn icon-btn--sm" aria-label="Aggiorna elenchi" title="Aggiorna">
+                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                        </button>
                     </div>
 
                     <div class="list-filter">
@@ -377,7 +538,7 @@
                     <ul id="admin-all-cards-list" class="family-list"></ul>
                 </section>
 
-                <section id="acquisti-section" class="pf-section" aria-labelledby="recent-purchases-heading">
+                <section id="acquisti-section" class="pf-section drawer-panel" hidden aria-labelledby="recent-purchases-heading">
                     <div class="pf-section-head">
                         <h2 id="recent-purchases-heading" class="pf-section-title">Ultimi acquisti</h2>
                     </div>
@@ -417,8 +578,8 @@
     <!-- Librerie CDN: Supabase JS v2 & html5-qrcode -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <script src="main.js?v=2.2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="admin.js"></script>
+    <script src="main.js?v=4.0"></script>
+    <script src="supabase-config.js?v=4.0"></script>
+    <script src="admin.js?v=4.0"></script>
 </body>
 </html>

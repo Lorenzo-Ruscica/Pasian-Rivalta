@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const body = document.body;
     const $ = (id) => document.getElementById(id);
 
-    const demoBanner = $('demo-banner');
-    const demoFillRossiBtn = $('demo-fill-rossi-btn');
     const authSection = $('auth-section');
     const dashboardSection = $('dashboard-section');
 
@@ -56,10 +54,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let pendingRegistrationPayload = null;
     let memberRowCounter = 0;
     let wakeLock = null;
-
-    if (!PasianCardService.isLiveSupabase() && demoBanner) {
-        demoBanner.hidden = false;
-    }
 
     /* ------------------------------------------------------------------
      * Utility
@@ -225,19 +219,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <i class="fas fa-trash-alt" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="field-row">
-                <div class="field">
-                    <label for="member-name-${n}">Nome e cognome</label>
-                    <input type="text" id="member-name-${n}" name="member_full_name_${n}"
-                        class="pf-input member-fullname-input" required maxlength="100"
-                        enterkeyhint="next" autocomplete="off" placeholder="es. Giulia Rossi">
-                    <div class="error-msg">Inserisci nome e cognome.</div>
-                </div>
-                <div class="field">
-                    <label for="member-birth-${n}">Data di nascita <span class="field-optional">(facoltativa)</span></label>
-                    <input type="date" id="member-birth-${n}" name="member_birth_date_${n}"
-                        class="pf-input member-birthdate-input">
-                </div>
+            <div class="field">
+                <label for="member-name-${n}">Nome e cognome</label>
+                <input type="text" id="member-name-${n}" name="member_full_name_${n}"
+                    class="pf-input member-fullname-input" required maxlength="100"
+                    enterkeyhint="done" autocomplete="off">
+                <div class="error-msg">Inserisci nome e cognome.</div>
             </div>
         `;
 
@@ -253,22 +240,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     /* ------------------------------------------------------------------
      * Accesso
      * ------------------------------------------------------------------ */
-    demoFillRossiBtn?.addEventListener('click', async () => {
-        try {
-            await PasianCardService.signIn('famiglia.rossi@esempio.it', 'RossiPassword1!');
-            await refreshPortalState();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (err) {
-            showStatus(signinStatus, err.message, 'error');
-        }
-    });
-
     signinForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearStatus(signinStatus);
 
         const firstInvalid = validateFields(signinForm);
         if (firstInvalid) {
+            showStatus(signinStatus, 'Email o password errata. Controlla i dati inseriti e riprova.', 'error');
             firstInvalid.focus();
             return;
         }
@@ -279,7 +257,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             await refreshPortalState();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) {
-            showStatus(signinStatus, err.message || 'Accesso non riuscito.', 'error');
+            showStatus(signinStatus, err.message || 'Email o password errata. Controlla i dati inseriti e riprova.', 'error');
         } finally {
             setLoading(signinSubmitBtn, false);
         }
@@ -351,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 additionalMembers.push({
                     full_name: nameVal,
                     role: row.dataset.memberRole || 'figlio',
-                    birth_date: row.querySelector('.member-birthdate-input')?.value || null
+                    birth_date: null
                 });
             }
         });
@@ -485,7 +463,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     cardQrButton?.addEventListener('click', openQrFullscreen);
 
     /* ------------------------------------------------------------------
-     * Card sconti (Gioielleria / Ottica)
+     * Card sconti (Gioielleria / Ottica) — grafica compatta e zero ridondanza
      * ------------------------------------------------------------------ */
     function renderDiscountCard(container, state) {
         if (!container) return;
@@ -493,8 +471,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const done = state.completedInActiveCycle;
 
         const statusLine = state.isCycleActive
-            ? `${state.nextPurchaseNumber}° acquisto su 3`
-            : 'Si parte dal 1° acquisto';
+            ? `${state.nextPurchaseNumber}° su 3`
+            : '1° su 3';
 
         const tiersHtml = state.tiers.map((pct, idx) => {
             const n = idx + 1;
@@ -510,7 +488,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <li class="${cls}">
                     <span class="tier-track__dot">${dot}</span>
                     <span class="tier-track__pct">-${pct}%</span>
-                    <span class="tier-track__lbl">${n}° acq.</span>
                 </li>`;
         }).join('');
 
@@ -520,16 +497,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const urgent = state.daysRemaining <= 14;
             footClass += urgent ? ' is-active is-urgent' : ' is-active';
             footHtml = `<i class="fas fa-hourglass-half" aria-hidden="true"></i>
-                <span>Valido fino al <strong>${formatDateIT(state.expiresAt)}</strong> · ${state.daysRemaining} ${state.daysRemaining === 1 ? 'giorno' : 'giorni'}</span>`;
+                <span>Scade il <strong>${formatDateIT(state.expiresAt)}</strong> (${state.daysRemaining}g)</span>`;
         } else if (state.wasCompleted) {
             footHtml = `<i class="fas fa-trophy" aria-hidden="true"></i>
-                <span>Ciclo completato! Si riparte da <strong>-${state.tiers[0]}%</strong></span>`;
+                <span>3/3 completato · riparte da <strong>-${state.tiers[0]}%</strong></span>`;
         } else if (state.wasExpired) {
             footHtml = `<i class="fas fa-rotate-left" aria-hidden="true"></i>
-                <span>3 mesi scaduti il ${formatDateIT(state.lastExpiresAt)}. Si riparte da <strong>-${state.tiers[0]}%</strong></span>`;
+                <span>Scaduto · riparte da <strong>-${state.tiers[0]}%</strong></span>`;
         } else {
-            footHtml = `<i class="fas fa-magic" aria-hidden="true"></i>
-                <span>Il 1° acquisto attiva <strong>3 mesi</strong> di sconti crescenti</span>`;
+            footHtml = `<i class="fas fa-hourglass-start" aria-hidden="true"></i>
+                <span><strong>3 mesi</strong> dal 1° acquisto</span>`;
         }
 
         container.innerHTML = `
@@ -540,23 +517,45 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>${statusLine}</p>
                 </div>
                 <div class="discount-card__next">
-                    <span>Prossimo</span>
+                    <span>Oggi</span>
                     <strong>-${state.nextDiscountPercent}%</strong>
                 </div>
             </div>
             <ol class="tier-track" style="--progress:${done / 2}" aria-label="Avanzamento sconti ${ui.name}">${tiersHtml}</ol>
             <p class="${footClass}">${footHtml}</p>
-            ${state.exclusionNote ? `<p class="discount-card__excl"><i class="fas fa-ban" aria-hidden="true"></i> ${state.exclusionNote}</p>` : ''}
+            ${state.exclusionNote ? `<p class="discount-card__excl"><i class="fas fa-ban" aria-hidden="true"></i> Escluse lenti a contatto</p>` : ''}
         `;
     }
 
     /* ------------------------------------------------------------------
-     * Famiglia e storico
+     * Famiglia e storico (apribili a richiesta con pulsante)
      * ------------------------------------------------------------------ */
+    const toggleFamigliaBtn = $('toggle-famiglia-btn');
+    const toggleStoricoBtn = $('toggle-storico-btn');
+
+    function toggleDrawerSection(sectionId, forceOpen = null) {
+        const famSec = $('famiglia-section');
+        const stoSec = $('storico-section');
+        const isFam = sectionId === 'famiglia-section';
+        const targetSec = isFam ? famSec : stoSec;
+        const targetBtn = isFam ? toggleFamigliaBtn : toggleStoricoBtn;
+        if (!targetSec || !targetBtn) return;
+
+        const willOpen = forceOpen !== null ? forceOpen : targetSec.hidden;
+        targetSec.hidden = !willOpen;
+        targetBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        targetBtn.classList.toggle('is-open', willOpen);
+    }
+
+    toggleFamigliaBtn?.addEventListener('click', () => toggleDrawerSection('famiglia-section'));
+    toggleStoricoBtn?.addEventListener('click', () => toggleDrawerSection('storico-section'));
+
     function renderMembers(members) {
         const list = $('registered-members-grid');
         list.innerHTML = '';
-        $('members-count').textContent = `${members.length} ${members.length === 1 ? 'membro' : 'membri'}`;
+        if ($('members-count')) {
+            $('members-count').textContent = String(members.length);
+        }
 
         members.forEach((m) => {
             const li = document.createElement('li');
@@ -571,9 +570,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
             li.querySelector('.avatar').textContent = getInitials(m.full_name);
             li.querySelector('.member-row__name').textContent = m.full_name;
-            li.querySelector('.member-row__role').textContent = m.birth_date
-                ? `${roleLabel(m.role)} · ${formatDateIT(m.birth_date)}`
-                : roleLabel(m.role);
+            li.querySelector('.member-row__role').textContent = roleLabel(m.role);
             list.appendChild(li);
         });
     }
@@ -581,13 +578,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderPurchases(purchases) {
         const list = $('customer-purchases-list');
         list.innerHTML = '';
+        if ($('purchases-count')) {
+            $('purchases-count').textContent = String(purchases.length);
+        }
 
         if (!purchases.length) {
             list.innerHTML = `
                 <li class="empty-state">
                     <i class="fas fa-bag-shopping" aria-hidden="true"></i>
                     <strong>Nessun acquisto</strong>
-                    <span>Mostra il QR in negozio per iniziare a risparmiare.</span>
                 </li>`;
             return;
         }
@@ -600,7 +599,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             li.innerHTML = `
                 <span class="purchase-item__icon" aria-hidden="true"><i class="fas ${ui.icon}"></i></span>
                 <div class="purchase-item__body">
-                    <span class="purchase-item__title">${ui.name} · ${p.purchase_number_in_cycle}° acquisto</span>
+                    <span class="purchase-item__title">${ui.name} · ${p.purchase_number_in_cycle}°</span>
                     <span class="purchase-item__meta"></span>
                     ${p.notes ? '<span class="purchase-item__notes"></span>' : ''}
                 </div>
@@ -689,6 +688,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.addEventListener('click', () => {
             const targetId = btn.dataset.mobileNav;
             setActiveTab(targetId);
+            if (targetId === 'famiglia-section' || targetId === 'storico-section') {
+                toggleDrawerSection(targetId, true);
+            }
             if (targetId === 'wallet-card') {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {

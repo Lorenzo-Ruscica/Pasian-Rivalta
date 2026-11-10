@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -16,8 +16,8 @@
     <meta property="og:site_name" content="Pasian Rivalta">
     <meta property="og:image" content="https://www.pasianrivalta.it/immagini/logo.png">
     <title>Card Famiglia | Pasian Rivalta</title>
-    <link rel="stylesheet" href="style.css?v=2.2">
-    <link rel="stylesheet" href="card-famiglia.css">
+    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="card-famiglia.css?v=4.0">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="immagini/logo_favicon.ico" type="image/png">
@@ -59,102 +59,20 @@
             <div class="pf-hero-top">
                 <span class="pf-hero-crest" aria-hidden="true"><i class="fas fa-crown"></i></span>
                 <div class="pf-hero-titles">
-                    <span class="pf-eyebrow">Programma Fedeltà</span>
+                    <span class="pf-eyebrow">Pasian Rivalta</span>
                     <h1>Card <span class="gradient-text">Famiglia</span></h1>
                 </div>
             </div>
-            <p class="pf-subtitle">Un unico QR Code per Genitori, Figli e Nonni con sconti crescenti entro 3 mesi.</p>
-            <div class="pf-hero-pills" aria-label="Riepilogo sconti">
-                <div class="pf-hero-pill">
-                    <i class="fas fa-gem" aria-hidden="true"></i>
-                    <div>
-                        <span>Gioielleria</span>
-                        <strong>-10% · -15% · -20%</strong>
-                    </div>
-                </div>
-                <div class="pf-hero-pill">
-                    <i class="fas fa-glasses" aria-hidden="true"></i>
-                    <div>
-                        <span>Ottica</span>
-                        <strong>-15% · -20% · -25%</strong>
-                    </div>
-                </div>
-            </div>
+            <p class="pf-subtitle">Un solo QR per tutta la famiglia.</p>
         </div>
     </header>
 
     <main class="pf-container">
 
-        <!-- Banner Modalità Demo (visibile solo senza chiavi Supabase) -->
-        <aside id="demo-banner" class="pf-demo" hidden aria-label="Modalità demo">
-            <div class="pf-demo__text">
-                <i class="fas fa-flask" aria-hidden="true"></i>
-                <span><strong>Modalità demo</strong> · dati salvati solo su questo dispositivo</span>
-            </div>
-            <div class="pf-demo__actions">
-                <button type="button" id="demo-fill-rossi-btn" class="pf-chip-btn">
-                    <i class="fas fa-magic" aria-hidden="true"></i> Prova account demo
-                </button>
-                <a href="admin.html" class="pf-chip-btn">
-                    <i class="fas fa-cash-register" aria-hidden="true"></i> Cassa
-                </a>
-            </div>
-        </aside>
-
         <!-- ==================================================================
-             VISTA 1: VANTAGGI + ACCESSO / REGISTRAZIONE (utente non autenticato)
+             VISTA 1: ACCESSO / REGISTRAZIONE
              ================================================================== -->
         <div id="auth-section" class="pf-auth-layout">
-
-            <section id="perks-section" class="pf-section" aria-labelledby="perks-title">
-                <h2 id="perks-title" class="pf-section-title">Più acquisti, più risparmi</h2>
-
-                <div class="perks-grid">
-                    <article class="perk-card">
-                        <div class="perk-card__head">
-                            <span class="perk-card__icon" aria-hidden="true"><i class="fas fa-gem"></i></span>
-                            <div class="perk-card__title">
-                                <h3>Gioielleria</h3>
-                                <p>Gioielli e orologi</p>
-                            </div>
-                            <span class="perk-card__max">fino a <strong>-20%</strong></span>
-                        </div>
-                        <ol class="perk-steps" aria-label="Sconti Gioielleria">
-                            <li><strong>-10%</strong><span>1° acquisto</span></li>
-                            <li><strong>-15%</strong><span>2° acquisto</span></li>
-                            <li><strong>-20%</strong><span>3° acquisto</span></li>
-                        </ol>
-                    </article>
-
-                    <article class="perk-card">
-                        <div class="perk-card__head">
-                            <span class="perk-card__icon" aria-hidden="true"><i class="fas fa-glasses"></i></span>
-                            <div class="perk-card__title">
-                                <h3>Ottica</h3>
-                                <p>Occhiali da vista e da sole</p>
-                            </div>
-                            <span class="perk-card__max">fino a <strong>-25%</strong></span>
-                        </div>
-                        <ol class="perk-steps" aria-label="Sconti Ottica">
-                            <li><strong>-15%</strong><span>1° acquisto</span></li>
-                            <li><strong>-20%</strong><span>2° acquisto</span></li>
-                            <li><strong>-25%</strong><span>3° acquisto</span></li>
-                        </ol>
-                        <p class="perk-card__note"><i class="fas fa-ban" aria-hidden="true"></i> Lenti a contatto escluse</p>
-                    </article>
-                </div>
-
-                <p class="perks-rule">
-                    <i class="fas fa-hourglass-half" aria-hidden="true"></i>
-                    <span>Il 2° e il 3° sconto valgono <strong>entro 3 mesi</strong> dal 1° acquisto, per chiunque della famiglia.</span>
-                </p>
-
-                <ol class="how-strip" aria-label="Come funziona">
-                    <li><span class="how-strip__icon" aria-hidden="true"><i class="fas fa-users"></i></span>Registra la famiglia</li>
-                    <li><span class="how-strip__icon" aria-hidden="true"><i class="fas fa-qrcode"></i></span>Mostra il QR in cassa</li>
-                    <li><span class="how-strip__icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>Lo sconto cresce</li>
-                </ol>
-            </section>
 
             <section id="auth-card" class="auth-shell" aria-labelledby="auth-section-title">
                 <h2 id="auth-section-title" class="visually-hidden">Accesso e registrazione Card Famiglia</h2>
@@ -175,7 +93,7 @@
                             <label for="login-email">Email</label>
                             <input type="email" id="login-email" name="email" class="pf-input"
                                 autocomplete="username" inputmode="email" enterkeyhint="next"
-                                placeholder="nome@esempio.it" required aria-errormessage="login-email-error">
+                                required aria-errormessage="login-email-error">
                             <div id="login-email-error" class="error-msg">Inserisci un'email valida.</div>
                         </div>
 
@@ -218,7 +136,7 @@
                                 <label for="family-name">Nome della famiglia</label>
                                 <input type="text" id="family-name" name="family_name" class="pf-input"
                                     autocomplete="family-name" enterkeyhint="next" maxlength="100"
-                                    placeholder="es. Famiglia Rossi" required aria-errormessage="family-name-error">
+                                    required aria-errormessage="family-name-error">
                                 <div id="family-name-error" class="error-msg">Inserisci il nome della famiglia.</div>
                             </div>
 
@@ -226,7 +144,7 @@
                                 <label for="holder-name">Il tuo nome e cognome</label>
                                 <input type="text" id="holder-name" name="holder_name" class="pf-input"
                                     autocomplete="name" enterkeyhint="next" maxlength="100"
-                                    placeholder="es. Mario Rossi" required aria-errormessage="holder-name-error">
+                                    required aria-errormessage="holder-name-error">
                                 <div id="holder-name-error" class="error-msg">Inserisci nome e cognome.</div>
                             </div>
 
@@ -252,7 +170,7 @@
                                 <label for="holder-phone">Cellulare</label>
                                 <input type="tel" id="holder-phone" name="holder_phone" class="pf-input"
                                     autocomplete="tel" inputmode="tel" enterkeyhint="next"
-                                    placeholder="+39 333 1234567" required aria-errormessage="holder-phone-error">
+                                    required aria-errormessage="holder-phone-error">
                                 <div id="holder-phone-error" class="error-msg">Inserisci un numero valido.</div>
                             </div>
 
@@ -260,7 +178,7 @@
                                 <label for="signup-email">Email</label>
                                 <input type="email" id="signup-email" name="email" class="pf-input"
                                     autocomplete="username" inputmode="email" enterkeyhint="next"
-                                    placeholder="nome@esempio.it" required aria-errormessage="signup-email-error">
+                                    required aria-errormessage="signup-email-error">
                                 <div id="signup-email-error" class="error-msg">Inserisci un'email valida.</div>
                             </div>
 
@@ -409,28 +327,49 @@
                 </div>
 
                 <div class="dash-col-info">
-                    <!-- SCONTI -->
+                    <!-- SCONTI (vista grafica immediata) -->
                     <section id="sconti-section" class="pf-section" aria-labelledby="sconti-title">
-                        <h2 id="sconti-title" class="pf-section-title">I tuoi sconti</h2>
+                        <h2 id="sconti-title" class="pf-section-title">Il tuo sconto oggi</h2>
                         <div class="discount-list">
                             <article class="discount-card" id="jewelry-cycle-card" aria-label="Sconti Gioielleria"></article>
                             <article class="discount-card" id="optics-cycle-card" aria-label="Sconti Ottica"></article>
                         </div>
                     </section>
 
-                    <!-- FAMIGLIA -->
-                    <section id="famiglia-section" class="pf-section" aria-labelledby="members-section-title">
-                        <div class="pf-section-head">
-                            <h2 id="members-section-title" class="pf-section-title">La tua famiglia</h2>
-                            <span class="pf-tag"><i class="fas fa-lock" aria-hidden="true"></i> <span id="members-count">0</span></span>
-                        </div>
+                    <!-- ACCESSO SU RICHIESTA: FAMIGLIA & STORICO -->
+                    <div class="drawer-triggers" aria-label="Altre informazioni">
+                        <button type="button" id="toggle-famiglia-btn" class="drawer-trigger-btn" aria-expanded="false" aria-controls="famiglia-section">
+                            <span class="drawer-trigger-btn__left">
+                                <i class="fas fa-users" aria-hidden="true"></i>
+                                <strong>La tua famiglia</strong>
+                            </span>
+                            <span class="drawer-trigger-btn__right">
+                                <span class="pf-tag" id="members-count">0</span>
+                                <i class="fas fa-chevron-down drawer-chevron" aria-hidden="true"></i>
+                            </span>
+                        </button>
+
+                        <button type="button" id="toggle-storico-btn" class="drawer-trigger-btn" aria-expanded="false" aria-controls="storico-section">
+                            <span class="drawer-trigger-btn__left">
+                                <i class="fas fa-receipt" aria-hidden="true"></i>
+                                <strong>Storico acquisti</strong>
+                            </span>
+                            <span class="drawer-trigger-btn__right">
+                                <span class="pf-tag" id="purchases-count">0</span>
+                                <i class="fas fa-chevron-down drawer-chevron" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- FAMIGLIA (apribile al tocco) -->
+                    <section id="famiglia-section" class="pf-section drawer-panel" hidden aria-labelledby="members-section-title">
+                        <h2 id="members-section-title" class="visually-hidden">La tua famiglia</h2>
                         <ul id="registered-members-grid" class="member-list"></ul>
-                        <p class="pf-footnote">Tutti possono usare il QR della famiglia.</p>
                     </section>
 
-                    <!-- STORICO -->
-                    <section id="storico-section" class="pf-section" aria-labelledby="purchases-section-title">
-                        <h2 id="purchases-section-title" class="pf-section-title">Storico acquisti</h2>
+                    <!-- STORICO (apribile al tocco) -->
+                    <section id="storico-section" class="pf-section drawer-panel" hidden aria-labelledby="purchases-section-title">
+                        <h2 id="purchases-section-title" class="visually-hidden">Storico acquisti</h2>
                         <ul id="customer-purchases-list" class="purchase-list"></ul>
                     </section>
                 </div>
@@ -530,8 +469,8 @@
     <!-- Librerie CDN: Supabase JS v2 & QRCode.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="main.js?v=2.2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="card-famiglia.js"></script>
+    <script src="main.js?v=4.0"></script>
+    <script src="supabase-config.js?v=4.0"></script>
+    <script src="card-famiglia.js?v=4.0"></script>
 </body>
 </html>

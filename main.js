@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
     const burger = document.querySelector('.burger');
     const nav = document.querySelector('.nav-links');
@@ -45,7 +45,7 @@
     if (nav && !nav.dataset.mobileEnhanced) {
         nav.dataset.mobileEnhanced = 'true';
 
-        // Header del drawer mobile
+        // Header del drawer mobile (minimal e pulito)
         const drawerHeader = document.createElement('li');
         drawerHeader.className = 'mobile-nav-chrome mobile-nav-header';
         drawerHeader.innerHTML = `
@@ -53,7 +53,7 @@
                 <span class="pf-brand-emblem" aria-hidden="true"></span>
                 <div class="pf-brand-text">
                     <strong class="pf-brand-title">Pasian Rivalta</strong>
-                    <span class="pf-brand-sub">Rivalta di Torino · Dal 1981</span>
+                    <span class="pf-brand-sub">Dal 1981</span>
                 </div>
             </div>
             <button type="button" class="mnav-close-btn" aria-label="Chiudi menu">
@@ -62,14 +62,14 @@
         `;
         nav.prepend(drawerHeader);
 
-        // Metadati icone e sottotitoli per le voci di menu su mobile
+        // Metadati icone per le voci di menu su mobile (senza sottotitoli superflui)
         const itemMeta = {
-            'index.html': { icon: 'fa-home', title: 'Home', sub: 'Pagina principale' },
-            'storia.html': { icon: 'fa-award', title: 'La nostra storia', sub: 'Tradizione dal 1981' },
-            'ottica.html': { icon: 'fa-glasses', title: 'Ottica', sub: 'Vista e sole' },
-            'gioielleria.html': { icon: 'fa-gem', title: 'Gioielleria', sub: 'Gioielli e orologi' },
-            'card-famiglia.html': { icon: 'fa-crown', title: 'Card Famiglia', sub: 'Sconti fino al -25%' },
-            'contatti.html': { icon: 'fa-map-marker-alt', title: 'Contatti', sub: 'Orari e sede' }
+            'index.html': { icon: 'fa-home', title: 'Home' },
+            'storia.html': { icon: 'fa-award', title: 'La nostra storia' },
+            'ottica.html': { icon: 'fa-glasses', title: 'Ottica' },
+            'gioielleria.html': { icon: 'fa-gem', title: 'Gioielleria' },
+            'card-famiglia.html': { icon: 'fa-crown', title: 'Card Famiglia' },
+            'contatti.html': { icon: 'fa-map-marker-alt', title: 'Contatti' }
         };
 
         // Assicura che "Card Famiglia" sia presente in tutte le pagine (es. privacy/cookie)
@@ -88,7 +88,7 @@
             const href = (a.getAttribute('href') || '').split('/').pop().toLowerCase();
             const isDropdownToggle = a.parentElement?.classList.contains('dropdown');
             const meta = isDropdownToggle
-                ? { icon: 'fa-layer-group', title: 'Collezioni', sub: 'Ottica e Gioielleria' }
+                ? { icon: 'fa-layer-group', title: 'Collezioni' }
                 : itemMeta[href];
 
             if (!meta) return;
@@ -101,7 +101,6 @@
                     <span class="mnav-icon" aria-hidden="true"><i class="fas ${meta.icon}"></i></span>
                     <span class="mnav-labels">
                         <span class="mnav-title">${labelText || meta.title}</span>
-                        <span class="mnav-sub">${meta.sub}</span>
                     </span>
                 </span>
                 <i class="fas ${isDropdownToggle ? 'fa-chevron-down' : 'fa-chevron-right'} mnav-arrow" aria-hidden="true"></i>
@@ -121,7 +120,6 @@
                 <span class="mnav-subcard-icon" aria-hidden="true"><i class="fas ${meta.icon}"></i></span>
                 <span class="mnav-subcard-body">
                     <strong class="mnav-subcard-title">${label}</strong>
-                    <span class="mnav-subcard-sub">${meta.sub}</span>
                 </span>
             `;
         });

@@ -10,14 +10,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const body = document.body;
     const $ = (id) => document.getElementById(id);
 
-    const adminDemoBanner = $('admin-demo-banner');
-    const adminDemoLoginBtn = $('admin-demo-login-btn');
-
     const adminLoginSection = $('admin-login-section');
     const adminWorkspaceSection = $('admin-workspace-section');
     const adminSigninForm = $('admin-signin-form');
     const adminSigninBtn = $('admin-signin-btn');
     const adminLoginStatus = $('admin-login-status');
+    const adminSetpassForm = $('admin-setpass-form');
+    const adminSetpassBtn = $('admin-setpass-btn');
+    const adminSetpassStatus = $('admin-setpass-status');
+    const switchToSetpassBtn = $('switch-to-setpass-btn');
     const adminSignoutBtn = $('admin-signout-btn');
 
     const scanStage = $('scan-stage');
@@ -31,7 +32,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const emptyScanPlaceholder = $('empty-scan-placeholder');
     const scannedCardPanel = $('scanned-card-panel');
     const clearScannedCardBtn = $('clear-scanned-card-btn');
-    const loadSampleRossiBtn = $('load-sample-rossi-btn');
+
+    const toggleEditCardBtn = $('toggle-edit-card-btn');
+    const adminEditCardForm = $('admin-edit-card-form');
+    const adminEditFamilyName = $('admin-edit-family-name');
+    const adminEditHolderName = $('admin-edit-holder-name');
+    const adminEditHolderPhone = $('admin-edit-holder-phone');
+    const adminSaveCardBtn = $('admin-save-card-btn');
+
+    const toggleAddMemberBtn = $('toggle-add-member-btn');
+    const adminAddMemberForm = $('admin-add-member-form');
+    const adminNewMemberName = $('admin-new-member-name');
+    const adminNewMemberRole = $('admin-new-member-role');
+    const adminAddMemberBtn = $('admin-add-member-btn');
+    const adminManageStatus = $('admin-manage-status');
+    const adminCardPurchasesList = $('admin-card-purchases-list');
 
     const recordPurchaseForm = $('record-purchase-form');
     const recordPurchaseBtn = $('record-purchase-btn');
@@ -54,10 +69,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isCameraRunning = false;
     let currentCardBundle = null;
     let cachedCardsData = { cards: [], members: [], purchases: [] };
-
-    if (!PasianCardService.isLiveSupabase() && adminDemoBanner) {
-        adminDemoBanner.hidden = false;
-    }
 
     /* ------------------------------------------------------------------
      * Utility
@@ -129,17 +140,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     /* ------------------------------------------------------------------
-     * Accesso Operatore
+     * Accesso Operatore & Impostazione Password
      * ------------------------------------------------------------------ */
-    adminDemoLoginBtn?.addEventListener('click', async () => {
-        try {
-            await PasianCardService.signIn('admin@pasianrivalta.it', 'AdminPassword1!');
-            await refreshAdminView();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (err) {
-            showStatus(adminLoginStatus, err.message, 'error');
+    function switchAdminAuthTab(tabName) {
+        const isLogin = tabName !== 'setpass';
+        const tabLogin = $('admin-tab-login');
+        const tabSetpass = $('admin-tab-setpass');
+        const panelLogin = $('admin-panel-login');
+        const panelSetpass = $('admin-panel-setpass');
+
+        if (tabLogin) tabLogin.setAttribute('aria-selected', isLogin ? 'true' : 'false');
+        if (tabSetpass) tabSetpass.setAttribute('aria-selected', isLogin ? 'false' : 'true');
+        if (panelLogin) panelLogin.hidden = !isLogin;
+        if (panelSetpass) panelSetpass.hidden = isLogin;
+
+        clearStatus(adminLoginStatus);
+        clearStatus(adminSetpassStatus);
+
+        if (!isLogin) {
+            const loginEmail = $('admin-email')?.value?.trim();
+            if (loginEmail && $('admin-setpass-email')) {
+                $('admin-setpass-email').value = loginEmail;
+            }
+            $('admin-new-password')?.focus();
         }
+    }
+
+    document.querySelectorAll('[data-admin-auth-tab]').forEach((btn) => {
+        btn.addEventListener('click', () => switchAdminAuthTab(btn.getAttribute('data-admin-auth-tab')));
     });
+
+    switchToSetpassBtn?.addEventListener('click', () => switchAdminAuthTab('setpass'));
 
     adminSigninForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -149,6 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             adminSigninForm.querySelectorAll('input').forEach((inp) => {
                 inp.classList.toggle('user-invalid-fallback', !inp.checkValidity());
             });
+            showStatus(adminLoginStatus, 'Email o password errata. Controlla i dati inseriti e riprova.', 'error');
             adminSigninForm.querySelector(':invalid')?.focus();
             return;
         }
@@ -159,9 +191,40 @@ document.addEventListener('DOMContentLoaded', async () => {
             await refreshAdminView();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (err) {
-            showStatus(adminLoginStatus, err.message || 'Accesso non riuscito.', 'error');
+            showStatus(adminLoginStatus, err.message || 'Email o password errata. Controlla i dati inseriti e riprova.', 'error');
         } finally {
             setLoading(adminSigninBtn, false);
+        }
+    });
+
+    adminSetpassForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearStatus(adminSetpassStatus);
+
+        const emailVal = $('admin-setpass-email')?.value?.trim();
+        const newPassVal = $('admin-new-password')?.value || '';
+        const confirmPassVal = $('admin-confirm-password')?.value || '';
+
+        if (!emailVal || newPassVal.length < 8) {
+            showStatus(adminSetpassStatus, 'Inserisci l\'email operatore e una password di almeno 8 caratteri.', 'error');
+            return;
+        }
+
+        if (newPassVal !== confirmPassVal) {
+            showStatus(adminSetpassStatus, 'Le due password non coincidono.', 'error');
+            $('admin-confirm-password')?.focus();
+            return;
+        }
+
+        setLoading(adminSetpassBtn, true);
+        try {
+            await PasianCardService.setOperatorPassword(emailVal, newPassVal);
+            await refreshAdminView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (err) {
+            showStatus(adminSetpassStatus, err.message || 'Impossibile aggiornare la password.', 'error');
+        } finally {
+            setLoading(adminSetpassBtn, false);
         }
     });
 
@@ -260,17 +323,131 @@ document.addEventListener('DOMContentLoaded', async () => {
         await lookupAndDisplayCard(q, false);
     });
 
-    loadSampleRossiBtn?.addEventListener('click', async () => {
-        await lookupAndDisplayCard('PR-FAM-ROSSI81', false);
-    });
-
     clearScannedCardBtn?.addEventListener('click', () => {
         currentCardBundle = null;
         scannedCardPanel.hidden = true;
         emptyScanPlaceholder.hidden = false;
         clearStatus(scannerStatus);
         clearStatus(recordPurchaseStatus);
+        clearStatus(adminManageStatus);
     });
+
+    async function refreshCurrentCardAndLists(statusMessage = '') {
+        if (currentCardBundle?.card?.card_code) {
+            const updatedBundle = await PasianCardService.findCardByQuery(currentCardBundle.card.card_code);
+            currentCardBundle = updatedBundle;
+            renderScannedCardBundle(updatedBundle);
+        }
+        await loadAdminLists();
+        if (statusMessage) {
+            showStatus(adminManageStatus, statusMessage, 'success');
+        }
+    }
+
+    // Toggle modifica dati scheda famiglia
+    toggleEditCardBtn?.addEventListener('click', () => {
+        if (!adminEditCardForm || !currentCardBundle?.card) return;
+        const willOpen = adminEditCardForm.hidden;
+        adminEditCardForm.hidden = !willOpen;
+        toggleEditCardBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        if (willOpen) {
+            adminEditFamilyName.value = currentCardBundle.card.family_name || '';
+            adminEditHolderName.value = currentCardBundle.card.holder_name || '';
+            adminEditHolderPhone.value = currentCardBundle.card.holder_phone || '';
+            adminEditFamilyName.focus();
+        }
+    });
+
+    adminEditCardForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentCardBundle?.card) return;
+        clearStatus(adminManageStatus);
+
+        const familyName = adminEditFamilyName.value.trim();
+        const holderName = adminEditHolderName.value.trim();
+        const holderPhone = adminEditHolderPhone.value.trim();
+
+        if (!familyName || !holderName) {
+            showStatus(adminManageStatus, 'Inserisci il nome famiglia e il nome del titolare.', 'error');
+            return;
+        }
+
+        setLoading(adminSaveCardBtn, true);
+        try {
+            await PasianCardService.adminUpdateCard({
+                cardId: currentCardBundle.card.id,
+                familyName,
+                holderName,
+                holderPhone
+            });
+            adminEditCardForm.hidden = true;
+            toggleEditCardBtn?.setAttribute('aria-expanded', 'false');
+            await refreshCurrentCardAndLists('Dati della Card Famiglia aggiornati.');
+        } catch (err) {
+            showStatus(adminManageStatus, err.message || 'Errore durante il salvataggio.', 'error');
+        } finally {
+            setLoading(adminSaveCardBtn, false);
+        }
+    });
+
+    // Toggle aggiunta rapido componente
+    toggleAddMemberBtn?.addEventListener('click', () => {
+        if (!adminAddMemberForm) return;
+        const willOpen = adminAddMemberForm.hidden;
+        adminAddMemberForm.hidden = !willOpen;
+        toggleAddMemberBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        if (willOpen) {
+            adminNewMemberName?.focus();
+        }
+    });
+
+    adminAddMemberForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentCardBundle?.card) return;
+        clearStatus(adminManageStatus);
+
+        const fullName = adminNewMemberName?.value?.trim();
+        const role = adminNewMemberRole?.value || 'figlio';
+
+        if (!fullName || fullName.length < 2) {
+            showStatus(adminManageStatus, 'Inserisci nome e cognome del familiare.', 'error');
+            adminNewMemberName?.focus();
+            return;
+        }
+
+        setLoading(adminAddMemberBtn, true);
+        try {
+            await PasianCardService.adminAddMember({
+                cardId: currentCardBundle.card.id,
+                fullName,
+                role
+            });
+            adminNewMemberName.value = '';
+            adminAddMemberForm.hidden = true;
+            toggleAddMemberBtn?.setAttribute('aria-expanded', 'false');
+            await refreshCurrentCardAndLists(`Familiare "${fullName}" aggiunto alla Card.`);
+        } catch (err) {
+            showStatus(adminManageStatus, err.message || 'Impossibile aggiungere il familiare.', 'error');
+        } finally {
+            setLoading(adminAddMemberBtn, false);
+        }
+    });
+
+    async function handleCancelPurchase(purchase) {
+        if (!purchase?.id) return;
+        clearStatus(adminManageStatus);
+        clearStatus(recordPurchaseStatus);
+        try {
+            await PasianCardService.adminCancelPurchase(purchase.id);
+            const catLabel = purchase.category === 'gioielleria' ? 'Gioielleria' : 'Ottica';
+            await refreshCurrentCardAndLists(
+                `Acquisto ${catLabel} (-${purchase.discount_percent}%) annullato: lo sconto è tornato disponibile.`
+            );
+        } catch (err) {
+            showStatus(adminManageStatus, err.message || 'Impossibile annullare l\'acquisto.', 'error');
+            showStatus(scannerStatus, err.message || 'Impossibile annullare l\'acquisto.', 'error');
+        }
+    }
 
     async function lookupAndDisplayCard(queryText, fromQr = false) {
         clearStatus(scannerStatus);
@@ -336,7 +513,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         emptyScanPlaceholder.hidden = true;
         scannedCardPanel.hidden = false;
 
-        const { card, members } = bundle;
+        const { card, members, purchases } = bundle;
 
         $('admin-card-family').textContent = card.family_name;
         $('admin-card-code').textContent = card.card_code;
@@ -364,7 +541,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             contactsList.appendChild(mailLi);
         }
 
-        // Chip componenti e select acquirente
+        // Chip componenti (con pulsante rimozione per i non-titolari) e select acquirente
         const badgesContainer = $('admin-members-badges');
         badgesContainer.innerHTML = '';
         purchaseMemberSelect.innerHTML = '';
@@ -377,10 +554,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <span class="avatar" aria-hidden="true"></span>
                 <strong></strong>
                 <small></small>
+                ${!m.is_holder ? '<button type="button" class="chip__remove" aria-label="Rimuovi familiare" title="Rimuovi familiare"><i class="fas fa-times" aria-hidden="true"></i></button>' : ''}
             `;
             chip.querySelector('.avatar').textContent = getInitials(m.full_name);
             chip.querySelector('strong').textContent = m.full_name;
-            chip.querySelector('small').textContent = rLabel;
+            chip.querySelector('small').textContent = m.is_holder ? `${rLabel} · Titolare` : rLabel;
+
+            const removeBtn = chip.querySelector('.chip__remove');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', async () => {
+                    clearStatus(adminManageStatus);
+                    try {
+                        await PasianCardService.adminRemoveMember(m.id);
+                        await refreshCurrentCardAndLists(`Familiare "${m.full_name}" rimosso dalla Card.`);
+                    } catch (err) {
+                        showStatus(adminManageStatus, err.message || 'Impossibile rimuovere il familiare.', 'error');
+                    }
+                });
+            }
+
             badgesContainer.appendChild(chip);
 
             const opt = document.createElement('option');
@@ -399,6 +591,48 @@ document.addEventListener('DOMContentLoaded', async () => {
         $('cat-pct-ottica').textContent = `-${opticsState.nextDiscountPercent}%`;
 
         updateLivePricePreview();
+        renderScannedCardPurchases(purchases || []);
+    }
+
+    function renderScannedCardPurchases(purchases) {
+        if (!adminCardPurchasesList) return;
+        adminCardPurchasesList.innerHTML = '';
+
+        if (!purchases.length) {
+            adminCardPurchasesList.innerHTML = `
+                <li class="empty-state empty-state--compact">
+                    <span>Nessun acquisto attivo per questa Card.</span>
+                </li>`;
+            return;
+        }
+
+        purchases.forEach((p) => {
+            const ui = CATEGORY_UI[p.category] || CATEGORY_UI.gioielleria;
+            const hasAmount = p.final_amount !== null && p.final_amount !== undefined;
+
+            const li = document.createElement('li');
+            li.className = 'purchase-item';
+            li.innerHTML = `
+                <span class="purchase-item__icon" aria-hidden="true"><i class="fas ${ui.icon}"></i></span>
+                <div class="purchase-item__body">
+                    <span class="purchase-item__title"></span>
+                    <span class="purchase-item__meta"></span>
+                    ${p.notes ? '<span class="purchase-item__notes"></span>' : ''}
+                </div>
+                <div class="purchase-item__right">
+                    <span class="purchase-item__pct">-${p.discount_percent}%</span>
+                    ${hasAmount ? `<span class="purchase-item__amount">${formatCurrencyEUR(p.final_amount)}<s>${formatCurrencyEUR(p.original_amount)}</s></span>` : ''}
+                    <button type="button" class="purchase-cancel-btn" title="Annulla questo acquisto e ripristina lo sconto">
+                        <i class="fas fa-rotate-left" aria-hidden="true"></i> Annulla sconto
+                    </button>
+                </div>
+            `;
+            li.querySelector('.purchase-item__title').textContent = `${p.member_name || 'Cliente'} · ${p.purchase_number_in_cycle}° ${ui.name}`;
+            li.querySelector('.purchase-item__meta').textContent = formatDateIT(p.created_at, true);
+            if (p.notes) li.querySelector('.purchase-item__notes').textContent = p.notes;
+            li.querySelector('.purchase-cancel-btn').addEventListener('click', () => handleCancelPurchase(p));
+            adminCardPurchasesList.appendChild(li);
+        });
     }
 
     function getSelectedCategory() {
@@ -585,6 +819,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const { purchases, cards } = cachedCardsData;
         const cardById = new Map(cards.map((c) => [c.id, c]));
+        if ($('admin-purchases-count')) {
+            $('admin-purchases-count').textContent = String(purchases.length);
+        }
         listEl.innerHTML = '';
 
         if (!purchases.length) {
@@ -614,11 +851,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="purchase-item__right">
                     <span class="purchase-item__pct">-${p.discount_percent}%</span>
                     ${hasAmount ? `<span class="purchase-item__amount">${formatCurrencyEUR(p.final_amount)}<s>${formatCurrencyEUR(p.original_amount)}</s></span>` : ''}
+                    <button type="button" class="purchase-cancel-btn" title="Annulla questo acquisto e ripristina lo sconto">
+                        <i class="fas fa-rotate-left" aria-hidden="true"></i> Annulla sconto
+                    </button>
                 </div>
             `;
             li.querySelector('.purchase-item__title').textContent = `${p.member_name || fam || 'Cliente'} · ${p.purchase_number_in_cycle}° ${ui.name}`;
             li.querySelector('.purchase-item__meta').textContent = `${fam ? fam + ' · ' : ''}${formatDateIT(p.created_at, true)}`;
             if (p.notes) li.querySelector('.purchase-item__notes').textContent = p.notes;
+            li.querySelector('.purchase-cancel-btn').addEventListener('click', () => handleCancelPurchase(p));
             listEl.appendChild(li);
         });
     }
@@ -640,8 +881,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     refreshAdminListsBtn?.addEventListener('click', loadAdminLists);
 
     /* ------------------------------------------------------------------
-     * Tab bar inferiore (mobile)
+     * Apertura a richiesta per Famiglie registrate e Ultimi acquisti + Tab bar mobile
      * ------------------------------------------------------------------ */
+    const toggleAdminFamiglieBtn = $('toggle-admin-famiglie-btn');
+    const toggleAdminAcquistiBtn = $('toggle-admin-acquisti-btn');
+
+    function toggleAdminDrawer(sectionId, forceOpen = null) {
+        const famSec = $('famiglie-section');
+        const acqSec = $('acquisti-section');
+        const isFam = sectionId === 'famiglie-section';
+        const targetSec = isFam ? famSec : acqSec;
+        const targetBtn = isFam ? toggleAdminFamiglieBtn : toggleAdminAcquistiBtn;
+        if (!targetSec || !targetBtn) return;
+
+        const willOpen = forceOpen !== null ? forceOpen : targetSec.hidden;
+        targetSec.hidden = !willOpen;
+        targetBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        targetBtn.classList.toggle('is-open', willOpen);
+    }
+
+    toggleAdminFamiglieBtn?.addEventListener('click', () => toggleAdminDrawer('famiglie-section'));
+    toggleAdminAcquistiBtn?.addEventListener('click', () => toggleAdminDrawer('acquisti-section'));
+
     const adminMobileNavBtns = document.querySelectorAll('[data-admin-mobile-nav]');
 
     function setActiveAdminTab(targetId) {
@@ -652,6 +913,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.addEventListener('click', () => {
             const targetId = btn.dataset.adminMobileNav;
             setActiveAdminTab(targetId);
+            if (targetId === 'famiglie-section' || targetId === 'acquisti-section') {
+                toggleAdminDrawer(targetId, true);
+            }
             if (targetId === 'scanner-panel') {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {

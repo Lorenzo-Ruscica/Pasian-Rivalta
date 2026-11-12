@@ -308,10 +308,44 @@ const PasianCardService = {
     },
 
     /**
-     * Registrazione Completa in Un'Unica Fase:
-     * Crea l'account Auth + la Card Famiglia + tutti i Membri (Genitori, Figli, Nonni) e blocca subito modifiche future per il cliente.
+     * Verifica preventivamente che il Codice Acquisto inserito dal cliente esista e non sia già stato usato.
+     */
+    async verifyRegistrationCode(code) {
+        const cleanCode = String(code || '').trim().toUpperCase();
+        if (!cleanCode) {
+            throw new Error('Inserisci il codice acquisto rilasciato in negozio.');
+        }
+
+        const sb = getSupabaseClient();
+        if (!sb) throw new Error('Database non raggiungibile.');
+
+        const { data, error } = await sb.rpc('verify_registration_code', {
+            p_code: cleanCode
+        });
+
+        if (error) {
+            const raw = String(error.message || '');
+            if (raw.includes('verify_registration_code') || raw.includes('schema cache')) {
+                throw new Error('Funzione codici acquisto non ancora attiva sul database. Esegui lo script supabase-schema.sql su Supabase.');
+            }
+            throw new Error(translateAuthErrorIT(raw));
+        }
+
+        if (!data || !data.valid) {
+            throw new Error(data?.message || 'Codice acquisto non valido o già utilizzato.');
+        }
+
+        return data;
+    },
+
+    /**
+     * Registrazione Completa in Un'Unica Fase con Codice Acquisto Monouso:
+     * 1. Verifica che il Codice Acquisto sia valido e non ancora utilizzato PRIMA di creare l'utente Auth
+     * 2. Crea l'account Auth + la Card Famiglia + tutti i Membri (Genitori, Figli, Nonni)
+     * 3. Consuma atomicamente il Codice Acquisto (1 solo utilizzo per account) e blocca modifiche future per il cliente.
      */
     async registerFamilyInOnePhase({
+        registrationCode,
         email,
         password,
         familyName,
@@ -321,6 +355,14 @@ const PasianCardService = {
         holderBirthDate,
         additionalMembers
     }) {
+        const cleanRegCode = String(registrationCode || '').trim().toUpperCase();
+        if (!cleanRegCode) {
+            throw new Error('Inserisci il codice acquisto rilasciato in negozio per poterti registrare.');
+        }
+
+        // 1. Verifica preventiva: impedisce di creare account Auth se il codice non esiste o è già stato usato
+        await this.verifyRegistrationCode(cleanRegCode);
+
         const cleanEmail = String(email || '').trim().toLowerCase();
         const sb = getSupabaseClient();
         if (!sb) throw new Error('Database non raggiungibile.');
@@ -330,6 +372,7 @@ const PasianCardService = {
             password,
             options: {
                 data: {
+                    registration_code: cleanRegCode,
                     family_name: familyName,
                     holder_name: holderName,
                     holder_phone: holderPhone,
@@ -358,7 +401,8 @@ const PasianCardService = {
                 p_holder_phone: holderPhone || '',
                 p_holder_role: holderRole || 'genitore',
                 p_holder_birth_date: holderBirthDate || null,
-                p_additional_members: additionalMembers || []
+                p_additional_members: additionalMembers || [],
+                p_registration_code: cleanRegCode
             });
             if (rpcError) throw new Error(translateAuthErrorIT(rpcError.message));
             return { requiresEmailConfirmation: false };
@@ -377,7 +421,7 @@ const PasianCardService = {
         const sb = getSupabaseClient();
         if (!sb) return null;
 
-        const { data: card, error } = await sb
+        let { data: card, error } = await sb
             .from('family_cards')
             .select('*')
             .eq('user_id', user.id)
@@ -385,6 +429,34 @@ const PasianCardService = {
             .maybeSingle();
 
         if (error) throw new Error(translateAuthErrorIT(error.message));
+
+        // Se l'utente aveva confermato l'email dopo il signUp, completa automaticamente la creazione della Card con il codice salvato
+        if (!card) {
+            const { data: authData } = await sb.auth.getUser();
+            const meta = authData?.user?.user_metadata;
+            if (meta && meta.family_name && meta.holder_name && meta.registration_code) {
+                const { error: rpcErr } = await sb.rpc('register_family_card', {
+                    p_family_name: meta.family_name,
+                    p_holder_name: meta.holder_name,
+                    p_holder_email: user.email,
+                    p_holder_phone: meta.holder_phone || '',
+                    p_holder_role: meta.holder_role || 'genitore',
+                    p_holder_birth_date: meta.holder_birth_date || null,
+                    p_additional_members: meta.additional_members || [],
+                    p_registration_code: meta.registration_code
+                });
+                if (!rpcErr) {
+                    const retry = await sb
+                        .from('family_cards')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .eq('is_archived', false)
+                        .maybeSingle();
+                    card = retry.data || null;
+                }
+            }
+        }
+
         if (!card) return null;
 
         const [{ data: members }, { data: purchases }] = await Promise.all([
@@ -549,13 +621,86 @@ const PasianCardService = {
     },
 
     /**
-     * Elenco di tutte le Card registrate e ultimi acquisti attivi (per dashboard Admin)
+     * Permessi Totali Admin: Elimina l'account e la Card Famiglia registrata
+     */
+    async adminDeleteFamilyCard(cardId) {
+        const sb = getSupabaseClient();
+        if (!sb) throw new Error('Database non raggiungibile.');
+
+        const { data, error } = await sb.rpc('admin_delete_family_card', {
+            p_card_id: cardId
+        });
+        if (error) throw new Error(translateAuthErrorIT(error.message));
+        return data;
+    },
+
+    /**
+     * Genera un nuovo Codice Acquisto sempre diverso e univoco (Solo Admin)
+     * I codici generati in precedenza e non ancora usati restano tutti validi (1 solo utilizzo per account).
+     */
+    async adminGenerateRegistrationCode(notes = '') {
+        const sb = getSupabaseClient();
+        if (!sb) throw new Error('Database non raggiungibile.');
+
+        const { data, error } = await sb.rpc('admin_generate_registration_code', {
+            p_notes: notes ? String(notes).trim() : null
+        });
+        if (error) {
+            const raw = String(error.message || '');
+            if (raw.includes('admin_generate_registration_code') || raw.includes('schema cache')) {
+                throw new Error('Funzione codici acquisto non ancora attiva sul database. Esegui lo script supabase-schema.sql nel SQL Editor di Supabase.');
+            }
+            throw new Error(translateAuthErrorIT(raw));
+        }
+        return data;
+    },
+
+    /**
+     * Elimina un Codice Acquisto non ancora utilizzato (Solo Admin)
+     */
+    async adminDeleteRegistrationCode(codeId) {
+        const sb = getSupabaseClient();
+        if (!sb) throw new Error('Database non raggiungibile.');
+
+        const { data, error } = await sb.rpc('admin_delete_registration_code', {
+            p_code_id: codeId
+        });
+        if (error) throw new Error(translateAuthErrorIT(error.message));
+        return data;
+    },
+
+    /**
+     * Elenco di tutti i Codici Acquisto (disponibili e già utilizzati) (Solo Admin)
+     */
+    async adminListRegistrationCodes() {
+        const sb = getSupabaseClient();
+        if (!sb) return { codes: [], schemaMissing: false };
+
+        const { data, error } = await sb
+            .from('registration_codes')
+            .select('*')
+            .eq('is_archived', false)
+            .order('created_at', { ascending: false })
+            .limit(200);
+
+        if (error) {
+            const raw = String(error.message || '');
+            if (raw.includes('registration_codes') || raw.includes('schema cache') || error.code === '42P01') {
+                return { codes: [], schemaMissing: true };
+            }
+            throw new Error(translateAuthErrorIT(raw));
+        }
+        return { codes: data || [], schemaMissing: false };
+    },
+
+    /**
+     * Elenco di tutte le Card registrate, ultimi acquisti attivi e codici acquisto (per dashboard Admin)
      */
     async listAllCardsAndRecentPurchases() {
         const sb = getSupabaseClient();
-        if (!sb) return { cards: [], members: [], purchases: [] };
+        if (!sb) return { cards: [], members: [], purchases: [], registrationCodes: [], registrationCodesSchemaMissing: false };
 
-        const [{ data: cards }, { data: members }, { data: purchases }] = await Promise.all([
+        const [{ data: cards }, { data: members }, { data: purchases }, codesRes] = await Promise.all([
             sb
                 .from('family_cards')
                 .select('*')
@@ -571,12 +716,15 @@ const PasianCardService = {
                 .select('*')
                 .eq('is_cancelled', false)
                 .order('created_at', { ascending: false })
-                .limit(30)
+                .limit(30),
+            this.adminListRegistrationCodes().catch(() => ({ codes: [], schemaMissing: true }))
         ]);
         return {
             cards: cards || [],
             members: members || [],
-            purchases: purchases || []
+            purchases: purchases || [],
+            registrationCodes: codesRes?.codes || [],
+            registrationCodesSchemaMissing: Boolean(codesRes?.schemaMissing)
         };
     }
 };

@@ -132,6 +132,31 @@
                     <form id="signup-form" action="/card-famiglia.html" method="POST" novalidate>
                         <!-- PASSO 1: DATI TITOLARE -->
                         <div class="wizard-step" data-step="1">
+                            <div class="field reg-code-field">
+                                <label for="registration-code">
+                                    <i class="fas fa-key" aria-hidden="true"></i> Codice Acquisto <span class="field-optional">(rilasciato in negozio)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="registration-code"
+                                    name="registration_code"
+                                    class="pf-input pf-input--code"
+                                    autocomplete="off"
+                                    autocapitalize="characters"
+                                    spellcheck="false"
+                                    enterkeyhint="next"
+                                    maxlength="32"
+                                    placeholder="es. PR-ACQ-XXXX-XXXX"
+                                    required
+                                    aria-describedby="registration-code-hint"
+                                    aria-errormessage="registration-code-error"
+                                >
+                                <span id="registration-code-hint" class="field-hint">
+                                    Inserisci il codice monouso consegnato in negozio (valido per 1 solo account).
+                                </span>
+                                <div id="registration-code-error" class="error-msg">Inserisci il codice acquisto rilasciato in negozio.</div>
+                            </div>
+
                             <div class="field">
                                 <label for="family-name">Nome della famiglia</label>
                                 <input type="text" id="family-name" name="family_name" class="pf-input"

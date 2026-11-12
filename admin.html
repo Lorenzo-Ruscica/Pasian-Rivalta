@@ -324,6 +324,9 @@
                                     <button type="button" id="toggle-edit-card-btn" class="pf-chip-btn" aria-expanded="false" aria-controls="admin-edit-card-form">
                                         <i class="fas fa-pen" aria-hidden="true"></i> Modifica dati
                                     </button>
+                                    <button type="button" id="admin-delete-card-btn" class="pf-chip-btn pf-chip-btn--danger" title="Elimina definitivamente questo account famiglia">
+                                        <i class="fas fa-trash-alt" aria-hidden="true"></i> Elimina famiglia
+                                    </button>
                                     <button type="button" id="clear-scanned-card-btn" class="icon-btn icon-btn--sm" aria-label="Chiudi scheda famiglia" title="Chiudi scheda">
                                         <i class="fas fa-times" aria-hidden="true"></i>
                                     </button>
@@ -490,6 +493,86 @@
                 </div>
             </div>
 
+            <!-- SEZIONE CODICI ACQUISTO MONOUSO (PER REGISTRAZIONE CLIENTI) -->
+            <section id="codici-panel" class="panel codici-panel" aria-labelledby="codici-heading">
+                <div class="codici-head">
+                    <div>
+                        <h2 id="codici-heading" class="panel-title">
+                            <span class="step-badge"><i class="fas fa-key" aria-hidden="true"></i></span>
+                            Codici Acquisto (Registrazione Clienti)
+                        </h2>
+                        <p class="codici-desc">
+                            Genera un codice monouso da consegnare al cliente per registrare la sua Card Famiglia.
+                            Anche generando nuovi codici, tutti quelli precedenti non ancora usati restano validi (1 solo utilizzo per account).
+                        </p>
+                    </div>
+                    <div class="codici-head__actions">
+                        <span class="pf-tag pf-tag--gold">
+                            <span id="admin-codes-available-count">0</span> disponibili
+                        </span>
+                        <button type="button" id="refresh-codes-btn" class="icon-btn icon-btn--sm" aria-label="Aggiorna codici acquisto" title="Aggiorna codici">
+                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="generate-code-form" class="codici-gen-form" novalidate>
+                    <div class="codici-gen-row">
+                        <div class="field">
+                            <label for="new-code-notes" class="visually-hidden">Nota cliente o scontrino (opzionale)</label>
+                            <input
+                                type="text"
+                                id="new-code-notes"
+                                name="notes"
+                                class="pf-input"
+                                maxlength="120"
+                                placeholder="Nota opzionale (es. Fam. Rossi, Scontrino #120...)"
+                            >
+                        </div>
+                        <button type="submit" id="generate-code-btn" class="btn-primary-gold">
+                            <i class="fas fa-plus-circle" aria-hidden="true"></i> Genera nuovo codice acquisto
+                        </button>
+                    </div>
+                </form>
+
+                <!-- BOX CODICE APPENA GENERATO -->
+                <div id="generated-code-banner" class="generated-code-banner" hidden aria-live="polite">
+                    <div class="generated-code-banner__info">
+                        <span class="generated-code-banner__eyebrow">
+                            <i class="fas fa-circle-check" aria-hidden="true"></i> Nuovo codice pronto (valido per 1 registrazione)
+                        </span>
+                        <code id="generated-code-value" class="generated-code-banner__code">PR-ACQ-XXXX-XXXX</code>
+                        <span id="generated-code-note" class="generated-code-banner__note"></span>
+                    </div>
+                    <div class="generated-code-banner__actions">
+                        <button type="button" id="copy-generated-code-btn" class="btn-primary-gold btn-sm">
+                            <i class="fas fa-copy" aria-hidden="true"></i> Copia codice
+                        </button>
+                        <button type="button" id="copy-generated-link-btn" class="btn-secondary-gold btn-sm">
+                            <i class="fas fa-link" aria-hidden="true"></i> Copia link registrazione
+                        </button>
+                    </div>
+                </div>
+
+                <div id="generate-code-status" class="form-status-box" role="status" aria-live="polite"></div>
+
+                <div class="codici-list-bar">
+                    <div class="codici-filter-pills" role="group" aria-label="Filtra codici per stato">
+                        <button type="button" class="codici-filter-pill is-active" data-codes-filter="unused">
+                            Disponibili (<span id="codes-count-unused">0</span>)
+                        </button>
+                        <button type="button" class="codici-filter-pill" data-codes-filter="used">
+                            Già utilizzati (<span id="codes-count-used">0</span>)
+                        </button>
+                        <button type="button" class="codici-filter-pill" data-codes-filter="all">
+                            Tutti (<span id="codes-count-all">0</span>)
+                        </button>
+                    </div>
+                </div>
+
+                <ul id="admin-codes-list" class="codes-list"></ul>
+            </section>
+
             <!-- ELENCO FAMIGLIE & ULTIMI ACQUISTI (APRIBILI CON PULSANTE) -->
             <div class="drawer-triggers drawer-triggers--admin" aria-label="Elenchi negozio">
                 <button type="button" id="toggle-admin-famiglie-btn" class="drawer-trigger-btn" aria-expanded="false" aria-controls="famiglie-section">
@@ -556,7 +639,7 @@
     </footer>
 
     <!-- Barra di navigazione inferiore stile App (operatore mobile) -->
-    <nav class="mobile-app-tabbar" aria-label="Navigazione rapida Cassa">
+    <nav class="mobile-app-tabbar mobile-app-tabbar--5" aria-label="Navigazione rapida Cassa">
         <button type="button" class="app-tab-item active" data-admin-mobile-nav="scanner-panel">
             <i class="fas fa-qrcode" aria-hidden="true"></i>
             <span>Scanner</span>
@@ -564,6 +647,10 @@
         <button type="button" class="app-tab-item" data-admin-mobile-nav="cassa-panel">
             <i class="fas fa-cash-register" aria-hidden="true"></i>
             <span>Cassa</span>
+        </button>
+        <button type="button" class="app-tab-item" data-admin-mobile-nav="codici-panel">
+            <i class="fas fa-key" aria-hidden="true"></i>
+            <span>Codici</span>
         </button>
         <button type="button" class="app-tab-item" data-admin-mobile-nav="famiglie-section">
             <i class="fas fa-users" aria-hidden="true"></i>

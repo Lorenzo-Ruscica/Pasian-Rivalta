@@ -60,6 +60,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filterCardsInput = $('filter-cards-input');
     const refreshAdminListsBtn = $('refresh-admin-lists-btn');
 
+    const generateCodeForm = $('generate-code-form');
+    const newCodeNotes = $('new-code-notes');
+    const generateCodeBtn = $('generate-code-btn');
+    const generatedCodeBanner = $('generated-code-banner');
+    const generatedCodeValue = $('generated-code-value');
+    const generatedCodeNote = $('generated-code-note');
+    const copyGeneratedCodeBtn = $('copy-generated-code-btn');
+    const copyGeneratedLinkBtn = $('copy-generated-link-btn');
+    const generateCodeStatus = $('generate-code-status');
+    const refreshCodesBtn = $('refresh-codes-btn');
+    const adminCodesList = $('admin-codes-list');
+    const codeFilterBtns = document.querySelectorAll('[data-codes-filter]');
+
     const CATEGORY_UI = {
         gioielleria: { name: 'Gioielleria', icon: 'fa-gem' },
         ottica: { name: 'Ottica', icon: 'fa-glasses' }
@@ -68,7 +81,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     let html5QrScanner = null;
     let isCameraRunning = false;
     let currentCardBundle = null;
-    let cachedCardsData = { cards: [], members: [], purchases: [] };
+    let currentCodesFilter = 'unused';
+    let cachedCardsData = {
+        cards: [],
+        members: [],
+        purchases: [],
+        registrationCodes: [],
+        registrationCodesSchemaMissing: false
+    };
 
     /* ------------------------------------------------------------------
      * Utility
@@ -449,6 +469,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    async function handleDeleteFamilyCard(card) {
+        if (!card?.id) return;
+        const label = `${card.family_name || 'Famiglia'}${card.holder_email ? ' (' + card.holder_email + ')' : ''}`;
+        const confirmed = window.confirm(
+            `Vuoi eliminare definitivamente l'account e la Card di "${label}"?\n\nL'account verrà disattivato e rimosso dall'elenco famiglie.`
+        );
+        if (!confirmed) return;
+
+        clearStatus(adminManageStatus);
+        clearStatus(scannerStatus);
+
+        const deleteBtn = $('admin-delete-card-btn');
+        if (deleteBtn) setLoading(deleteBtn, true);
+
+        try {
+            await PasianCardService.adminDeleteFamilyCard(card.id);
+            if (currentCardBundle?.card?.id === card.id) {
+                currentCardBundle = null;
+                scannedCardPanel.hidden = true;
+                emptyScanPlaceholder.hidden = false;
+            }
+            await loadAdminLists();
+            showStatus(scannerStatus, `Account e Card di "${card.family_name}" eliminati con successo.`, 'success');
+        } catch (err) {
+            showStatus(adminManageStatus, err.message || 'Impossibile eliminare la scheda famiglia.', 'error');
+            showStatus(scannerStatus, err.message || 'Impossibile eliminare la scheda famiglia.', 'error');
+        } finally {
+            if (deleteBtn) setLoading(deleteBtn, false);
+        }
+    }
+
+    $('admin-delete-card-btn')?.addEventListener('click', () => {
+        if (currentCardBundle?.card) {
+            handleDeleteFamilyCard(currentCardBundle.card);
+        }
+    });
+
     async function lookupAndDisplayCard(queryText, fromQr = false) {
         clearStatus(scannerStatus);
         clearStatus(recordPurchaseStatus);
@@ -808,7 +865,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 $('cassa-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
 
+            const delFamilyBtn = document.createElement('button');
+            delFamilyBtn.type = 'button';
+            delFamilyBtn.className = 'family-item__delete-btn';
+            delFamilyBtn.title = `Elimina account e Card di ${c.family_name}`;
+            delFamilyBtn.setAttribute('aria-label', `Elimina account e Card di ${c.family_name}`);
+            delFamilyBtn.innerHTML = '<i class="fas fa-trash-alt" aria-hidden="true"></i>';
+            delFamilyBtn.addEventListener('click', (ev) => {
+                ev.stopPropagation();
+                handleDeleteFamilyCard(c);
+            });
+
             li.appendChild(btn);
+            li.appendChild(delFamilyBtn);
             listEl.appendChild(li);
         });
     }
@@ -864,11 +933,249 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    /* ------------------------------------------------------------------
+     * Gestione Codici Acquisto Monouso (Generazione, Copia, Elenco, Eliminazione)
+     * ------------------------------------------------------------------ */
+    async function copyTextWithFeedback(text, btn, copiedLabel = 'Copiato!') {
+        if (!text) return;
+        let ok = false;
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+                ok = true;
+            }
+        } catch (_) {
+            ok = false;
+        }
+        if (!ok) {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none;';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                ok = true;
+            } catch (_) {
+                ok = false;
+            }
+        }
+        if (ok && btn) {
+            const prevHtml = btn.dataset.origHtml || btn.innerHTML;
+            btn.dataset.origHtml = prevHtml;
+            btn.innerHTML = `<i class="fas fa-check" aria-hidden="true"></i> ${copiedLabel}`;
+            setTimeout(() => {
+                btn.innerHTML = prevHtml;
+            }, 1800);
+        }
+    }
+
+    function buildRegistrationUrl(code) {
+        const base = window.location.origin + window.location.pathname.replace(/admin\.html.*$/i, 'card-famiglia.html');
+        return `${base}?codice=${encodeURIComponent(code)}`;
+    }
+
+    copyGeneratedCodeBtn?.addEventListener('click', () => {
+        const code = generatedCodeValue?.textContent?.trim();
+        copyTextWithFeedback(code, copyGeneratedCodeBtn, 'Codice copiato!');
+    });
+
+    copyGeneratedLinkBtn?.addEventListener('click', () => {
+        const code = generatedCodeValue?.textContent?.trim();
+        if (!code) return;
+        copyTextWithFeedback(buildRegistrationUrl(code), copyGeneratedLinkBtn, 'Link copiato!');
+    });
+
+    async function handleDeleteRegistrationCode(codeRow) {
+        if (!codeRow || codeRow.is_used) return;
+        const confirmed = window.confirm(`Vuoi eliminare il codice acquisto non ancora utilizzato "${codeRow.code}"?`);
+        if (!confirmed) return;
+
+        clearStatus(generateCodeStatus);
+        try {
+            await PasianCardService.adminDeleteRegistrationCode(codeRow.id);
+            if (generatedCodeValue?.textContent?.trim() === codeRow.code && generatedCodeBanner) {
+                generatedCodeBanner.hidden = true;
+            }
+            showStatus(generateCodeStatus, `Codice ${codeRow.code} eliminato.`, 'success');
+            await loadAdminLists();
+        } catch (err) {
+            showStatus(generateCodeStatus, err.message || 'Impossibile eliminare il codice.', 'error');
+        }
+    }
+
+    function renderRegistrationCodesList() {
+        if (!adminCodesList) return;
+
+        const allCodes = cachedCardsData.registrationCodes || [];
+        const unusedCodes = allCodes.filter((c) => !c.is_used);
+        const usedCodes = allCodes.filter((c) => Boolean(c.is_used));
+
+        if ($('admin-codes-available-count')) $('admin-codes-available-count').textContent = String(unusedCodes.length);
+        if ($('codes-count-unused')) $('codes-count-unused').textContent = String(unusedCodes.length);
+        if ($('codes-count-used')) $('codes-count-used').textContent = String(usedCodes.length);
+        if ($('codes-count-all')) $('codes-count-all').textContent = String(allCodes.length);
+
+        adminCodesList.innerHTML = '';
+
+        if (cachedCardsData.registrationCodesSchemaMissing) {
+            adminCodesList.innerHTML = `
+                <li class="empty-state">
+                    <i class="fas fa-database" aria-hidden="true"></i>
+                    <strong>Tabella Codici Acquisto da attivare su Supabase</strong>
+                    <span>Apri il SQL Editor del tuo progetto Supabase ed esegui lo script <code>supabase-schema.sql</code> per abilitare i codici acquisto monouso.</span>
+                </li>`;
+            return;
+        }
+
+        const filtered =
+            currentCodesFilter === 'unused'
+                ? unusedCodes
+                : currentCodesFilter === 'used'
+                  ? usedCodes
+                  : allCodes;
+
+        if (!filtered.length) {
+            const emptyMsg =
+                currentCodesFilter === 'unused'
+                    ? 'Nessun codice acquisto disponibile al momento. Premi "Genera nuovo codice acquisto" qui sopra per crearne uno.'
+                    : currentCodesFilter === 'used'
+                      ? 'Nessun codice acquisto è ancora stato utilizzato.'
+                      : 'Nessun codice acquisto generato finora.';
+            adminCodesList.innerHTML = `
+                <li class="empty-state">
+                    <i class="fas fa-key" aria-hidden="true"></i>
+                    <strong>Nessun codice in questo elenco</strong>
+                    <span>${emptyMsg}</span>
+                </li>`;
+            return;
+        }
+
+        const cardById = new Map((cachedCardsData.cards || []).map((c) => [c.id, c]));
+
+        filtered.forEach((c) => {
+            const li = document.createElement('li');
+            li.className = `code-item ${c.is_used ? 'is-used' : 'is-available'}`;
+
+            const statusBadgeHtml = c.is_used
+                ? `<span class="code-status-badge is-used"><i class="fas fa-lock" aria-hidden="true"></i> Già utilizzato</span>`
+                : `<span class="code-status-badge is-available"><i class="fas fa-check-circle" aria-hidden="true"></i> Disponibile · 1 utilizzo</span>`;
+
+            li.innerHTML = `
+                <div class="code-item__main">
+                    <div class="code-item__top">
+                        <code class="code-item__code"></code>
+                        ${statusBadgeHtml}
+                    </div>
+                    <span class="code-item__meta"></span>
+                    ${c.notes ? '<span class="code-item__note"></span>' : ''}
+                </div>
+                <div class="code-item__actions"></div>
+            `;
+
+            li.querySelector('.code-item__code').textContent = c.code;
+
+            if (c.is_used) {
+                const usedFam = c.used_by_family_name || cardById.get(c.used_by_card_id)?.family_name || c.used_by_email || 'Cliente registrato';
+                li.querySelector('.code-item__meta').textContent =
+                    `Utilizzato da: ${usedFam} · ${c.used_at ? formatDateIT(c.used_at, true) : formatDateIT(c.created_at, true)}`;
+            } else {
+                li.querySelector('.code-item__meta').textContent = `Generato il ${formatDateIT(c.created_at, true)} · Valido per 1 registrazione`;
+            }
+
+            if (c.notes) {
+                li.querySelector('.code-item__note').textContent = `Nota: ${c.notes}`;
+            }
+
+            const actionsEl = li.querySelector('.code-item__actions');
+            if (!c.is_used) {
+                const copyBtn = document.createElement('button');
+                copyBtn.type = 'button';
+                copyBtn.className = 'pf-chip-btn';
+                copyBtn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i> Copia';
+                copyBtn.addEventListener('click', () => copyTextWithFeedback(c.code, copyBtn, 'Copiato!'));
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'purchase-cancel-btn';
+                delBtn.title = 'Elimina codice non utilizzato';
+                delBtn.innerHTML = '<i class="fas fa-trash-alt" aria-hidden="true"></i> Elimina';
+                delBtn.addEventListener('click', () => handleDeleteRegistrationCode(c));
+
+                actionsEl.appendChild(copyBtn);
+                actionsEl.appendChild(delBtn);
+            } else {
+                const linkedCard = cardById.get(c.used_by_card_id);
+                const lookupQuery = linkedCard?.card_code || c.used_by_family_name || c.used_by_email;
+                if (lookupQuery) {
+                    const openBtn = document.createElement('button');
+                    openBtn.type = 'button';
+                    openBtn.className = 'pf-chip-btn';
+                    openBtn.innerHTML = '<i class="fas fa-id-card" aria-hidden="true"></i> Apri Card';
+                    openBtn.addEventListener('click', () => {
+                        lookupAndDisplayCard(lookupQuery, false);
+                        $('cassa-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                    actionsEl.appendChild(openBtn);
+                }
+            }
+
+            adminCodesList.appendChild(li);
+        });
+    }
+
+    codeFilterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            currentCodesFilter = btn.dataset.codesFilter || 'unused';
+            codeFilterBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+            renderRegistrationCodesList();
+        });
+    });
+
+    generateCodeForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearStatus(generateCodeStatus);
+
+        const notes = newCodeNotes ? newCodeNotes.value.trim() : '';
+        setLoading(generateCodeBtn, true);
+
+        try {
+            const created = await PasianCardService.adminGenerateRegistrationCode(notes);
+            if (newCodeNotes) newCodeNotes.value = '';
+
+            if (generatedCodeBanner && generatedCodeValue && created?.code) {
+                generatedCodeValue.textContent = created.code;
+                if (generatedCodeNote) {
+                    generatedCodeNote.textContent = created.notes ? `Nota: ${created.notes}` : '';
+                }
+                generatedCodeBanner.hidden = false;
+            }
+
+            currentCodesFilter = 'unused';
+            codeFilterBtns.forEach((b) => b.classList.toggle('is-active', b.dataset.codesFilter === 'unused'));
+
+            await loadAdminLists();
+            showStatus(
+                generateCodeStatus,
+                `Nuovo codice acquisto ${created.code} generato! Consegnalo al cliente per registrare la sua Card Famiglia (i codici precedenti non usati restano validi).`,
+                'success'
+            );
+        } catch (err) {
+            showStatus(generateCodeStatus, err.message || 'Errore nella generazione del codice acquisto.', 'error');
+        } finally {
+            setLoading(generateCodeBtn, false);
+        }
+    });
+
+    refreshCodesBtn?.addEventListener('click', loadAdminLists);
+
     async function loadAdminLists() {
         try {
             cachedCardsData = await PasianCardService.listAllCardsAndRecentPurchases();
             renderCardsList(filterCardsInput?.value || '');
             renderRecentPurchasesList();
+            renderRegistrationCodesList();
         } catch (err) {
             showStatus(scannerStatus, err.message, 'error');
         }
@@ -930,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (entry.isIntersecting) setActiveAdminTab(entry.target.id);
             });
         }, { rootMargin: '-45% 0px -50% 0px' });
-        ['scanner-panel', 'cassa-panel', 'famiglie-section', 'acquisti-section'].forEach((id) => {
+        ['scanner-panel', 'cassa-panel', 'codici-panel', 'famiglie-section', 'acquisti-section'].forEach((id) => {
             const el = $(id);
             if (el) sectionObserver.observe(el);
         });

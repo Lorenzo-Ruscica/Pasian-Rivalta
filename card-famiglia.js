@@ -164,8 +164,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     /* ------------------------------------------------------------------
-     * Wizard registrazione (2 passaggi)
+     * Wizard registrazione (2 passaggi) + Verifica Codice Acquisto
      * ------------------------------------------------------------------ */
+    const regCodeInput = $('registration-code');
+    const regCodeError = $('registration-code-error');
+
+    regCodeInput?.addEventListener('input', () => {
+        const start = regCodeInput.selectionStart;
+        const end = regCodeInput.selectionEnd;
+        regCodeInput.value = regCodeInput.value.toUpperCase();
+        if (typeof start === 'number' && typeof end === 'number') {
+            try { regCodeInput.setSelectionRange(start, end); } catch (_) { /* ignore */ }
+        }
+        regCodeInput.setCustomValidity('');
+        if (regCodeError) {
+            regCodeError.textContent = 'Inserisci il codice acquisto rilasciato in negozio.';
+        }
+    });
+
+    // Eventuale pre-compilazione codice da parametro URL (?codice=... o ?code=...)
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlCode = (urlParams.get('codice') || urlParams.get('code') || '').trim().toUpperCase();
+        if (urlCode && regCodeInput) {
+            regCodeInput.value = urlCode;
+            switchAuthTab('signup');
+        }
+    } catch (_) {
+        // ignore
+    }
+
     function goToSignupStep(step) {
         signupForm.querySelectorAll('.wizard-step').forEach((el) => {
             el.hidden = el.dataset.step !== String(step);
@@ -187,15 +215,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         $('holder-preview-avatar').textContent = getInitials(name);
     }
 
-    signupNextBtn?.addEventListener('click', () => {
+    signupNextBtn?.addEventListener('click', async () => {
+        clearStatus(signupStatus);
+        if (regCodeInput) {
+            regCodeInput.setCustomValidity('');
+        }
+
         const step1 = signupForm.querySelector('[data-step="1"]');
         const firstInvalid = validateFields(step1);
         if (firstInvalid) {
             firstInvalid.focus();
             return;
         }
-        syncHolderPreview();
-        goToSignupStep(2);
+
+        // Verifica immediata sul database che il Codice Acquisto esista e non sia già stato usato
+        const codeVal = regCodeInput ? regCodeInput.value.trim().toUpperCase() : '';
+        setLoading(signupNextBtn, true);
+        try {
+            const res = await PasianCardService.verifyRegistrationCode(codeVal);
+            if (regCodeInput && res?.code) {
+                regCodeInput.value = res.code;
+            }
+            syncHolderPreview();
+            goToSignupStep(2);
+        } catch (err) {
+            const msg = err.message || 'Codice acquisto non valido o già utilizzato.';
+            if (regCodeInput) {
+                regCodeInput.setCustomValidity(msg);
+                regCodeInput.classList.add('user-invalid-fallback');
+                regCodeInput.setAttribute('aria-invalid', 'true');
+                if (regCodeError) {
+                    regCodeError.textContent = msg;
+                }
+                regCodeInput.focus();
+            }
+            showStatus(signupStatus, msg, 'error');
+        } finally {
+            setLoading(signupNextBtn, false);
+        }
     });
 
     signupBackBtn?.addEventListener('click', () => goToSignupStep(1));
@@ -335,6 +392,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         pendingRegistrationPayload = {
+            registrationCode: $('registration-code')?.value?.trim().toUpperCase() || '',
             email: $('signup-email').value.trim(),
             password: newPasswordInput.value,
             familyName: $('family-name').value.trim(),
